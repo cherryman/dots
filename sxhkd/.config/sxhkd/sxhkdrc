@@ -1,0 +1,23 @@
+### Programs
+super + d
+	rofi -show run
+
+super + grave
+	urxvt
+
+
+### Applications
+
+
+### XF86 Keys
+XF86Audio{Prev,Next,Play}
+	playerctl {previous,next,play-pause}
+
+XF86Audio{Lower,Raise}Volume
+	$HOME/.config/sxhkd/volume.sh {down,up}
+
+XF86HomePage
+	surf slashdot.org
+
+XF86Explorer
+	pcmanfm
