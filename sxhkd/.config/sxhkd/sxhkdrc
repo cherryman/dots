@@ -16,6 +16,9 @@ XF86Audio{Prev,Next,Play}
 XF86Audio{Lower,Raise}Volume
 	$HOME/.config/sxhkd/volume.sh {down,up}
 
+XF86MonBrightness{Up,Down}
+	lux -m 10 -{a,s} 50
+
 XF86HomePage
 	surf slashdot.org
 
