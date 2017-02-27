@@ -39,21 +39,21 @@ set $bar	#22242d
 
 
 ### i3Bar
-bar {
-	status_command i3blocks
-	font pango:Overpass-Regular 11
-	tray_output none
-
-	strip_workspace_numbers yes
-
-	colors {
-		background 		$bar
-		focused_workspace	$bar	$bar	$txt-0
-		active_workspace	$bar	$bar	$txt-1
-		inactive_workspace	$bar	$bar	$txt-1
-		urgent_workspace	$bg-2	$bar	$bg-2
-	}
-}
+#bar {
+#	status_command i3blocks
+#	font pango:Overpass-Regular 11
+#	tray_output none
+#
+#	strip_workspace_numbers yes
+#
+#	colors {
+#		background 		$bar
+#		focused_workspace	$bar	$bar	$txt-0
+#		active_workspace	$bar	$bar	$txt-1
+#		inactive_workspace	$bar	$bar	$txt-1
+#		urgent_workspace	$bg-2	$bar	$bg-2
+#	}
+#}
 
 ### Color
 # class                 border	backgr.	text	indic.	child_border
