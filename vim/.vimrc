@@ -4,7 +4,7 @@ let skip_defaults_vim=1
 
 
 " ---- Misc
-colorscheme molokai
+colorscheme badwolf
 filetype plugin on
 syntax on
 
@@ -20,6 +20,7 @@ set number
 set cursorline " highlight line under cursor
 filetype indent on
 set lazyredraw " redraw only when necessary
+set laststatus=2
 
 set showmatch " highlight matching bracket
 set incsearch " search while typing
@@ -31,6 +32,23 @@ set mouse=a
 
 
 " ---- Keybinds
-let mapleader="\"
+let mapleader="\\"
 
 nnoremap gV `[v`]
+
+
+" ---- Plugins
+
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" vim-airline
+let g:airline_theme='badwolf'
+let g:airline_powerline_fonts = 1
