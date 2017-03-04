@@ -1,4 +1,3 @@
-    echo "test"
 ### Programs
 super + d
 	rofi -show run
@@ -12,10 +11,10 @@ XF86Audio{Prev,Next,Play}
 	playerctl {previous,next,play-pause}
 
 XF86Audio{Lower,Raise}Volume
-	volume.sh {down,up}
+	~/.config/sxhkd/volume.sh {down,up}
 
 XF86MonBrightness{Up,Down}
-	backlight.sh {up,down}
+	~/.config/sxhkd/backlight.sh {up,down}
 
 XF86HomePage
 	firefox
