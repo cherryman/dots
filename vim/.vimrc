@@ -1,4 +1,4 @@
-execute pathogen#infect() 
+execute pathogen#infect()
 
 let skip_defaults_vim=1
 
@@ -13,6 +13,7 @@ syntax on
 set tabstop=4
 set softtabstop=4
 set expandtab
+set shiftwidth=4
 
 
 " ---- Interface
