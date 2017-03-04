@@ -10,7 +10,7 @@ fi
 xrdb -merge $HOME/.Xresources
 xmodmap $HOME/.Xmodmap
 
-PATH="$HOME/.config/sxhkd:$PATH" sxhkd &
+sxhkd &
 compton &
 dunst &
 redshift -t6500:3200 -b1.0:0.8 &

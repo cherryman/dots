@@ -1,3 +1,4 @@
+    echo "test"
 ### Programs
 super + d
 	rofi -show run
@@ -6,21 +7,18 @@ super + grave
 	urxvt
 
 
-### Applications
-
-
 ### XF86 Keys
 XF86Audio{Prev,Next,Play}
 	playerctl {previous,next,play-pause}
 
 XF86Audio{Lower,Raise}Volume
-	$HOME/.config/sxhkd/volume.sh {down,up}
+	volume.sh {down,up}
 
 XF86MonBrightness{Up,Down}
-	lux -m 10 -{a,s} 50
+	backlight.sh {up,down}
 
 XF86HomePage
-	surf slashdot.org
+	firefox
 
 XF86Explorer
 	pcmanfm
