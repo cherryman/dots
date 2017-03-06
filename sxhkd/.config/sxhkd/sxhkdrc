@@ -10,8 +10,8 @@ super + grave
 XF86Audio{Prev,Next,Play}
 	playerctl {previous,next,play-pause}
 
-XF86Audio{Lower,Raise}Volume
-	~/.config/sxhkd/volume.sh {down,up}
+XF86Audio{LowerVolume,RaiseVolume,Mute}
+	~/.config/sxhkd/volume.sh {down,up,mute}
 
 XF86MonBrightness{Up,Down}
 	~/.config/sxhkd/backlight.sh {up,down}
