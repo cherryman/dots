@@ -1,3 +1,4 @@
+runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
 let skip_defaults_vim=1
