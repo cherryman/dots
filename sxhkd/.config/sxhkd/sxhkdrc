@@ -5,6 +5,8 @@ super + d
 super + grave
 	urxvt
 
+super + space
+	~/.config/sxhkd/lang.sh
 
 ### XF86 Keys
 XF86Audio{Prev,Next,Play}
