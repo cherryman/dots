@@ -26,7 +26,7 @@ ID="$(cat $ID_FILE)"
 if [[ -e "$(amixer get Master | grep '[off]')" ]]; then
 	VOL="mute"
 else
-	VOL="$(amixer get Master | awk '$0~/%/{print $4}' | tr -d '[]%')"
+    VOL="$(amixer get Master | grep -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
 fi
 
 case $VOL in
