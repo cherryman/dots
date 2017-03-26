@@ -26,17 +26,17 @@ ID="$(cat $ID_FILE)"
 if [[ -e "$(amixer get Master | grep '[off]')" ]]; then
 	VOL="mute"
 else
-    VOL="$(amixer get Master | grep -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
+	VOL="$(amixer get Master | grep -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
 fi
 
 case $VOL in
 	0|mute)
-		dunstify -p -r $ID "$ICON_MUTE $VOL" > $ID_FILE
+		dunstify -pr $ID "$ICON_MUTE $VOL" > $ID_FILE
 		;;
 	[4-9][0-9])
-		dunstify -p -r $ID "$ICON_HIGH $VOL" > $ID_FILE
+		dunstify -pr $ID "$ICON_HIGH $VOL" > $ID_FILE
 		;;
 	*)
-		dunstify -p -r $ID "$ICON_LOW  $VOL" > $ID_FILE
+		dunstify -pr $ID "$ICON_LOW  $VOL" > $ID_FILE
 		;;
 esac
