@@ -1,6 +1,6 @@
 #!/bin/sh
 #DEP setxkbmap tr cut
-#OPT dunst dunstify
+#OPT dunst dunstify xmodmap
 
 # Retrieve the current keymap
 lang="$(setxkbmap -query | grep layout | tr -d ' ' | cut -f2 -d':')"
@@ -41,4 +41,10 @@ if [[ -e $(which dunstify) ]]; then
 		dunstify -p "$out" > $id_file
 	fi
 
+fi
+
+
+# Changing keymaps breaks xmodmap settings
+if [[ -e "$(which xmodmap)" && -f ~/.Xmodmap ]]; then
+    xmodmap ~/.Xmodmap &> /dev/null
 fi
