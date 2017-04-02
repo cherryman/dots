@@ -22,3 +22,6 @@
 [submodule "bar"]
 	path = bar
 	url = https://github.com/CherryMan/bar.git
+[submodule "zsh/.zplug"]
+	path = zsh/.zplug
+	url = https://github.com/zplug/zplug.git
