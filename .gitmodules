@@ -19,8 +19,8 @@
 [submodule "vim/.vim/bundle/vim-polyglot"]
 	path = vim/.vim/bundle/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot.git
-[submodule "bar"]
-	path = bar
+[submodule "_bar"]
+	path = _bar
 	url = https://github.com/CherryMan/bar.git
 [submodule "zsh/.zplug"]
 	path = zsh/.zplug
