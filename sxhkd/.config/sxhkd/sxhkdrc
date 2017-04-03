@@ -3,7 +3,7 @@ super + d
 	rofi -show run
 
 super + grave
-	urxvt
+	st
 
 super + space
 	~/.config/sxhkd/lang.sh
