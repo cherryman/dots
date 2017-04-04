@@ -25,3 +25,6 @@
 [submodule "_bar"]
 	path = _bar
 	url = https://github.com/CherryMan/bar.git
+[submodule "vim/.vim/bundle/nerdtree"]
+	path = vim/.vim/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git

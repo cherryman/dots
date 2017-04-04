@@ -4,10 +4,15 @@ execute pathogen#infect()
 let skip_defaults_vim=1
 
 
-" ---- Misc
+" ---- Colors
 colorscheme badwolf
 filetype plugin on
 syntax on
+
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
+highlight LineNr ctermbg=none
+highlight Directory ctermfg=004
 
 
 " ---- Indentation
@@ -36,6 +41,7 @@ set mouse=a
 " ---- Keybinds
 let mapleader="\\"
 
+map <Leader>o :NERDTreeToggle<CR>
 nnoremap gV `[v`]
 
 
