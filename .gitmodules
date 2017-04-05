@@ -28,3 +28,6 @@
 [submodule "vim/.vim/bundle/nerdtree"]
 	path = vim/.vim/bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
+[submodule "vim/.vim/vim-plug"]
+	path = vim/.vim/vim-plug
+	url = https://github.com/junegunn/vim-plug.git

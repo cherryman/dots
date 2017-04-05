@@ -1,7 +1,27 @@
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-execute pathogen#infect()
-
 let skip_defaults_vim=1
+
+
+" ---- Plug
+runtime vim-plug/plug.vim
+
+call plug#begin('~/.vim/plugged')
+
+
+" themes
+Plug 'sjl/badwolf'
+Plug 'tomasr/molokai'
+
+" interface
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdtree'
+
+" lang
+Plug 'vim-syntastic/syntastic'
+Plug 'sheerun/vim-polyglot'
+
+
+call plug#end()
 
 
 " ---- Colors
@@ -46,7 +66,6 @@ nnoremap gV `[v`]
 
 
 " ---- Plugins
-
 " syntastic
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
