@@ -6,17 +6,17 @@ super + grave
 	st
 
 super + space
-	~/.config/sxhkd/lang.sh
+	keymap
 
 ### XF86 Keys
 XF86Audio{Prev,Next,Play}
 	playerctl {previous,next,play-pause}
 
 XF86Audio{LowerVolume,RaiseVolume,Mute}
-	~/.config/sxhkd/volume.sh {down,up,mute}
+	volume {down,up,mute}
 
 XF86MonBrightness{Up,Down}
-	~/.config/sxhkd/backlight.sh {up,down}
+	backlight {up,down}
 
 XF86HomePage
 	firefox
