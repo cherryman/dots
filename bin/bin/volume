@@ -1,42 +1,98 @@
 #!/bin/sh
-#requires dunst with dunstify & font-awesome
+#_DEP amixer grep tr
+#_OPT dunst dunstify
+#_FONT fontawesome
 
+icon_mute=""
+icon_low=""
+icon_high=""
+
+# Used for notification gen
+id_file="/tmp/.dunst_volume.id"
+
+
+### Functions
+
+# Set volume to $1, return volume
+function vol() {
+
+	# If $1 is empty, simply return the volume
+	[[ -n $1 ]] && cmd="set Master $1"
+	cmd=${cmd-"get Master"}
+
+	ret="$(amixer $cmd \
+	| grep -Eo '\[[0-9]{1,3}%\]' \
+	| tr -d '[]%' \
+	| tail -1)"
+
+	echo $ret
+}
+
+function is_mute() {
+
+	# Check if amixer returns '[off]'
+	if [[ "$(amixer get Master | grep -o '\[off\]')" ]]; then
+		return 0
+	else
+		return 1
+	fi
+
+}
+
+# Volume interval, default is 2, set by $2
+inter=${2-"2"}
+
+# Set the value to change for volume in $val
 case $1 in
 	"up")
-		amixer set Master 2%+ unmute
+		val="${inter}%+ unmute"
 		;;
 	"down")
-		amixer set Master 2%- unmute
+		val="${inter}%- unmute"
 		;;
 	"mute")
-		amixer set Master mute
+		val="mute"
 		;;
+	"*")
+		val=""
 esac
 
+# Set the volume and retrieve it
+volume="$(vol $val)"
 
-ID_FILE="/tmp/.dunst_volume.id"
-ICON_MUTE=""
-ICON_LOW=""
-ICON_HIGH=""
+# Generate a notification if dunstify is installed
+if [[ -e "$(which dunstify)" ]]; then
 
-ID="$(cat $ID_FILE)"
-[[ $ID -gt 0 ]] || ID=1
+	id="$(cat $id_file)"
 
+	# Mute is currently broken
+	#is_mute && echo "mute"
 
-if [[ -e "$(amixer get Master | grep '[off]')" ]]; then
-	VOL="mute"
-else
-	VOL="$(amixer get Master | grep -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
+	# Set the icon to be used, depending on volume
+	case $volume in
+		"x")
+			ico="$icon_mute"
+			;;
+		0)
+			ico="$icon_mute"
+			;;
+		[4-9][0-9])
+			ico="$icon_high"
+			;;
+		100)
+			ico="$icon_high"
+			;;
+		*)
+			ico="$icon_low"
+			;;
+	esac
+
+	# If id is valid, notif is replace and id is replace using -r
+	# -p prints the ID
+	if [[ $id -gt 0 ]]; then
+		dunstify -pr $id "$ico $volume" > $id_file
+	else
+		dunstify -p "$ico $volume" > $id_file
+	fi
+
 fi
-
-case $VOL in
-	0|mute)
-		dunstify -pr $ID "$ICON_MUTE $VOL" > $ID_FILE
-		;;
-	[4-9][0-9])
-		dunstify -pr $ID "$ICON_HIGH $VOL" > $ID_FILE
-		;;
-	*)
-		dunstify -pr $ID "$ICON_LOW  $VOL" > $ID_FILE
-		;;
-esac

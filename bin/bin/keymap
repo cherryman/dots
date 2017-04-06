@@ -46,5 +46,5 @@ fi
 
 # Changing keymaps breaks xmodmap settings
 if [[ -e "$(which xmodmap)" && -f ~/.Xmodmap ]]; then
-    xmodmap ~/.Xmodmap &> /dev/null
+	xmodmap ~/.Xmodmap &> /dev/null
 fi
