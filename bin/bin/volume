@@ -11,59 +11,36 @@ icon_high=""
 id_file="/tmp/.dunst_volume.id"
 
 
-### Functions
-
-# Set volume to $1, return volume
-function vol() {
-
-	# If $1 is empty, simply return the volume
-	[[ -n $1 ]] && cmd="set Master $1"
-	cmd=${cmd-"get Master"}
-
-	ret="$(amixer $cmd \
-	| grep -Eo '\[[0-9]{1,3}%\]' \
-	| tr -d '[]%' \
-	| tail -1)"
-
-	echo $ret
-}
-
-function is_mute() {
-
-	# Check if amixer returns '[off]'
-	if [[ "$(amixer get Master | grep -o '\[off\]')" ]]; then
-		return 0
-	else
-		return 1
-	fi
-
-}
-
 # Volume interval, default is 2, set by $2
 inter=${2-"2"}
 
-# Set the value to change for volume in $val
+# Set the volume and store output of command in $volume
 case $1 in
 	"up")
-		val="${inter}%+ unmute"
+		volume="$(amixer set Master ${inter}%+ unmute)"
 		;;
 	"down")
-		val="${inter}%- unmute"
+		volume="$(amixer set Master ${inter}%- unmute)"
 		;;
 	"mute")
-		val="mute"
+		volume="$(amixer set Master mute)"
 		;;
 	"*")
-		val=""
+		;;
 esac
 
-# Set the volume and retrieve it
-volume="$(vol $val)"
+# Retrieve the volume using $volume
+volume="$(grep <<< $volume -Eo '\[[0-9]{1,3}%\]' \
+		| tr -d '[]%' \
+		| tail -1)"
+
+# Update vol script, used for bar
+pkill -USR1 '^vol$' &
 
 # Generate a notification if dunstify is installed
-if [[ -e "$(which dunstify)" ]]; then
+if which dunstify; then
 
-	id="$(cat $id_file)"
+	id="$(cat $id_file &)"
 
 	# Mute is currently broken
 	#is_mute && echo "mute"
@@ -96,3 +73,6 @@ if [[ -e "$(which dunstify)" ]]; then
 	fi
 
 fi
+
+
+# vim:set noexpandtab:
