@@ -1,18 +1,26 @@
-source ~/.zplug/init.zsh
+### ENV
+BASE16_SHELL="$HOME/.config/base16-shell"
+DOTDIR="$HOME/dotfiles"
+PATH="$HOME/bin":$PATH
+ZPLUG_HOME="$HOME/.config/zplug"
 
-# Packages
+
+### Source
+source "$ZPLUG_HOME/init.zsh"
+[ -n "$PS1" ] \
+    && [ -s $BASE16_SHELL/profile_helper.sh ] \
+    && eval "$($BASE16_SHELL/profile_helper.sh)"
 
 
-# Theme
-zplug themes/agnoster, from:oh-my-zsh
+### Plug
+zplug 'modules/prompt', from:prezto
 
+
+### ZSH Settings
+zstyle ':prezto:module:prompt' theme 'agnoster'
 
 autoload -Uz compinit
-compinit -D
-
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle ':completion:*' ignore-parents parent pwd ..
-zstyle ':completion:*' matcher-list '' '+m:{[:lower:]}={[:upper:]}' '+m:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+r:|[._-]=** r:|=**'
 zstyle ':completion:*' menu select
 
 unsetopt beep
