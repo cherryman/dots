@@ -14,6 +14,7 @@ source "$ZPLUG_HOME/init.zsh"
 
 ### Plug
 zplug 'modules/prompt', from:prezto
+zplug 'plugins/git', from:oh-my-zsh
 
 
 ### ZSH Settings
