@@ -49,8 +49,8 @@
 *color15:		S_base3
 
 *background:              S_base03
-*foreground:              S_base0
-*cursorColor:             S_base1
+*foreground:              S_base2
+*cursorColor:             S_base3
 *pointerColorBackground:  S_base01
 *pointerColorForeground:  S_base1
 

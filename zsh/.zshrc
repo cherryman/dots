@@ -1,7 +1,8 @@
 ### ENV
 BASE16_SHELL="$HOME/.config/base16-shell"
 DOTDIR="$HOME/dotfiles"
-PATH="$HOME/bin":$PATH
+GOPATH="$HOME/.local"
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 ZPLUG_HOME="$HOME/.config/zplug"
 
 

@@ -15,4 +15,6 @@ compton &
 dunst &
 redshift -t6500:3200 -b1.0:0.8 &
 
-exec i3
+
+# i3 if first argument isn't given to startx
+exec ${2-i3}

@@ -19,7 +19,7 @@ XF86MonBrightness{Up,Down}
 	backlight {up,down}
 
 XF86HomePage
-	firefox
+	min
 
 XF86Explorer
 	pcmanfm

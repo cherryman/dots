@@ -10,17 +10,13 @@ icon_high=""
 # Used for notification gen
 id_file="/tmp/.dunst_volume.id"
 
-
-# Volume interval, default is 2, set by $2
-inter=${2-"2"}
-
 # Set the volume and store output of command in $volume
 case $1 in
 	"up")
-		volume="$(amixer set Master ${inter}%+ unmute)"
+		volume="$(amixer set Master ${2-"2"}%+ unmute)"
 		;;
 	"down")
-		volume="$(amixer set Master ${inter}%- unmute)"
+		volume="$(amixer set Master ${2-"2"}%- unmute)"
 		;;
 	"mute")
 		volume="$(amixer set Master mute)"
@@ -66,11 +62,12 @@ if which dunstify; then
 
 	# If id is valid, notif is replace and id is replace using -r
 	# -p prints the ID
-	if [[ $id -gt 0 ]]; then
-		dunstify -pr $id "$ico $volume" > $id_file
-	else
-		dunstify -p "$ico $volume" > $id_file
-	fi
+	#if [[ $id -gt 0 ]]; then
+	#	dunstify -pr $id "$ico $volume" > $id_file
+	#else
+	#	dunstify -p "$ico $volume" > $id_file
+	#fi
+	dunstify -pr 1 "$ico $volume"
 
 fi
 
