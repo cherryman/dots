@@ -1,7 +1,7 @@
 set $mod Mod4
 set $sup Mod3
 set $hyp Mod3
-for_window [class="^.*"] border pixel 0
+for_window [class="^.*"] border pixel 2
 hide_edge_borders both
 gaps inner 10
 gaps outer 0
@@ -9,6 +9,7 @@ gaps outer 0
 
 ### Startup
 exec --no-startup-id feh --bg-scale ~/.wallpaper
+exec --no-startup-id eval "$DOTDIR/bar.sh"
 
 exec --no-startup-id dropbox
 exec --no-startup-id steam -silent %U
@@ -30,7 +31,7 @@ set $ws8 "18:8"
 set $ws9 "19:9"
 set $ws0 "20:10"
 
-set $bg-0	#383c4a
+set $bg-0	#bb33aa
 set $bg-1	#383c4a
 set $txt-0	#d3dae3
 set $txt-1	#676E7D
@@ -38,30 +39,13 @@ set $bg-2	#E53935
 set $bar	#22242d
 
 
-### i3Bar
-#bar {
-#	status_command i3blocks
-#	font pango:Overpass-Regular 11
-#	tray_output none
-#
-#	strip_workspace_numbers yes
-#
-#	colors {
-#		background 		$bar
-#		focused_workspace	$bar	$bar	$txt-0
-#		active_workspace	$bar	$bar	$txt-1
-#		inactive_workspace	$bar	$bar	$txt-1
-#		urgent_workspace	$bg-2	$bar	$bg-2
-#	}
-#}
-
 ### Color
 # class                 border	backgr.	text	indic.	child_border
-client.focused          $bg-0	$bg-0	$txt-0	#0000FF	#285577
-client.focused_inactive $bg-1	$bg-1	$txt-1	#0000FF	#5f676a
-client.unfocused        $bg-1	$bg-1	$txt-1	#0000FF	#222222
-client.urgent           $bg-2	$bg-2	$txt-1	#0000FF	#900000
-client.placeholder      #000000 #0c0c0c #ffffff #0000FF #0c0c0c
+client.focused          $bg-0	$bg-0	$txt-0	$bg-0
+client.focused_inactive $bg-1	$bg-1	$txt-1	$bg-1
+client.unfocused        $bg-1	$bg-1	$txt-1	$bg-1
+client.urgent           $bg-1	$bg-1	$txt-1	$bg-1
+client.placeholder      #000000 #0c0c0c #ffffff #000000
 
 ### Workspaces
 assign [class="Steam"] $ws_1

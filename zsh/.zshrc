@@ -1,9 +1,10 @@
 ### ENV
 BASE16_SHELL="$HOME/.config/base16-shell"
-DOTDIR="$HOME/dotfiles"
-GOPATH="$HOME/.local/go"
 ZPLUG_HOME="$HOME/.config/zplug"
-PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PATH"
+
+export DOTDIR="$HOME/dotfiles"
+export GOPATH="$HOME/.local/go"
+export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PATH"
 
 
 ### Source

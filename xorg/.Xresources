@@ -65,7 +65,7 @@ URxvt.iso14755:			false
 URxvt*secondaryWheel:	true
 
 ! -------------- xst --------------------
-st.tername:				st
+st.tername:				Terminal
 st.opacity:				255
 st.background:			#0a1216
 st.font:				Inconsolata for Powerline:pixelsize=20
