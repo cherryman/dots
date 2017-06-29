@@ -54,6 +54,13 @@ autocmd VimEnter *
 " set highlight options
 autocmd ColorScheme * call SetHighlight()
 
+
+" filetype specific settings
+augroup filetypes
+    au!
+    au FileType *tex setl textwidth=79
+augroup END
+
 "}}}
 " ---- Functions {{{
 

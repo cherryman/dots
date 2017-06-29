@@ -1,9 +1,9 @@
 ### ENV
 BASE16_SHELL="$HOME/.config/base16-shell"
 DOTDIR="$HOME/dotfiles"
-GOPATH="$HOME/.local"
-PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+GOPATH="$HOME/.local/go"
 ZPLUG_HOME="$HOME/.config/zplug"
+PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PATH"
 
 
 ### Source
@@ -13,9 +13,17 @@ source "$ZPLUG_HOME/init.zsh"
     && eval "$($BASE16_SHELL/profile_helper.sh)"
 
 
+### Alias
+alias ls='ls --color=always'
+alias l='ls -l'
+
+
 ### Plug
+zplug 'modules/helper', from:prezto
+zplug 'modules/editor', from:prezto
+zplug 'modules/git', from:prezto
+
 zplug 'modules/prompt', from:prezto
-zplug 'plugins/git', from:oh-my-zsh
 
 
 ### ZSH Settings
