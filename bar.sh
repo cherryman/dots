@@ -52,4 +52,4 @@ echo -n "%{A}%{A}"
 echo -n "%{-o}"
 
 # Requires a patched lemonbar for xft support
-} | genbar -db '<<' -de '>>' | lemonbar -a 20 -b -o '1' -f "Noto Sans" -o '-1' -f "FontAwesome"| sh &> /dev/null
+} | genbar -db '<<' -de '>>' | lemonbar -u 2 -a 20 -b -o '1' -f "Noto Sans" -o '-1' -f "FontAwesome"| sh &> /dev/null
