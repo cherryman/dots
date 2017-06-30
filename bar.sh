@@ -11,7 +11,7 @@ sep="        "
 {
 
 echo -n "$reset"
-echo -n "%{U#bb33aa}"
+echo -n "%{U#aa33aa}"
 
 ### Left
 echo -n "%{l}"

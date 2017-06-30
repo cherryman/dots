@@ -31,7 +31,7 @@ set $ws8 "18:8"
 set $ws9 "19:9"
 set $ws0 "20:10"
 
-set $bg-0	#bb33aa
+set $bg-0	#aa33aa
 set $bg-1	#383c4a
 set $txt-0	#d3dae3
 set $txt-1	#676E7D
@@ -50,6 +50,7 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000
 ### Workspaces
 assign [class="Steam"] $ws_1
 assign [class="discord"] $ws_2
+assign [class="Riot"] $ws_2
 assign [class="Spotify"] $ws_3
 
 bindsym $sup+grave workspace $ws_0
