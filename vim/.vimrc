@@ -19,14 +19,14 @@ Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'junegunn/limelight.vim'
 Plug 'bimlas/vim-high'
+Plug 'edkolev/tmuxline.vim'
 
 " util
 Plug 'tpope/vim-fugitive'
 Plug 'alexdavid/vim-min-git-status'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'junegunn/fzf', {'dir': '~/.local/opt/fzf', 'do': './install --bin'}
-Plug 'LucHermitte/lh-vim-lib'
-Plug 'LucHermitte/local_vimrc' " dep lh-vim-lib
+Plug 'junegunn/fzf', {'dir': '~/.local/src/fzf', 'do': './install --bin'}
+Plug 'scrooloose/nerdtree'
+Plug 'embear/vim-localvimrc'
 
 " edit
 Plug 'Raimondi/delimitMate'
@@ -34,7 +34,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'terryma/vim-expand-region'
 
 " prog
-Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-dispatch'
 
@@ -112,6 +112,11 @@ set softtabstop=4
 set expandtab
 set shiftwidth=4
 
+augroup indent
+    au!
+    au FileType go setl noexpandtab
+augroup END
+
 "}}}
 " ---- Interface {{{
 filetype indent on
@@ -141,12 +146,9 @@ xmap - <Plug>(expand_region_shrink)
 " <Space> :: main
 let mapleader = "\<Space>"
 map <Leader>w <C-w>
-map <Leader>o :Files .<CR>
+map <Leader>fo :Files .<CR>
+map <Leader>ft :NERDTreeToggle<CR>
 map <Leader>n :ToggleRelativeNum<CR>
-
-" !! toggles, other is for visual selection
-nmap <Leader>l :Limelight!!<CR>
-xmap <Leader>l :Limelight<CR>
 
 map <Leader>j <Plug>(easymotion-prefix)
 
@@ -154,25 +156,38 @@ map <Leader>j <Plug>(easymotion-prefix)
 " <Space>b :: buffer
 let mapleader = "\<Space>b"
 nmap <Leader>b :Buffers<CR>
-
-
-" <Space>s :: git
-let mapleader = "\<Space>s"
-nmap <Leader>s :Gministatus<CR>
-nmap <Leader>b :Gblame<CR>
-
+nmap <Leader>[ :1bprevious<CR>
+nmap <Leader>] :1bNext<CR>
 
 " <Space>e :: edit
 let mapleader = "\<Space>e"
 nmap <Leader>a <Plug>(EasyAlign)
 xmap <Leader>a <Plug>(EasyAlign)
 
+" <Space>l :: linter
+let mapleader = "\<Space>l"
+nmap <Leader>l <Plug>(ale_lint)
+nmap <Leader>i <Plug>(ale_detail)
+nmap <Leader>[ <Plug>(ale_previous_wrap)
+nmap <Leader>] <Plug>(ale_next_wrap)
+nmap <Leader>o :copen<CR>
 
 " reset mapleader
 let mapleader = "\<Space>"
 
 "}}}
 " ---- Plugin Configuration {{{
+" ale
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+let g:ale_open_list = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_filetype_changed = 0
+let g:ale_lint_on_save = 0
+let g:ale_link_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+
+
 " easygit
 let g:easygit_enable_command = 1
 
@@ -196,24 +211,17 @@ endif
 let g:limelight_default_coefficient = 0.8
 let g:limelight_paragraph_span = 1
 
-" local-vimrc
-let g:local_vimrc = ['_vimrc_local.vim']
-call lh#local_vimrc#munge('whitelist', $HOME.'/git')
-call lh#local_vimrc#munge('whitelist', $HOME.'/projects')
 
-" syntastic
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_loc_list_height = 5
-let g:syntastic_mode_map = {
-    \ "mode": "passive"
-\ }
+" local-vimrc
+let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
+let g:localvimrc_whitelist = $HOME.'/projects'
+
 
 " vim-airline
 let g:airline_theme='badwolf'
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+
 
 " vim-gitgutter
 let g:gitgutter_override_sign_column_highlight = 0
