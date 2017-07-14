@@ -17,6 +17,7 @@ source "$ZPLUG_HOME/init.zsh"
 ### Alias
 alias ls='ls --color=always'
 alias l='ls -l'
+eval $(thefuck --alias)
 
 
 ### Plug
@@ -24,11 +25,14 @@ zplug 'modules/helper', from:prezto
 zplug 'modules/editor', from:prezto
 zplug 'modules/git', from:prezto
 
+zplug 'zsh-users/zsh-autosuggestions'
+zplug 'zsh-users/zsh-completions'
 zplug 'modules/prompt', from:prezto
+zplug 'zsh-users/zsh-syntax-highlighting'
 
 
 ### ZSH Settings
-zstyle ':prezto:module:prompt' theme 'agnoster'
+zstyle ':prezto:module:prompt' theme 'sorin'
 
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
