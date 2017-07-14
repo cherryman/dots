@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #_DEP amixer grep tr
 #_OPT dunst dunstify
-#_FONT fontawesome
 
 icon_mute=""
 icon_low=""
@@ -26,9 +25,7 @@ case $1 in
 esac
 
 # Retrieve the volume using $volume
-volume="$(grep <<< $volume -Eo '\[[0-9]{1,3}%\]' \
-		| tr -d '[]%' \
-		| tail -1)"
+volume="$(grep <<< $volume -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
 
 # Update vol script, used for bar
 pkill -USR1 '^vol$' &
