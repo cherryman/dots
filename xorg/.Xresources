@@ -66,6 +66,5 @@ URxvt*secondaryWheel:	true
 
 ! -------------- xst --------------------
 st.tername:				Terminal
-st.opacity:				255
 st.background:			#0a1216
-st.font:				Inconsolata for Powerline:pixelsize=20
+st.font:				Hack:style=Regular:pixelsize=17

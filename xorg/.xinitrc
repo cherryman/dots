@@ -10,6 +10,8 @@ fi
 xrdb -merge $HOME/.Xresources
 xmodmap $HOME/.Xmodmap
 
+xset m 1 0
+
 sxhkd &
 compton &
 dunst &
