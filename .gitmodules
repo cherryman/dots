@@ -1,33 +1,9 @@
-[submodule "vim/.vim/bundle/molokai"]
-	path = vim/.vim/bundle/molokai
-	url = https://github.com/tomasr/molokai.git
-[submodule "vim/.vim/bundle/vim-airline"]
-	path = vim/.vim/bundle/vim-airline
-	url = https://github.com/vim-airline/vim-airline.git
-[submodule "vim/.vim/bundle/vim-airline-themes"]
-	path = vim/.vim/bundle/vim-airline-themes
-	url = https://github.com/vim-airline/vim-airline-themes.git
-[submodule "vim/.vim/bundle/badwolf"]
-	path = vim/.vim/bundle/badwolf
-	url = https://github.com/sjl/badwolf.git
-[submodule "vim/.vim/bundle/syntastic"]
-	path = vim/.vim/bundle/syntastic
-	url = https://github.com/vim-syntastic/syntastic.git
-[submodule "vim/.vim/bundle/vim-pathogen"]
-	path = vim/.vim/bundle/vim-pathogen
-	url = https://github.com/tpope/vim-pathogen.git
-[submodule "vim/.vim/bundle/vim-polyglot"]
-	path = vim/.vim/bundle/vim-polyglot
-	url = https://github.com/sheerun/vim-polyglot.git
 [submodule "zsh/.zplug"]
 	path = zsh/.config/zplug
 	url = https://github.com/zplug/zplug.git
 [submodule "_bar"]
 	path = _bar
 	url = https://github.com/CherryMan/bar.git
-[submodule "vim/.vim/bundle/nerdtree"]
-	path = vim/.vim/bundle/nerdtree
-	url = https://github.com/scrooloose/nerdtree.git
 [submodule "vim/.vim/vim-plug"]
 	path = vim/.vim/vim-plug
 	url = https://github.com/junegunn/vim-plug.git
@@ -52,3 +28,6 @@
 [submodule "fonts/.local/share/fonts/source-serif-pro"]
 	path = fonts/.local/share/fonts/source-serif-pro
 	url = https://github.com/adobe-fonts/source-serif-pro
+[submodule "zsh/.config/pyenv"]
+	path = zsh/.config/pyenv
+	url = https://github.com/pyenv/pyenv
