@@ -1,10 +1,12 @@
 ### ENV
-BASE16_SHELL="$HOME/.config/base16-shell"
-ZPLUG_HOME="$HOME/.config/zplug"
+export BASE16_SHELL="$HOME/.config/base16-shell"
+export ZPLUG_HOME="$HOME/.config/zplug"
+export PYENV_ROOT="$HOME/.config/pyenv"
 
+export EDITOR=vim
 export DOTDIR="$HOME/dotfiles"
 export GOPATH="$HOME/.local/go"
-export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PYENV_ROOT/bin:$PATH"
 
 
 ### Source
@@ -19,6 +21,8 @@ alias ls='ls --color=always'
 alias l='ls -l'
 eval $(thefuck --alias)
 
+hash pyenv 2> /dev/null && eval "$(pyenv init - )"
+
 
 ### Plug
 zplug 'modules/helper', from:prezto
@@ -30,6 +34,10 @@ zplug 'zsh-users/zsh-completions'
 zplug 'modules/prompt', from:prezto
 zplug 'zsh-users/zsh-syntax-highlighting'
 
+zplug 'rupa/z', use:z.sh
+zplug 'ogham/exa', from:gh-r, as:command, rename-to:exa
+zplug 'junegunn/fzf-bin', from:gh-r, as:command, rename-to:fzf
+zplug 'BurntSushi/ripgrep', from:gh-r, as:command, rename-to:rg
 
 ### ZSH Settings
 zstyle ':prezto:module:prompt' theme 'sorin'
