@@ -3,7 +3,7 @@ super + d
 	rofi -show run
 
 super + grave
-	st
+	alacritty || xterm
 
 super + space
 	keymap
