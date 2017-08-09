@@ -3,7 +3,7 @@ set $sup Mod3
 set $hyp Mod3
 for_window [class="^.*"] border pixel 2
 hide_edge_borders both
-gaps inner 10
+gaps inner 20
 gaps outer 0
 
 
@@ -31,8 +31,8 @@ set $ws8 "18:8"
 set $ws9 "19:9"
 set $ws0 "20:10"
 
-set $bg-0	#aa33aa
-set $bg-1	#383c4a
+set $bg-0	#6c6c7a
+set $bg-1	#333345
 set $txt-0	#d3dae3
 set $txt-1	#676E7D
 set $bg-2	#E53935
@@ -51,7 +51,6 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000
 assign [class="Steam"] $ws_1
 assign [class="discord"] $ws_2
 assign [class="Riot"] $ws_2
-assign [class="Spotify"] $ws_3
 
 bindsym $sup+grave workspace $ws_0
 bindsym $sup+1 workspace $ws_1
@@ -71,7 +70,7 @@ bindsym $mod+0 workspace $ws0
 bindsym $sup+Shift+grave move container to workspace $ws_0
 bindsym $sup+Shift+1 move container to workspace $ws_1
 bindsym $sup+Shift+2 move container to workspace $ws_2
-bindsym $sup+Shift+3 move container to workspace $ws_2
+bindsym $sup+Shift+3 move container to workspace $ws_3
 bindsym $mod+Shift+1 move container to workspace $ws1
 bindsym $mod+Shift+2 move container to workspace $ws2
 bindsym $mod+Shift+3 move container to workspace $ws3
