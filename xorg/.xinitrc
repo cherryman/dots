@@ -10,13 +10,25 @@ fi
 xrdb -merge $HOME/.Xresources
 xmodmap $HOME/.Xmodmap
 
+# Disable mouse accel
 xset m 1 0
 
-sxhkd &
-compton &
-dunst &
+# Default wm is i3wm
+wm="${2-i3}"
+
+# Start programs
 redshift -t6500:3200 -b1.0:0.8 &
 
+case "$wm" in
 
-# i3 if first argument isn't given to startx
-exec ${2-i3}
+    "i3" | "bspwm")
+        sxhkd &
+        compton &
+        dunst &
+        ;;
+    *)
+        ;;
+esac
+
+# Start wm
+exec $wm
