@@ -11,6 +11,7 @@ Plug 'sjl/badwolf'
 Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
 Plug 'chriskempson/base16-vim'
+Plug 'w0ng/vim-hybrid'
 
 " interface
 Plug 'vim-airline/vim-airline'
@@ -50,16 +51,8 @@ autocmd VimEnter *
     \ |     PlugInstall --sync | q
     \ | endif
 
-
 " set highlight options
 autocmd ColorScheme * call SetHighlight()
-
-
-" filetype specific settings
-augroup filetypes
-    au!
-    au FileType *tex setl textwidth=79
-augroup END
 
 "}}}
 " ---- Functions {{{
@@ -100,7 +93,8 @@ syntax on
 let g:seoul256_background = 233
 let g:base16colorspace = 256
 
-colorscheme badwolf
+set background=dark
+colorscheme hybrid
 
 " highlight options are under 'SetHighlight()'
 " set using an autocmd
@@ -115,6 +109,7 @@ set shiftwidth=4
 augroup indent
     au!
     au FileType go setl noexpandtab
+    au FileType *tex setl textwidth=79
 augroup END
 
 "}}}
@@ -139,9 +134,11 @@ set mouse=a " mouse movement
 nnoremap gV `[v`]
 map ; :
 
-xmap + <Plug>(expand_region_expand)
-xmap - <Plug>(expand_region_shrink)
+"xmap + <Plug>(expand_region_expand)
+"xmap - <Plug>(expand_region_shrink)
 
+map <C-w>- <C-w>h
+map <C-w>\ <C-w>v
 
 " <Space> :: main
 let mapleader = "\<Space>"
@@ -218,7 +215,7 @@ let g:localvimrc_whitelist = $HOME.'/projects'
 
 
 " vim-airline
-let g:airline_theme='badwolf'
+let g:airline_theme='tomorrow'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
@@ -229,8 +226,13 @@ let g:gitgutter_override_sign_column_highlight = 0
 
 " vim-high
 let g:high_lighters = {
+\   '_': {
+\       'blacklist': ['help', 'qf', 'lf', 'vim-plug'],
+\   },
 \   'long_line': {},
-\}
+\   'mixed_indent': {'hlgroup': 'Error'},
+\ }
+
 
 "}}}
 " ---- Misc {{{
