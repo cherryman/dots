@@ -13,3 +13,6 @@
 [submodule "zsh/.config/pyenv"]
 	path = zsh/.config/pyenv
 	url = https://github.com/pyenv/pyenv
+[submodule "fonts/.local/share/fonts/fonts"]
+	path = fonts/.local/share/fonts/powerline-fonts
+	url = https://github.com/powerline/fonts
