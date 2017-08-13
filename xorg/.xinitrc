@@ -17,18 +17,19 @@ xset m 1 0
 wm="${2-i3}"
 
 # Start programs
-redshift -t6500:3200 -b1.0:0.8 &
-
 case "$wm" in
 
     "i3" | "bspwm")
         sxhkd &
         compton &
         dunst &
+        feh --bg-scale $wallp
         ;;
     *)
         ;;
 esac
+
+redshift -t6500:3200 -b1.0:0.8 &
 
 # Start wm
 exec $wm
