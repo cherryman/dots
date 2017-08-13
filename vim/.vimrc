@@ -196,7 +196,10 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit'
 \ }
-if executable('ag')
+if executable('rg')
+    let g:fzf_files_source = 'rg --files --hidden --color never
+                            \ --ignore-file ".git"'
+elseif executable('ag')
     let g:fzf_files_source = 'ag . -g "" --hidden --nocolor
                             \ --ignore ".git"'
 elseif executable('find')
