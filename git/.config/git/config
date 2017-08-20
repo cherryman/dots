@@ -1,3 +1,2 @@
-[user]
-	name = CherryMan
-	email = skipper308@hotmail.com
+[include]
+    path = ~/.config/git/user.inc
