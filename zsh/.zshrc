@@ -20,6 +20,8 @@ export dotdir="$HOME/dotfiles"
 
 
 ### Source
+[[ -e "$HOME/.local_src" ]] && source "$HOME/.local_src"
+
 source "$ZPLUG_HOME/init.zsh"
 [ -n "$PS1" ] \
     && [ -s $BASE16_SHELL/profile_helper.sh ] \
@@ -28,16 +30,14 @@ source "$ZPLUG_HOME/init.zsh"
 
 ### Alias
 
-function exists() {
-    command -v $1 &> /dev/null
-    return $?
-}
+alias has='command -v &> /dev/null'
 
-exists exa && alias ls='exa'
+has exa && alias tree='exa -T'
+has exa && alias ls='exa'
 alias l='ls -l'
 
-exists thefuck && eval $(thefuck --alias)
-exists pyenv && eval "$(pyenv init - )"
+has thefuck && eval $(thefuck --alias)
+has pyenv && eval "$(pyenv init - )"
 
 
 ### Plug
@@ -51,11 +51,13 @@ zplug 'modules/prompt', from:prezto
 zplug 'zsh-users/zsh-syntax-highlighting'
 
 zplug 'rupa/z', use:z.sh
+zplug 'junegunn/fzf', use:'shell/*.zsh', if:"(( $+commands[fzf] ))", defer:1
+
 zplug 'ogham/exa', from:gh-r, as:command, rename-to:exa
 zplug 'BurntSushi/ripgrep', from:gh-r, as:command, rename-to:rg
-
 zplug 'junegunn/fzf-bin', from:gh-r, as:command, rename-to:fzf
-zplug 'junegunn/fzf', use:'shell/*.zsh', defer:1
+zplug 'kotajacob/wal_steam', as:command, use:wal_steam.py, rename-to:wal_steam
+
 
 ### ZSH Settings
 zstyle ':prezto:module:prompt' theme 'sorin'
@@ -84,4 +86,3 @@ if ! zplug check --verbose; then
 fi
 
 zplug load
-
