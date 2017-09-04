@@ -2,7 +2,7 @@ rofi.modi: run
 rofi.disable-history:	true
 rofi.font: Overpass-Light 12
 rofi.width: 40
-rofi.opacity: 85
+rofi.opacity: 0
 rofi.padding: 50
 rofi.lines: 7
 rofi.columns: 1
@@ -11,7 +11,5 @@ rofi.monitor:	0
 rofi.eh:	2
 
 !					bg			fg			bgalt		hlbg		hlfg
-rofi.color-normal:	#222222, 	#f4f4f4, 	#444444, 	#666677, 	#f4f4f4
-rofi.color-window:	#222222, #222222
-!rofi.color-normal:	#2f343f, 	#f3f4f4, 	#2f343f, 	#9375cd, 	#2f343f
-!rofi.color-window:	#2f343f, #2f343f
+rofi.color-normal:	#1d1f21, 	#d5d8d6, 	#1d1f21, 	#6a758a, 	#efefef
+rofi.color-window:	#1d1f21,	#1d1f21

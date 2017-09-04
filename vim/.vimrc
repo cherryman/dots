@@ -110,6 +110,7 @@ augroup indent
     au!
     au FileType go setl noexpandtab
     au FileType *tex setl textwidth=79
+    au FileType markdown setl textwidth=79
 augroup END
 
 "}}}
@@ -131,24 +132,30 @@ set mouse=a " mouse movement
 
 "}}}
 " ---- Keybinds {{{
+
+
 nnoremap gV `[v`]
-map ; :
-
-"xmap + <Plug>(expand_region_expand)
-"xmap - <Plug>(expand_region_shrink)
-
 map <C-w>- <C-w>h
 map <C-w>\ <C-w>v
 
+map Y y$
+
+cmap <C-a> <Home>
+cmap <C-e> <End>
+cmap <C-f> <Right>
+cmap <C-b> <Left>
+cmap <A-f> <S-Right>
+cmap <A-b> <S-Left>
+
+
 " <Space> :: main
 let mapleader = "\<Space>"
-map <Leader>w <C-w>
 map <Leader>fo :Files .<CR>
 map <Leader>ft :NERDTreeToggle<CR>
 map <Leader>n :ToggleRelativeNum<CR>
-
 map <Leader>j <Plug>(easymotion-prefix)
-
+xmap <Leader>+ <Plug>(expand_region_expand)
+xmap <Leader>- <Plug>(expand_region_shrink)
 
 " <Space>b :: buffer
 let mapleader = "\<Space>b"
@@ -183,11 +190,13 @@ let g:ale_lint_on_filetype_changed = 0
 let g:ale_lint_on_save = 0
 let g:ale_link_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
-
+let g:ale_linters = {
+\   'bash': ['shellcheck'],
+\   'sh':   ['shellcheck']
+\}
 
 " easygit
 let g:easygit_enable_command = 1
-
 
 " fzf
 let g:fzf_layout = { 'down': '~20%'}
@@ -206,26 +215,21 @@ elseif executable('find')
     let g:fzf_files_source = 'find .'
 endif
 
-
 " limelight
 let g:limelight_default_coefficient = 0.8
 let g:limelight_paragraph_span = 1
 
-
 " local-vimrc
 let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
 let g:localvimrc_whitelist = $HOME.'/projects'
-
 
 " vim-airline
 let g:airline_theme='tomorrow'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
-
 " vim-gitgutter
 let g:gitgutter_override_sign_column_highlight = 0
-
 
 " vim-high
 let g:high_lighters = {

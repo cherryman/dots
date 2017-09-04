@@ -16,10 +16,10 @@ exec --no-startup-id steam -silent %U
 
 ### Variables
 set $ws_0 "0:"
-set $ws_1 "1:"
+set $ws_1 "1:"
 set $ws_2 "2:"
-set $ws_3 "3:"
-set $ws1 "11:1"
+set $ws_3 "3:"
+set $ws1 "11:"
 set $ws2 "12:2"
 set $ws3 "13:3"
 set $ws4 "14:4"

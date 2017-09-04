@@ -29,7 +29,7 @@ case "$wm" in
         ;;
 esac
 
-redshift -t6500:3200 -b1.0:0.8 &
+redshift -t6500:3400 -b1.0:0.9 &
 
 # Start wm
 exec $wm
