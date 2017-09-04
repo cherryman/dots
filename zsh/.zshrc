@@ -13,6 +13,8 @@ export LESS="-R"
 export GOPATH="$HOME/.local/go"
 export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PYENV_ROOT/bin:$PATH"
 
+export TENDERBLOCKS="$ZPLUG_HOME/repos/CherryMan/bartender/block"
+
 # Custom
 export term=alacritty
 export wallp="$HOME/Pictures/wallpaper"
@@ -57,6 +59,8 @@ zplug 'ogham/exa', from:gh-r, as:command, rename-to:exa
 zplug 'BurntSushi/ripgrep', from:gh-r, as:command, rename-to:rg
 zplug 'junegunn/fzf-bin', from:gh-r, as:command, rename-to:fzf
 zplug 'kotajacob/wal_steam', as:command, use:wal_steam.py, rename-to:wal_steam
+
+zplug 'CherryMan/bartender', use:genbar, as:command
 
 
 ### ZSH Settings

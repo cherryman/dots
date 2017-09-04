@@ -1,9 +1,5 @@
 #!/bin/sh
 
-echo $DOTDIR
-cd "$DOTDIR/_bar"
-PATH="$DOTDIR/_bar:$DOTDIR/_bar/block:$PATH"
-
 reset="%{-o}%{B#141021}%{F#dddddd}"
 sel="%{+o}%{B#222222}%{F#dddddd}%{U#aa33aa}"
 urg="%{+o}%{B#222222}%{F#dddddd}%{U#f40000}"

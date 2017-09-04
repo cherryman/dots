@@ -1,9 +1,6 @@
 [submodule "zsh/.zplug"]
 	path = zsh/.config/zplug
 	url = https://github.com/zplug/zplug.git
-[submodule "_bar"]
-	path = _bar
-	url = https://github.com/CherryMan/bar.git
 [submodule "vim/.vim/vim-plug"]
 	path = vim/.vim/vim-plug
 	url = https://github.com/junegunn/vim-plug.git
