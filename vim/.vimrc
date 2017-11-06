@@ -5,45 +5,46 @@ runtime vim-plug/plug.vim
 
 call plug#begin('~/.vim/plugged')
 
-
 " themes
 Plug 'sjl/badwolf'
 Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'w0ng/vim-hybrid'
+Plug 'vim-airline/vim-airline-themes'
 
 " interface
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
-Plug 'junegunn/limelight.vim'
 Plug 'bimlas/vim-high'
 Plug 'edkolev/tmuxline.vim'
 
 " util
-Plug 'tpope/vim-fugitive'
-Plug 'alexdavid/vim-min-git-status'
 Plug 'junegunn/fzf', {'dir': '~/.local/src/fzf', 'do': './install --bin'}
 Plug 'scrooloose/nerdtree'
 Plug 'embear/vim-localvimrc'
+Plug 'thaerkh/vim-workspace'
 
 " edit
 Plug 'Raimondi/delimitMate'
+Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'terryma/vim-expand-region'
+Plug 'tpope/vim-speeddating'
 
 " prog
 Plug 'w0rp/ale'
-Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-dispatch'
 
+" lang
+Plug 'sheerun/vim-polyglot'
+Plug 'lervag/vimtex'
+Plug 'jceb/vim-orgmode'
+Plug 'vim-scripts/SyntaxRange'
 
 call plug#end()
-
-"}}}
-" ---- Autocmd {{{
 
 " install missing plugins
 autocmd VimEnter *
@@ -51,19 +52,12 @@ autocmd VimEnter *
     \ |     PlugInstall --sync | q
     \ | endif
 
-" set highlight options
-autocmd ColorScheme * call SetHighlight()
-
 "}}}
 " ---- Functions {{{
 
 " set the colorscheme highlight values
-function SetHighlight()
+function! SetHighlight()
     highlight SignColumn ctermbg=none
-
-    highlight CtrlPNoEntries ctermfg=39
-    highlight CtrlPLinePre ctermfg=12
-    highlight CtrlPPrtBase ctermfg=12
 
     highlight GitGutterAdd ctermfg=2 ctermbg=none
     highlight GitGutterChange ctermfg=3 ctermbg=none
@@ -71,46 +65,53 @@ function SetHighlight()
     highlight GitGutterChangeDelete ctermfg=3 ctermbg=none
 endfunction
 
-
 " commands
-command ToggleRelativeNum let &relativenumber = ! &relativenumber
+command! ToggleSyntax
+\   if exists("g:syntax_on")
+\ |     syntax off
+\ | else
+\ |     syntax enable
+\ | endif
 
-command -nargs=1 -complete=dir Files
-\      call fzf#run(fzf#wrap('files', {
-\                            'source': g:fzf_files_source,
-\                            'dir': <q-args>}, 0))
+command! -nargs=1 -complete=dir Files
+\   call fzf#run(fzf#wrap('files', {
+\                         'source': g:fzf_files_source,
+\                         'dir': <q-args>}, 0))
 
-command Buffers
-\     call fzf#run(fzf#wrap('buffers', {
-\                           'source': map(range(1, bufnr('$')),
-\                           'bufname(v:val)')}))
+command! Buffers
+\   call fzf#run(fzf#wrap('buffers', {
+\                         'source': map(range(1, bufnr('$')),
+\                         'bufname(v:val)')}))
 
 "}}}
-" ---- Colors {{{
+" ---- Colours {{{
 filetype plugin on
-syntax on
+syntax enable
 
 let g:seoul256_background = 233
 let g:base16colorspace = 256
-
-set background=dark
-colorscheme hybrid
+"set background=dark
 
 " highlight options are under 'SetHighlight()'
-" set using an autocmd
+autocmd ColorScheme * call SetHighlight()
+
+let g:airline_theme='base16_spacemacs'
+colorscheme base16-spacemacs
 
 "}}}
 " ---- Indentation {{{
-set tabstop=4
-set softtabstop=4
-set expandtab
-set shiftwidth=4
+set tabstop=4     " ts
+set softtabstop=4 " sts
+set expandtab     " et
+set shiftwidth=4  " sw
 
 augroup indent
     au!
-    au FileType go setl noexpandtab
-    au FileType *tex setl textwidth=79
-    au FileType markdown setl textwidth=79
+    au FileType asm setl noet ts=6 sw=6 sts=0
+    au FileType make setl noet ts=8 sw=8 sts=0
+    au FileType go setl noet
+    au FileType *tex setl tw=79
+    au FileType markdown setl tw=79
 augroup END
 
 "}}}
@@ -122,7 +123,7 @@ set cursorline " highlight line under cursor
 set lazyredraw " redraw only when necessary
 set laststatus=2 " open statusline
 
-set showmatch " highlight matching bracket
+set noshowmatch " highlight matching bracket
 set incsearch " search while typing
 set hlsearch " highlight search
 
@@ -133,12 +134,14 @@ set mouse=a " mouse movement
 "}}}
 " ---- Keybinds {{{
 
-
-nnoremap gV `[v`]
-map <C-w>- <C-w>h
-map <C-w>\ <C-w>v
+let mapleader = "\<Space>"
 
 map Y y$
+imap jk <esc>
+xmap <Leader>+ <Plug>(expand_region_expand)
+xmap <Leader>- <Plug>(expand_region_shrink)
+map <C-w>- <C-w>s
+map <C-w>\ <C-w>v
 
 cmap <C-a> <Home>
 cmap <C-e> <End>
@@ -147,41 +150,46 @@ cmap <C-b> <Left>
 cmap <A-f> <S-Right>
 cmap <A-b> <S-Left>
 
-
-" <Space> :: main
-let mapleader = "\<Space>"
-map <Leader>fo :Files .<CR>
-map <Leader>ft :NERDTreeToggle<CR>
-map <Leader>n :ToggleRelativeNum<CR>
-map <Leader>j <Plug>(easymotion-prefix)
-xmap <Leader>+ <Plug>(expand_region_expand)
-xmap <Leader>- <Plug>(expand_region_shrink)
-
-" <Space>b :: buffer
-let mapleader = "\<Space>b"
-nmap <Leader>b :Buffers<CR>
-nmap <Leader>[ :1bprevious<CR>
-nmap <Leader>] :1bNext<CR>
-
-" <Space>e :: edit
-let mapleader = "\<Space>e"
 nmap <Leader>a <Plug>(EasyAlign)
 xmap <Leader>a <Plug>(EasyAlign)
 
-" <Space>l :: linter
-let mapleader = "\<Space>l"
-nmap <Leader>l <Plug>(ale_lint)
-nmap <Leader>i <Plug>(ale_detail)
-nmap <Leader>[ <Plug>(ale_previous_wrap)
-nmap <Leader>] <Plug>(ale_next_wrap)
-nmap <Leader>o :copen<CR>
+map <Leader>fo :Files .<CR>
+map <Leader>ft :NERDTreeToggle<CR>
+map <Leader>fs :write<CR>
+map <Leader>fS :wall<CR>
 
-" reset mapleader
-let mapleader = "\<Space>"
+map <Leader>qq :qall<CR>
+map <Leader>qs :wqall<CR>
+map <Leader>qQ :qall!<CR>
+
+map <Leader>j <Plug>(easymotion-prefix)
+
+map <Leader>tn :set number!<CR>
+map <Leader>tr :set relativenumber!<CR>
+map <Leader>th :ToggleSyntax<CR>
+map <Leader>tl <Plug>(ale_toggle)
+map <Leader>ts :ToggleWorkspace<CR>
+
+nmap <Leader>w <C-w>
+
+nmap <Leader>bb :Buffers<CR>
+nmap <Leader>b[ :1bprevious<CR>
+nmap <Leader>b] :1bNext<CR>
+
+nmap <Leader>ll <Plug>(ale_lint)
+nmap <Leader>li <Plug>(ale_detail)
+nmap <Leader>l[ <Plug>(ale_previous_wrap)
+nmap <Leader>l] <Plug>(ale_next_wrap)
 
 "}}}
 " ---- Plugin Configuration {{{
 " ale
+let g:ale_sign_column_always = 1
+let g:ale_sign_info = '-'
+let g:ale_sign_warning = '*'
+let g:ale_sign_style_warning = '>'
+let g:ale_sign_error = '>'
+let g:ale_sign_style_error = '>'
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
 let g:ale_open_list = 0
@@ -190,13 +198,15 @@ let g:ale_lint_on_filetype_changed = 0
 let g:ale_lint_on_save = 0
 let g:ale_link_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
+let g:ale_enabled = 0
 let g:ale_linters = {
+\   'rust': ['cargo'],
 \   'bash': ['shellcheck'],
 \   'sh':   ['shellcheck']
 \}
 
-" easygit
-let g:easygit_enable_command = 1
+" delimitMate
+let g:delimitMate_expand_cr = 1
 
 " fzf
 let g:fzf_layout = { 'down': '~20%'}
@@ -215,16 +225,17 @@ elseif executable('find')
     let g:fzf_files_source = 'find .'
 endif
 
-" limelight
-let g:limelight_default_coefficient = 0.8
-let g:limelight_paragraph_span = 1
-
 " local-vimrc
 let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
 let g:localvimrc_whitelist = $HOME.'/projects'
 
+" polyglot
+let g:polyglot_disabled = [
+\   'latex',
+\ ]
+
 " vim-airline
-let g:airline_theme='tomorrow'
+" colour set under "Colours"
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
@@ -240,6 +251,14 @@ let g:high_lighters = {
 \   'mixed_indent': {'hlgroup': 'Error'},
 \ }
 
+" vim-workspace
+let g:workspace_session_name = 'Session.vim'
+let g:workspace_autosave = 0
+let g:workspace_autosave_always = 0
+let g:workspace_autosave_untrailspaces = 0
+let g:workspace_autosave_ignore = [
+\   'gitcommit',
+\ ]
 
 "}}}
 " ---- Misc {{{

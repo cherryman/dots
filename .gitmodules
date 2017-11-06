@@ -10,3 +10,6 @@
 [submodule "zsh/.config/pyenv"]
 	path = zsh/.config/pyenv
 	url = https://github.com/pyenv/pyenv
+[submodule "tmux/.tmux/plugins/tpm"]
+	path = tmux/.tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm

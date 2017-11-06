@@ -4,7 +4,7 @@ set $hyp Mod3
 for_window [class="^.*"] border pixel 2
 hide_edge_borders both
 gaps inner 20
-gaps outer 0
+gaps outer 5
 
 
 ### Startup
@@ -12,6 +12,9 @@ exec --no-startup-id eval "$dotdir/bar.sh"
 
 exec --no-startup-id dropbox
 exec --no-startup-id steam -silent %U
+
+for_window [class="feh"] floating enable
+for_window [class="mpv"] floating enable
 
 
 ### Variables

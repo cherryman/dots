@@ -13,7 +13,7 @@ export LESS="-R"
 export GOPATH="$HOME/.local/go"
 export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PYENV_ROOT/bin:$PATH"
 
-export TENDERBLOCKS="$ZPLUG_HOME/repos/CherryMan/bartender/block"
+export TENDERBLOCKS="$ZPLUG_HOME/repos/Snowlabs/bartender/block"
 
 # Custom
 export term=alacritty
@@ -22,8 +22,6 @@ export dotdir="$HOME/dotfiles"
 
 
 ### Source
-[[ -e "$HOME/.local_src" ]] && source "$HOME/.local_src"
-
 source "$ZPLUG_HOME/init.zsh"
 [ -n "$PS1" ] \
     && [ -s $BASE16_SHELL/profile_helper.sh ] \
@@ -38,8 +36,13 @@ has exa && alias tree='exa -T'
 has exa && alias ls='exa'
 alias l='ls -l'
 
+alias v='f -f -e vim'
+alias m='f -f -e mplayer'
+alias o='a -e xdg-open'
+
 has thefuck && eval $(thefuck --alias)
 has pyenv && eval "$(pyenv init - )"
+eval "$(fasd --init posix-alias zsh-hook)"
 
 
 ### Plug
@@ -52,15 +55,14 @@ zplug 'zsh-users/zsh-completions'
 zplug 'modules/prompt', from:prezto
 zplug 'zsh-users/zsh-syntax-highlighting'
 
-zplug 'rupa/z', use:z.sh
+zplug 'clvv/fasd', use:fasd, as:command
 zplug 'junegunn/fzf', use:'shell/*.zsh', if:"(( $+commands[fzf] ))", defer:1
 
 zplug 'ogham/exa', from:gh-r, as:command, rename-to:exa
 zplug 'BurntSushi/ripgrep', from:gh-r, as:command, rename-to:rg
 zplug 'junegunn/fzf-bin', from:gh-r, as:command, rename-to:fzf
-zplug 'kotajacob/wal_steam', as:command, use:wal_steam.py, rename-to:wal_steam
 
-zplug 'CherryMan/bartender', use:genbar, as:command
+zplug 'Snowlabs/bartender', use:genbar, as:command
 
 
 ### ZSH Settings
@@ -69,6 +71,9 @@ zstyle ':prezto:module:prompt' theme 'sorin'
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
+
+setopt hist_ignore_space hist_reduce_blanks extended_history
+setopt inc_append_history_time hist_find_no_dups
 
 unsetopt beep
 
