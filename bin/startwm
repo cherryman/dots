@@ -1,0 +1,25 @@
+#! /bin/sh
+
+run() {
+    if command -v 2> /dev/null "$1"; then
+        eval "$@" &
+    fi
+}
+
+case "$1" in
+    i3|bspwm)   cmd="startx $*" ;;
+esac
+
+eval "$cmd" &
+pid=$!
+
+(
+sleep 5
+
+# Startup programs go here
+run steam
+run discord
+run dropbox
+) &
+
+wait $pid
