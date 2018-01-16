@@ -1,0 +1,55 @@
+super + shift + q
+	bspc node -c
+
+hyper + t
+	bspc node next.local.!floating -f
+
+hyper + f
+	bspc node next.local.floating -f
+
+hyper + {_, alt +} {h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+hyper + {_, alt +} {1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+hyper + alt + {comma,period}
+	bspc node @/ -R {270,90}
+
+hyper + alt + equal
+	bspc node @/ -E
+
+hyper + alt + z
+	bspc desktop focused -l next
+
+super + shift + t
+	bspc node focused -t tiled
+
+super + shift + f
+	bspc query -N -n focused.floating \
+	&& bspc node focused -t tiled     \
+	|| bspc node focused -t floating
+
+super + f
+	bspc query -N -n focused.fullscreen \
+	&& bspc node focused -t tiled       \
+	|| bspc node focused -t fullscreen
+
+super + equal
+	[ $(( $(bspc config window_gap) <= 190)) -eq 1 ] \
+	&& bspc config window_gap $(( $(bspc config window_gap) + 10)) \
+	|| bspc config window_gap 200
+
+super + minus
+	[ $(( $(bspc config window_gap) >= 10)) -eq 1 ] \
+	&& bspc config window_gap $(( $(bspc config window_gap) - 10)) \
+	|| bspc config window_gap 0
+
+super + alt + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+
+# vim: noet

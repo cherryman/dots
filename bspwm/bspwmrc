@@ -1,0 +1,39 @@
+#! /bin/sh
+
+BSPWM_HOME="$(dirname "$0")"
+
+ws_con=""
+ws_nav=""
+ws_com=""
+ws_gam=""
+ws_mus=""
+ws_vid=""
+ws_mis=""
+ws_pdf=""
+ws_dev=""
+ws_not=""
+
+sxhkd -c "$BSPWM_HOME/sxhkdrc" &
+
+bspc monitor -d $ws_con $ws_nav $ws_com $ws_gam $ws_mus \
+                $ws_vid $ws_mis $ws_pdf $ws_dev $ws_not
+
+bspc config border_width 2
+bspc config window_gap 25
+
+bspc config split_ratio 0.50
+bspc config borderless_monocle true
+bspc config gapless_monocle true
+bspc config single_monocle true
+bspc config focus_follows_pointer true
+bspc config click_to_focus
+
+bspc rule -a feh state=floating
+bspc rule -a mpv state=floating
+bspc rule -a Octave state=floating focus=off
+
+bspc rule -a mpv desktop="$ws_vid" follow=off
+bspc rule -a Firefox desktop="$ws_nav" follow=off
+bspc rule -a discord desktop="$ws_com" follow=off
+bspc rule -a Steam desktop="$ws_gam" follow=off
+bspc rule -a MuPDF desktop="$ws_pdf" follow=off
