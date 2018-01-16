@@ -15,10 +15,9 @@ export PATH="$HOME/bin:$HOME/.local/bin:$GOPATH/bin:$PYENV_ROOT/bin:$PATH"
 
 export TENDERBLOCKS="$ZPLUG_HOME/repos/Snowlabs/bartender/block"
 
-# Custom
-export term=alacritty
-export wallp="$HOME/Pictures/wallpaper"
-export dotdir="$HOME/dotfiles"
+export TERMINAL=alacritty
+export WALLPAPER="$HOME/Pictures/wallpaper"
+export DOTDIR="$HOME/dotfiles"
 
 
 ### Source
@@ -29,7 +28,6 @@ source "$ZPLUG_HOME/init.zsh"
 
 
 ### Alias
-
 alias has='command -v &> /dev/null'
 
 has exa && alias tree='exa -T'
@@ -39,6 +37,8 @@ alias l='ls -l'
 alias v='f -f -e vim'
 alias m='f -f -e mplayer'
 alias o='a -e xdg-open'
+
+has nvim && alias vim='nvim'
 
 has thefuck && eval $(thefuck --alias)
 has pyenv && eval "$(pyenv init - )"
@@ -56,6 +56,7 @@ zplug 'modules/prompt', from:prezto
 zplug 'zsh-users/zsh-syntax-highlighting'
 
 zplug 'clvv/fasd', use:fasd, as:command
+zplug 'pepa65/tldr-bash-client', use:'tldr', as:command, rename-to:tldr
 zplug 'junegunn/fzf', use:'shell/*.zsh', if:"(( $+commands[fzf] ))", defer:1
 
 zplug 'ogham/exa', from:gh-r, as:command, rename-to:exa
@@ -77,13 +78,6 @@ setopt inc_append_history_time hist_find_no_dups
 
 unsetopt beep
 
-# Keybinds
-bindkey -v
-bindkey '^T' fzf-file-widget
-bindkey '\ec' fzf-cd-widget
-bindkey '^R' fzf-history-widget
-
-
 # Install packages not installed
 if ! zplug check --verbose; then
     printf "Install? [Y/n]: "
@@ -95,3 +89,28 @@ if ! zplug check --verbose; then
 fi
 
 zplug load
+
+# Widgets
+less-widget() {
+    BUFFER+=" | ${PAGER:-more}"
+    zle accept-line
+}
+
+session-selector-widget() {
+    local sess
+    sess="$(abduco | tail -n +2 | fzf | cut -f 3)"
+    if [[ -n "$sess" ]]; then
+        BUFFER="abduco -a '$sess'"
+        zle accept-line
+    fi
+}
+
+zle -N less-widget
+zle -N session-selector-widget
+
+# Keybinds
+bindkey '^T' fzf-file-widget
+bindkey '\ec' fzf-cd-widget
+bindkey '^R' fzf-history-widget
+bindkey '\eo' less-widget
+bindkey '\es' session-selector-widget

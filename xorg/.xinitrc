@@ -14,7 +14,7 @@ xmodmap $HOME/.Xmodmap
 xset m 1 0
 
 # Default wm is i3wm
-wm="${2-i3}"
+wm="${2-bspwm}"
 
 # Start programs
 case "$wm" in
@@ -23,7 +23,7 @@ case "$wm" in
         sxhkd &
         compton &
         dunst &
-        feh --bg-scale $wallp
+        feh --bg-scale $WALLPAPER
         ;;
     *)
         ;;
