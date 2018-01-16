@@ -1,45 +1,65 @@
 #!/bin/sh
 
-reset="%{-o}%{B#141021}%{F#dddddd}"
-sel="%{+o}%{B#222222}%{F#dddddd}%{U#aa33aa}"
-urg="%{+o}%{B#222222}%{F#dddddd}%{U#f40000}"
+pr="%{R}%{R}"
+pl="%{F#f4aa00}%{B#dddddd}%{R}"
+
+bg="%{B#141021}"
+
+reset="%{-o}$bg%{F#dddddd}"
+sel="%{+o}%{B#222222}%{F#dddddd}%{u#aa33aa}"
+urg="%{+o}%{B#222222}%{F#dddddd}%{u#f40000}"
 sep="        "
+
+alias p='echo -n'
 
 {
 
-echo -n "$reset"
+p "$reset"
 
 ### Left
-echo -n "%{l}"
+p "%{l}"
 
-echo -n "<<"
-echo -n "i3ws -S -B "
-echo -n "-f '$reset  ' '  $reset' "
-echo -n "-F '$sel  ' '  $reset' "
-echo -n "-u '$urg  ' '  $reset'"
-echo -n ">>"
+#p "<<"
+#p "i3ws -S -B "
+#p "-f '$reset  ' '  ' "
+#p "-F '$sel  ' '  ' "
+#p "-u '$urg  ' '  '"
+#p ">>"
 
+p "<<"
+p "bspwmws -B "
+p " -n '$reset  ' -N '  '"
+p " -f '$sel  '   -F '  '"
+p ">>"
+
+p "$reset"
 
 ### Center
-echo -n "%{c}"
+p "%{c}"
 
-echo -n "$sel"
-echo -n "<<i3window>>"
-echo -n "$reset"
+#p "$sel"
+#p "<<i3window>>"
+#p "$reset"
 
 ### Right
-echo -n "%{r}"
+p "%{r}"
 
-echo -n "$sel"
-echo -n " <<clock '+%a, %d %b %H:%M'>> "
-echo -n "$reset"
-echo -n "$sep"
+p "$sel"
+p " <<clock '+%a, %d %b %H:%M'>> "
+p "$reset"
+p "$sep"
 
-echo -n "%{A4:volume up:}%{A5:volume down:}"
-echo -n "$sel"
-echo -n "   <<vol>> "
-echo -n "$reset"
-echo -n "%{A}%{A}"
+p "%{A4:volume up:}%{A5:volume down:}"
+p "$sel"
+p "   <<vol>> "
+p "$reset"
+p "%{A}%{A}"
 
 # Requires a patched lemonbar for xft support
-} | genbar -db '<<' -de '>>' | lemonbar -u 2 -a 20 -b -o '1' -f "Noto Sans" -o '-1' -f "FontAwesome"| sh &> /dev/null
+} | genbar -b'<<' -e'>>' \
+  | lemonade -b \
+        -u 2 -g "1920x27+0+0" \
+        -f "Noto Sans 12" \
+        -f "Hack 12" \
+        -f "FontAwesome 12" \
+  |sh #&> /dev/null

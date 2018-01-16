@@ -8,7 +8,7 @@ gaps outer 5
 
 
 ### Startup
-exec --no-startup-id eval "$dotdir/bar.sh"
+exec --no-startup-id eval "$DOTDIR/bar.sh"
 
 exec --no-startup-id dropbox
 exec --no-startup-id steam -silent %U
