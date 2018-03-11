@@ -74,6 +74,12 @@ command! ToggleSyntax
 \ |     syntax enable
 \ | endif
 
+command! -nargs=1 -complete=dir FilesNoVCS
+\   let s:cmd = g:ctrlp_user_command
+\ | let b:ctrlp_user_command = g:files_find_no_vcs_cmd
+\ | CtrlP <q-args>
+\ | let b:ctrlp_user_command = s:cmd
+
 command! -nargs=1 -complete=dir Files
 \   call fzf#run(fzf#wrap('files', {
 \                         'source': g:fzf_files_source,
@@ -158,8 +164,11 @@ xmap <Leader>ea <Plug>(EasyAlign)
 " not $MYVIMRC because of nvim
 nmap <Leader>ce :edit ~/.vimrc<CR>
 nmap <Leader>cr :source ~/.vimrc<CR>
+nmap <Leader>cc :CtrlPClearCache<CR>
 
-nmap <Leader>ff :CtrlP<CR>
+nmap <Leader>ff :CtrlP .<CR>
+nmap <Leader>fF :FilesNoVCS .<CR>
+nmap <Leader>fp :CtrlP<CR>
 nmap <Leader>ft :NERDTreeToggle<CR>
 nmap <Leader>fs :write<CR>
 nmap <Leader>fS :wall<CR>
@@ -168,7 +177,7 @@ nmap <Leader>qq :qall<CR>
 nmap <Leader>qs :wqall<CR>
 nmap <Leader>qQ :qall!<CR>
 
-nmap <Leader>j <Plug>(easymotion-prefix)
+map <Leader>j <Plug>(easymotion-prefix)
 
 nmap <Leader>tn :set number!<CR>
 nmap <Leader>tr :set relativenumber!<CR>
@@ -235,9 +244,11 @@ let g:ale_linters = {
 " ctrlp
 if executable('rg')
     let g:ctrlp_user_command = 'rg %s --files --hidden --color never -g "!.git/*"'
+    let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " --no-ignore"
 elseif executable('ag')
     let g:ctrlp_user_command = 'ag %s -g "" --hidden --nocolor
                         \ --ignore ".git"'
+    let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " --skip-vcs-ignores"
 elseif executable('find')
     let g:ctrlp_user_command = 'find %s'
 endif
@@ -272,7 +283,6 @@ let g:high_lighters = {
 \       'blacklist': ['help', 'qf', 'lf', 'vim-plug'],
 \   },
 \   'long_line': {},
-\   'mixed_indent': {'hlgroup': 'Error'},
 \ }
 
 " vim-pandoc

@@ -6,20 +6,35 @@ run() {
     fi
 }
 
+if [ $# -lt 1 ]; then
+    exit 1
+fi
+
 case "$1" in
-    i3|bspwm)   cmd="startx $*" ;;
+    i3|bspwm)
+        type="X"
+        cmd="startx $@"
+        ;;
+
+    *)
+        echo "Undefined WM" 1>&2
+        exit 1
+        ;;
 esac
 
 eval "$cmd" &
 pid=$!
 
 (
-sleep 5
+sleep 1
+
+if [ "$type" = "X" ]; then
+    export DISPLAY="$(ls /tmp/.X11-unix/ | tr 'X' ':' | tail -1)"
+fi
 
 # Startup programs go here
-run steam
+run steam > /tmp/steam.log
 run discord
-run dropbox
 ) &
 
 wait $pid

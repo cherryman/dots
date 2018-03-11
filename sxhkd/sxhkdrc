@@ -2,24 +2,21 @@
 alt + shift + e
 	rofi -show run
 
-## Screenshot
-# selection
-alt + shift + s
+super + grave
+	alacritty
+
+alt + shift + s; s
 	maim -s | xclip -i -sel c -t image/png
 
-# select window
-alt + shift + w
-	maim -i "$(xdotool getactivewindow)" | xclip -i -sel c -t image/png
-
-# everything
-Print
+alt + shift + s; d
 	maim | xclip -i -sel c -t image/png
 
-super + grave
-	alacritty || xterm
+super + l
+	locker
 
 alt + shift + l
 	keymap
+
 
 ### XF86 Keys
 XF86Audio{Prev,Next,Play}
