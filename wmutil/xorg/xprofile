@@ -1,0 +1,9 @@
+xrdb -merge "$HOME/.Xresources"
+xmodmap "$HOME/.Xmodmap"
+
+# Disable mouse accel
+xset m 1 0
+
+# Programs
+redshift -t6500:3400 -b1.0:0.9 &
+sxhkd &

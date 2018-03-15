@@ -1,13 +1,8 @@
-#!/bin/bash
-#_DEP amixer grep tr
-#_OPT dunst dunstify
+#! /bin/bash
 
 icon_mute=""
 icon_low=""
 icon_high=""
-
-# Used for notification gen
-id_file="/tmp/.dunst_volume.id"
 
 # Set the volume and store output of command in $volume
 case $1 in
@@ -25,18 +20,13 @@ case $1 in
 esac
 
 # Retrieve the volume using $volume
-volume="$(grep <<< $volume -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
+volume="$(echo $volume | grep -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
 
 # Update vol script, used for bar
 pkill -USR1 '^vol$' &
 
 # Generate a notification if dunstify is installed
 if command -v &> /dev/null dunstify; then
-
-	id="$(cat $id_file &)"
-
-	# Mute is currently broken
-	#is_mute && echo "mute"
 
 	# Set the icon to be used, depending on volume
 	case $volume in
@@ -64,9 +54,7 @@ if command -v &> /dev/null dunstify; then
 	#else
 	#	dunstify -p "$ico $volume" > $id_file
 	#fi
-	dunstify -pr 1 "$ico $volume"
-
+	dunstify -r 1 "$ico $volume"
 fi
-
 
 # vim:set noexpandtab:
