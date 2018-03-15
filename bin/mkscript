@@ -1,0 +1,160 @@
+#! /usr/bin/env sh
+
+
+## ---- Utility functions
+log() {
+    echo "$@"
+}
+
+err() {
+    log "$@" 1>&2
+}
+
+usage() {
+cat << EOF
+Usage: $(basename "$0") [OPTION] ...
+
+Generates a template shellscript based on the
+provided options and outputs it to stdout.
+
+Options:
+    -h      Print this help.
+
+    -i      Comma separated list of components to include.
+            The order has an effect on the script. Can use the following:
+            err,log,usage,main,args.
+            For example see the source of this script.
+
+    -s      Shell to use in shebang. Defaults to sh.
+EOF
+}
+
+
+## ---- Write functions
+w_err() {
+    echo='echo'
+
+    if [ "$log" = true ]; then
+        echo='log'
+    fi
+cat << EOF
+err() {
+    $echo "\$@" 1>&2
+}
+EOF
+}
+
+w_log() {
+cat << EOF
+log() {
+    echo "\$@"
+}
+EOF
+}
+
+w_usage() {
+cat <<!
+usage() {
+cat << EOF
+Usage: \$(basename "\$0") [OPTION] ...
+
+Description.
+
+Options:
+    --
+EOF
+}
+!
+}
+
+w_main() {
+cat << EOF
+main() {
+    true
+}
+EOF
+}
+
+w_args() {
+    if [ "$usage" = true ]; then
+        op='h'
+    fi
+
+cat << EOF
+while getopts "$op" opt; do
+    case "\$opt" in
+EOF
+
+    if [ "$usage" = true ]; then
+cat << EOF
+        h)
+            usage
+            exit 1
+            ;;
+EOF
+    fi
+
+cat << EOF
+        *)
+            ;;
+    esac
+done
+EOF
+}
+
+
+## ---- Script begins here
+main() {
+
+    # Set up shebang
+    echo "#! /usr/bin/env $shell"
+
+    run=
+    IFS=","
+    for i in $components; do
+        case "$i" in
+            err)   run="$run w_err"			      ;;
+            log)   run="$run w_log";   log=true   ;;
+            usage) run="$run w_usage"; usage=true ;;
+            main)  run="$run w_main";  main=true  ;;
+            args)  run="$run w_args"		      ;;
+            *)
+                err Invalid component "$i", ignoring.
+                ;;
+        esac
+    done
+
+    IFS=" "
+    for i in $run; do
+        echo # Spacing before each function
+        eval "$i"
+    done
+
+    if [ "$main" = true ]; then
+        echo
+        echo "main"
+    fi
+}
+
+components=err,usage,main,args
+shell='sh'
+while getopts "hi:s:" opt; do
+    case "$opt" in
+        i)
+            components="$OPTARG"
+            ;;
+        s)
+            shell="$OPTARG"
+            ;;
+        h)
+            usage
+            exit 0
+            ;;
+        ?)
+            err 'See -h for more information'
+            exit 1
+            ;;
+    esac
+done
+
+main
