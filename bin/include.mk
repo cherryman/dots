@@ -5,8 +5,9 @@ bin:	$(HOME)/bin/          \
 	$(HOME)/bin/bar       \
 	$(HOME)/bin/keymap    \
 	$(HOME)/bin/mkscript  \
+	$(HOME)/bin/notif     \
 	$(HOME)/bin/startwm   \
-	$(HOME)/bin/volume
+	$(HOME)/bin/vol
 
 $(HOME)/bin/%: $(DIR)/%
 	$(LINK) $? $@

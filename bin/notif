@@ -1,0 +1,51 @@
+#! /usr/bin/env sh
+
+# TODO: notif replace
+
+err() { log "$@" 1>&2; }
+log() { echo "$@"; }
+
+usage() {
+cat << EOF
+Usage: $(basename "$0") [OPTION] ...
+
+Description.
+
+Options:
+  --
+EOF
+}
+
+delay=2000
+id=
+while getopts "i:n:h" opt; do
+    case "$opt" in
+        i)  id="$OPTARG"    ;;
+        n)  delay="$OPTARG" ;;
+        h)
+            usage
+            exit 1
+            ;;
+        *)
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+text="$*"
+
+### Main
+if command -v dunstify > /dev/null; then
+
+    if [ ! -z "$id" ]; then
+
+        id_file="/tmp/notif_${USER}_${id}"
+        if [ -f "$id_file" ]; then
+            d_args="-r \"$(cat "$id_file")\""
+        else
+            d_args="-p > '$id_file'"
+        fi
+    fi
+
+    eval dunstify -t "$delay" $d_args '"$text"'
+fi

@@ -1,0 +1,72 @@
+#! /usr/bin/env sh
+
+err() { echo "$@" 1>&2; }
+
+usage() {
+cat << EOF
+usage: $(basename "$0") <command> [<args>]
+
+Commands:
+  set  <vol>
+  inc  <amount>          Increase the volume
+  dec  <amount>          Decrease the volume
+  get
+  mute <on|off|toggle>   Mute, unmute or toggle
+EOF
+}
+
+
+### Volume backends
+#
+# Each should return the changed volume to use it to generate
+# a notification.
+vol_alsa() {
+
+    case "$cmd" in
+        set)    a_cmd="set"; a_arg="$arg  unmute" ;;
+        inc)    a_cmd="set"; a_arg="$arg+ unmute" ;;
+        dec)    a_cmd="set"; a_arg="$arg- unmute" ;;
+        get)    a_cmd="get"; a_arg="" ;;
+        mute)   a_cmd="set";
+            if   [ "$arg" = "on"     ]; then a_arg="mute"
+            elif [ "$arg" = "off"    ]; then a_arg="unmute"
+            elif [ "$arg" = "toggle" ]; then a_arg="toggle"
+            fi ;;
+        *)
+            err "Invalid command $cmd provided"
+            exit 1
+            ;;
+    esac
+
+    vol="$(
+        amixer "$a_cmd" Master $a_arg              \
+        | sed -n 's/.*\[\([0-9][0-9]*\)%\].*/\1/p' \
+        | head -1
+    )"
+}
+
+
+### Main
+cmd="$1"
+arg="$2"
+
+vol= # Volume after setting it
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
+elif [ -z "$cmd" ]; then
+    err "No command provided"
+    exit 1
+fi
+
+# Only alsa supported currently
+vol_alsa
+
+# Generate notification
+if [ "$cmd" != "get" ]; then
+    notif                     \
+        -n 400                \
+        -i "$(basename "$0")" \
+        " $vol"
+fi
