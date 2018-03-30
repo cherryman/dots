@@ -1,8 +1,8 @@
 XDGC	= $(HOME)/.config/
 ROOT	= $(PWD)
 LN	= -ln
-LNARGS	= -s
-LINK	= $(LN) $(LNARGS)
+LNFLAGS	= -s
+LINK	= $(LN) $(LNFLAGS)
 
 include bin/include.mk
 include shell/include.mk
@@ -10,8 +10,7 @@ include wm/include.mk
 include wmutil/include.mk
 
 
-all:	$(XDGC) \
-	$(HOME)/.local
+all:	dir
 
 dir:	$(XDGC)/              \
 	$(HOME)/bin/          \
