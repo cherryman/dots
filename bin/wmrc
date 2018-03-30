@@ -1,0 +1,10 @@
+#! /usr/bin/env sh
+
+run() {
+    if command -v "$1" > /dev/null; then
+        eval "$@" &
+    fi
+}
+
+run steam > /tmp/steam.log
+run discord

@@ -7,7 +7,8 @@ bin:	$(HOME)/bin/          \
 	$(HOME)/bin/mkscript  \
 	$(HOME)/bin/notif     \
 	$(HOME)/bin/startwm   \
-	$(HOME)/bin/vol
+	$(HOME)/bin/vol       \
+	$(HOME)/bin/wmrc
 
 $(HOME)/bin/%: $(DIR)/%
 	$(LINK) $? $@
