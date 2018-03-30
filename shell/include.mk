@@ -10,7 +10,7 @@ $(HOME)/.%: $(DIR)/sh/%
 
 
 ### zsh
-zsh:	sh $(HOME)/.zshrc $(XDGC)/zplug
+zsh:	sh $(HOME)/.zshrc $(XDGC)/zplug $(XDGC)/base16-shell
 
 $(HOME)/.%: $(DIR)/zsh/%
 	$(LINK) $? $@

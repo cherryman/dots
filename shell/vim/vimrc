@@ -19,10 +19,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'bimlas/vim-high'
 Plug 'edkolev/tmuxline.vim'
-Plug 'majutsushi/tagbar'
 
 " util
-Plug 'junegunn/fzf', {'dir': '~/.local/src/fzf', 'do': './install --bin'}
 Plug 'scrooloose/nerdtree'
 Plug 'embear/vim-localvimrc'
 Plug 'thaerkh/vim-workspace'
@@ -34,12 +32,8 @@ Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
-Plug 'terryma/vim-expand-region'
 Plug 'editorconfig/editorconfig-vim'
-
-" prog
 Plug 'w0rp/ale'
-Plug 'tpope/vim-dispatch'
 
 " lang
 Plug 'sheerun/vim-polyglot'
@@ -79,16 +73,6 @@ command! -nargs=1 -complete=dir FilesNoVCS
 \ | let b:ctrlp_user_command = g:files_find_no_vcs_cmd
 \ | CtrlP <q-args>
 \ | let b:ctrlp_user_command = s:cmd
-
-command! -nargs=1 -complete=dir Files
-\   call fzf#run(fzf#wrap('files', {
-\                         'source': g:fzf_files_source,
-\                         'dir': <q-args>}, 0))
-
-command! Buffers
-\   call fzf#run(fzf#wrap('buffers', {
-\                         'source': map(range(1, bufnr('$')),
-\                         'bufname(v:val)')}))
 
 "}}}
 " ---- Colours {{{
@@ -184,7 +168,6 @@ nmap <Leader>tr :set relativenumber!<CR>
 nmap <Leader>tc :ToggleSyntax<CR>
 nmap <Leader>tl <Plug>(ale_toggle)
 nmap <Leader>ts :ToggleWorkspace<CR>
-nmap <Leader>th :TagbarToggle<CR>
 
 nmap <Leader>w <C-w>
 
@@ -199,10 +182,6 @@ nmap <Leader>ll <Plug>(ale_lint)
 nmap <Leader>li <Plug>(ale_detail)
 nmap <Leader>l[ <Plug>(ale_previous_wrap)
 nmap <Leader>l] <Plug>(ale_next_wrap)
-
-nmap <Leader>ho :TagbarOpen j<CR>
-nmap <Leader>hc :TagbarClose<CR>
-nmap <Leader>hj :TagbarOpenAutoClose<CR>
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>st :CtrlPBufTag<CR>

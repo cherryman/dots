@@ -4,14 +4,18 @@ have() {
 
 
 # Environment variables
+export XDG_CONFIG_COME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-export WALLPAPER="$HOME/Pictures/wallpaper"
+export WALLPAPER="$HOME/media/pic/wallp"
 export DOTDIR="$HOME/dotfiles"
 
 export LESS="-RSi"
-export CARGO_HOME="$HOME/.config/cargo"
-export RUSTUP_HOME="$HOME/.config/rustup"
-export GOPATH="$HOME/.local/go"
+export CARGO_HOME="$HOME/$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$HOME/$XDG_DATA_HOME/rustup"
+export GOPATH="$HOME/$XDG_DATA_HOME/go"
 
 have vim   && export EDITOR=vim && export VISUAL=vim
 have less  && export PAGER=less

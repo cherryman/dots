@@ -1,9 +1,9 @@
 ### Programs
 alt + shift + e
-	rofi -show run
+	$LAUNCHER
 
 super + grave
-	alacritty
+	$TERMINAL
 
 alt + shift + s; s
 	maim -s | xclip -i -sel c -t image/png
@@ -22,8 +22,8 @@ alt + shift + l
 XF86Audio{Prev,Next,Play}
 	playerctl {previous,next,play-pause}
 
-XF86Audio{LowerVolume,RaiseVolume,Mute}
-	volume {down,up,mute}
+XF86Audio{RaiseVolume,LowerVolume,Mute}
+	vol {inc 1, dec 1, mute on}
 
 XF86MonBrightness{Up,Down}
 	backlight {up,down}
