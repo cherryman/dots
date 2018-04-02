@@ -6,23 +6,10 @@ fi
 
 case "$1" in
     i3|bspwm)
-        X=1
-        cmd="startx $@" ;;
+        startx $@ ;;
 
     *)
-        echo "Undefined WM" 1>&2
+        echo "Undefined WM '$1'" 1>&2
         exit 1
         ;;
 esac
-
-eval "$cmd" &
-pid=$!
-
-if [ "$X" -eq 1 ]; then
-    DISPLAY="$(ls /tmp/.X11-unix/ | tr 'X' ':' | tail -1)"
-    export DISPLAY
-fi
-
-(sleep 1; wmrc) &
-
-wait $pid

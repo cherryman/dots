@@ -43,7 +43,7 @@ tmux:	$(HOME)/.tmux.conf $(HOME)/.tmuxline.conf \
 $(HOME)/.%.conf: $(DIR)/tmux/%.conf
 	$(LINK) $? $@
 
-$(HOME)/.tmux/plugins/tpm: $(HOME)/.tmux/plugins/ $(DIR)/tmux/tpm
+$(HOME)/.tmux/plugins/tpm: $(DIR)/tmux/tpm
 	$(LINK) $(DIR)/tmux/tpm $@
 
 

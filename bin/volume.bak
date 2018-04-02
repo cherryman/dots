@@ -1,0 +1,60 @@
+#! /bin/bash
+
+icon_mute=""
+icon_low=""
+icon_high=""
+
+# Set the volume and store output of command in $volume
+case $1 in
+	"up")
+		volume="$(amixer set Master ${2-"2"}%+ unmute)"
+		;;
+	"down")
+		volume="$(amixer set Master ${2-"2"}%- unmute)"
+		;;
+	"mute")
+		volume="$(amixer set Master mute)"
+		;;
+	"*")
+		;;
+esac
+
+# Retrieve the volume using $volume
+volume="$(echo $volume | grep -Eo '\[[0-9]{1,3}%\]' | tr -d '[]%' | tail -1)"
+
+# Update vol script, used for bar
+pkill -USR1 '^vol$' &
+
+# Generate a notification if dunstify is installed
+if command -v &> /dev/null dunstify; then
+
+	# Set the icon to be used, depending on volume
+	case $volume in
+		"x")
+			ico="$icon_mute"
+			;;
+		0)
+			ico="$icon_mute"
+			;;
+		[4-9][0-9])
+			ico="$icon_high"
+			;;
+		100)
+			ico="$icon_high"
+			;;
+		*)
+			ico="$icon_low"
+			;;
+	esac
+
+	# If id is valid, notif is replace and id is replace using -r
+	# -p prints the ID
+	#if [[ $id -gt 0 ]]; then
+	#	dunstify -pr $id "$ico $volume" > $id_file
+	#else
+	#	dunstify -p "$ico $volume" > $id_file
+	#fi
+	dunstify -r 1 "$ico $volume"
+fi
+
+# vim:set noexpandtab:

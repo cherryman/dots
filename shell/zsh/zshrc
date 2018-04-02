@@ -2,13 +2,6 @@
 export BASE16_SHELL="$HOME/.config/base16-shell"
 export ZPLUG_HOME="$HOME/.config/zplug"
 
-export FZF_DEFAULT_COMMAND="rg --files --hidden --color never --ignore-file .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
-
-export TENDERBLOCKS="$ZPLUG_HOME/repos/Snowlabs/bartender/block"
-
-
 ### Source
 source "$ZPLUG_HOME/init.zsh"
 [ -n "$PS1" ] \
@@ -17,8 +10,7 @@ source "$ZPLUG_HOME/init.zsh"
 
 
 ### Alias
-alias ls='ls --color=auto'
-
+alias ls='ls --color'
 alias -g CLIP='| xclip -i -sel clip'
 eval "$(fasd --init posix-alias zsh-hook)"
 
@@ -27,58 +19,38 @@ eval "$(fasd --init posix-alias zsh-hook)"
 zplug 'modules/helper', from:prezto
 zplug 'modules/editor', from:prezto
 zplug 'modules/git', from:prezto
+zplug 'modules/prompt', from:prezto
 
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
-zplug 'modules/prompt', from:prezto
 zplug 'zsh-users/zsh-syntax-highlighting'
 
 zplug 'clvv/fasd', use:fasd, as:command
 zplug 'pepa65/tldr-bash-client', use:'tldr', as:command, rename-to:tldr
 zplug 'junegunn/fzf', use:'shell/*.zsh', if:"(( $+commands[fzf] ))", defer:1
 
-zplug 'ogham/exa', from:gh-r, as:command, rename-to:exa
 zplug 'BurntSushi/ripgrep', from:gh-r, as:command, rename-to:rg
-zplug 'junegunn/fzf-bin', from:gh-r, as:command, rename-to:fzf
-
-zplug 'Snowlabs/bartender', use:genbar, as:command
-
 
 ### ZSH Settings
-zstyle ':prezto:module:prompt' theme 'sorin'
-
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
 
 setopt hist_ignore_space hist_reduce_blanks extended_history
 setopt inc_append_history_time hist_find_no_dups
-
 unsetopt beep
+
+bindkey -e
+
+# Prompt
+zstyle ':prezto:module:prompt' theme 'sorin'
 
 zplug load
 
-# Widgets
 less-widget() {
     BUFFER+=" | $PAGER"
     zle accept-line
 }
 
-session-selector-widget() {
-    local sess
-    sess="$(abduco | tail -n +2 | fzf | cut -f 3)"
-    if [[ -n "$sess" ]]; then
-        BUFFER="abduco -a '$sess'"
-        zle accept-line
-    fi
-}
-
 zle -N less-widget
-zle -N session-selector-widget
-
-# Keybinds
-bindkey '^T' fzf-file-widget
-bindkey '\ec' fzf-cd-widget
-bindkey '^R' fzf-history-widget
 bindkey '\eo' less-widget
-bindkey '\es' session-selector-widget

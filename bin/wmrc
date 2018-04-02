@@ -1,10 +1,18 @@
 #! /usr/bin/env sh
 
 run() {
-    if command -v "$1" > /dev/null; then
-        eval "$@" &
-    fi
+    while read -r cmd arg; do
+        if command -v "$cmd" > /dev/null; then
+            eval "$cmd" "$arg" &
+        fi
+    done
 }
 
-run steam > /tmp/steam.log
-run discord
+find "${XDG_CONFIG_HOME:-$HOME/.config}/autostart" \
+    -maxdepth 1       \
+    -name '*.desktop' \
+    -type f           \
+    -exec             \
+        grep '^Exec=' '{}' \; |
+        cut -d= -f2-          |
+        run

@@ -1,5 +1,5 @@
 XDG_DOCUMENTS_DIR="$HOME/doc"
-XDG_DESKTOP_DIR="$HOME/doc/desktop"
+XDG_DESKTOP_DIR="$HOME/doc/desk"
 XDG_DOWNLOAD_DIR="$HOME/doc/download"
 XDG_PUBLICSHARE_DIR="$HOME/doc/pub"
 XDG_TEMPLATES_DIR="$HOME/doc/templates"

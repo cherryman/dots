@@ -186,7 +186,9 @@ nmap <Leader>l] <Plug>(ale_next_wrap)
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>st :CtrlPBufTag<CR>
 nmap <Leader>sq :CtrlPQuickfix<CR>
-nmap <Leader>sb :CtrlPBookmarkDir<CR>
+
+nmap <Leader>df :CtrlPBookmarkDir<CR>
+nmap <Leader>da :CtrlPBookmarkDirAdd<CR>
 
 xmap <C-c><C-c> <Plug>SlimeRegionSend
 nmap <C-c><C-c> <Plug>SlimeParagraphSend
