@@ -11,10 +11,9 @@ Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'w0ng/vim-hybrid'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
 
 " interface
-Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'bimlas/vim-high'
@@ -26,6 +25,7 @@ Plug 'embear/vim-localvimrc'
 Plug 'thaerkh/vim-workspace'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'jpalardy/vim-slime'
+Plug 'tpope/vim-dispatch'
 
 " edit
 Plug 'Raimondi/delimitMate'
@@ -101,8 +101,8 @@ augroup indent
     au FileType asm      setl noet ts=6 sw=6 sts=0
     au FileType make     setl noet ts=8 sw=8 sts=0
     au FileType go       setl noet
-    au FileType *tex     setl tw=79
-    au FileType markdown setl tw=79
+    au FileType *tex     setl tw=72
+    au FileType markdown setl tw=72
     au FileType yaml     setl ts=2 sts=2 sw=2
 augroup END
 
@@ -128,10 +128,7 @@ set mouse=a " mouse movement
 let mapleader = "\<Space>"
 let maplocalleader = "\\"
 
-map Y y$
 imap jk <esc>
-xmap <Leader>+ <Plug>(expand_region_expand)
-xmap <Leader>- <Plug>(expand_region_shrink)
 nnoremap <C-w>- <C-w>s
 nnoremap <C-w>\ <C-w>v
 
@@ -171,17 +168,13 @@ nmap <Leader>ts :ToggleWorkspace<CR>
 
 nmap <Leader>w <C-w>
 
-nmap <Leader>bb :CtrlPBuffer<CR>
-nmap <Leader>bd :bdelete<CR>
-nmap <Leader>b[ :1bprevious<CR>
-nmap <Leader>b] :1bNext<CR>
+nmap <Leader>b :CtrlPBuffer<CR>
+nmap <Leader>[ :1bprevious<CR>
+nmap <Leader>] :1bnext<CR>
 nnoremap <BS> <C-^>
-nmap <Leader>bR :edit<CR>
 
 nmap <Leader>ll <Plug>(ale_lint)
 nmap <Leader>li <Plug>(ale_detail)
-nmap <Leader>l[ <Plug>(ale_previous_wrap)
-nmap <Leader>l] <Plug>(ale_next_wrap)
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>st :CtrlPBufTag<CR>
@@ -245,13 +238,30 @@ augroup END
 let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
 let g:localvimrc_whitelist = $HOME.'/projects'
 
+" tmuxline
+let g:tmuxline_powerline_separators = 0
+let g:tmuxline_theme = 'lightline'
+let g:tmuxline_preset = {
+    \ 'a'    : '#S',
+    \ 'b'    : ['%b %e', '%H:%M'],
+    \ 'c'    : '',
+    \ 'win'  : '#I #W',
+    \ 'cwin' : '#I #W',
+    \ 'x'    : '',
+    \ 'y'    : '#(id -u -n)',
+    \ 'z'    : '#H',
+    \ 'options' : {
+    \     'status-justify': 'centre',
+    \ }
+\ }
+
 " polyglot
 let g:polyglot_disabled = [
 \   'latex',
 \ ]
 
 " vim-airline
-" colour set under "Colours"
+" colour set under 'Colours'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
@@ -264,6 +274,11 @@ let g:high_lighters = {
 \       'blacklist': ['help', 'qf', 'lf', 'vim-plug'],
 \   },
 \   'long_line': {},
+\ }
+
+" vim-lightline
+let g:lightline = {
+\   'colorscheme': 'wombat',
 \ }
 
 " vim-pandoc
@@ -290,7 +305,6 @@ let g:workspace_autosave_untrailspaces = 0
 let g:workspace_autosave_ignore = [
 \   'gitcommit',
 \ ]
-
 "}}}
 " ---- Misc {{{
 set modeline
@@ -300,6 +314,7 @@ set hidden
 
 set scrolloff=3
 
+set backspace=indent,eol,start
 "}}}
 
 " vim:foldmethod=marker:foldlevel=0

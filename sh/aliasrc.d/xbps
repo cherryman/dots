@@ -1,0 +1,3 @@
+alias xi='xbps-install'
+alias xq='xbps-query'
+alias xqs='xbps-query -Rs'

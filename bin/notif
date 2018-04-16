@@ -1,7 +1,5 @@
 #! /usr/bin/env sh
 
-# TODO: notif replace
-
 err() { log "$@" 1>&2; }
 log() { echo "$@"; }
 
@@ -9,10 +7,14 @@ usage() {
 cat << EOF
 Usage: $(basename "$0") [OPTION] ...
 
-Description.
+Generate a notification. Currently uses dunstify
+to generate the notification.
 
 Options:
-  --
+  -h            Show this help.
+  -n DELAY      Delay in ms to keep the notification.
+  -i NAME       If a notification with the same name exists,
+                replace it.
 EOF
 }
 

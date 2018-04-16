@@ -9,5 +9,8 @@ fi
 
 [ -f "$HOME/.xprofile" ] && . "$HOME/.xprofile"
 
-wm="${2-bspwm}"
+wm="$2"
+if [ -z "$wm" ]; then
+    exit 1
+fi
 exec "$wm"

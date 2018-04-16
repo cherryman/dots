@@ -1,97 +1,70 @@
-XDGC	= $(HOME)/.config/
-ROOT	= $(PWD)
-LN	= -ln
-LNFLAGS	= -s
-LINK	= $(LN) $(LNFLAGS)
-
-### Inference rules
-%/:
-	mkdir -p $@
-
-$(HOME)/.%: 	$(ROOT)/%
-	$(LINK) $? $@
-
-# This assumes $(XDGC) exists
-$(XDGC)/%: 	$(ROOT)/%
-	$(LINK) $? $@
-
+XDGC		= $(HOME)/.config
+DOTDIR		= dots
+LN		= ln
+LNFLAGS		= -s
+LINK		= $(LN) $(LNFLAGS)
 
 ### Targets
 all:		dir xdg
-dir:		$(XDGC)/              \
-		$(HOME)/bin/          \
-		$(HOME)/.local/       \
-		$(HOME)/.local/share/ \
-		$(HOME)/.local/bin/   \
-		$(HOME)/.local/src/   \
-		$(HOME)/doc/          \
-		$(HOME)/doc/desktop/  \
-		$(HOME)/doc/download/ \
-		$(HOME)/media/        \
-		$(HOME)/media/pic/
-xdg:		$(XDGC)/user-dirs.dirs
-alacritty:	$(XDGC)/alacritty
-i3:		$(XDGC)/i3
-bspwm:		$(XDGC)/bspwm
-compton:	$(XDGC)/compton.conf
-dunst:		$(XDGC)/dunst
-rofi:		$(XDGC)/rofi
-sxhkd:		$(XDGC)/sxhkd
-base16-shell:	$(XDGC)/base16-shell
-sh: 		$(HOME)/.profile
-nvim:		$(XDGC)/nvim vim
 
-$(HOME)/bin/%: $(ROOT)/bin/%
-	$(LINK) $? $@
-bin:		$(HOME)/bin/          \
-		$(HOME)/bin/backlight \
-		$(HOME)/bin/bar       \
-		$(HOME)/bin/keymap    \
-		$(HOME)/bin/mkscript  \
-		$(HOME)/bin/notif     \
-		$(HOME)/bin/startwm   \
-		$(HOME)/bin/vol       \
-		$(HOME)/bin/wmrc
+# for $XDG_CONFIG_HOME/%
+XDGC_TARGETS	= alacritty    \
+		  i3           \
+		  bspwm        \
+		  dunst        \
+		  rofi         \
+		  sxhkd        \
+		  base16-shell \
+		  nvim         \
+		  git
 
+$(XDGC_TARGETS):
+	$(LINK) $(PWD)/$@ $(XDGC)/$(@F)
 
-$(HOME)/.vimrc: $(ROOT)/vim/vimrc
-	$(LINK) $? $@
-$(HOME)/.vim/vim-plug: $(ROOT)/vim/vim-plug
-	mkdir -p "$(HOME)/.vim"
-	$(LINK) $? $@
-vim:		$(HOME)/.vimrc $(HOME)/.vim/vim-plug
+# basic directories in home
+HOME_DIRS	= .config bin                               \
+		  .local .local/share .local/src .local/bin \
+		  doc doc/desk doc/www                      \
+		  media media/pic
 
+dir:
+	cd '$(HOME)'; mkdir -p $(HOME_DIRS)
 
-$(HOME)/.zshrc: $(ROOT)/zsh/zshrc
-	$(LINK) $? $@
-$(XDGC)/zplug: $(ROOT)/zsh/zplug
-	$(LINK) $? $@
-zsh:	sh $(HOME)/.zshrc $(XDGC)/zplug base16-shell
+xdg:
+	$(LINK) $(PWD)/$@/* $(XDGC)
 
+compton:
+	$(LINK) $(PWD)/$@/* $(XDGC)
 
-$(XDGC)/git/%:	$(ROOT)/git/%
-	mkdir -p "$(XDGC)/git"
-	$(LINK) $? $@
-git:		$(XDGC)/git/ $(XDGC)/git/config $(XDGC)/git/ignore
+bin:
+	$(LINK) $@/bin/* $(HOME)/bin/
 
+vim:
+	mkdir -p $(HOME)/.vim
+	$(LINK) $(DOTDIR)/$@/vimrc ../.vimrc
+	$(LINK) $(DOTDIR)/$@/vim-plug ../.vim/
 
-$(HOME)/.tmux%: $(ROOT)/tmux/tmux%
-	$(LINK) $? $@
-$(HOME)/.tmux/plugins/tpm: $(ROOT)/tmux/tpm
-	mkdir -p "$(HOME)/.tmux/plugins"
-	$(LINK) $? $@
-tmux:	$(HOME)/.tmux.conf     \
-	$(HOME)/.tmuxline.conf \
-	$(HOME)/.tmux/plugins/tpm
+sh:
+	$(LINK) $(DOTDIR)/$@/aliasrc ../.aliasrc
+	$(LINK) $(DOTDIR)/$@/aliasrc.d ../.aliasrc.d
+	$(LINK) $(DOTDIR)/$@/profile ../.profile
 
-$(HOME)/.%:	$(ROOT)/xorg/%
-	$(LINK) $? $@
-xorg:		$(HOME)/.Xmodmap    \
-		$(HOME)/.Xresources \
-		$(HOME)/.xinitrc    \
-		$(HOME)/.xprofile
+zsh:	base16-shell
+	$(LINK) $(DOTDIR)/$@/zshrc ../.zshrc
+	$(LINK) ../$(DOTDIR)/$@/zplug $(XDGC)
+
+tmux:
+	mkdir -p $(HOME)/.tmux/plugins
+	$(LINK) $(DOTDIR)/$@/tmux.conf ../.tmux.conf
+	$(LINK) ../../$(DOTDIR)/$@/tpm ../.tmux/plugins/tpm
+
+xorg:
+	$(LINK) $(DOTDIR)/$@/Xmodmap ../.Xmodmap
+	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources
+	$(LINK) $(DOTDIR)/$@/xprofile ../.xprofile
+	$(LINK) $(DOTDIR)/$@/xinitrc ../.xinitrc
 
 .PHONY: all dir xdg
+.PHONY: $(XDGC_TARGETS)
 .PHONY: i3 bspwm
-.PHONY: compton dunst rofi sxhkd xorg
-.PHONY: sh zsh tmux vim nvim alacritty bin
+.PHONY: xorg sh zsh tmux vim bin

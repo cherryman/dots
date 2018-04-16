@@ -10,15 +10,13 @@ source "$ZPLUG_HOME/init.zsh"
 
 
 ### Alias
-alias ls='ls --color'
+source "$HOME/.aliasrc"
 alias -g CLIP='| xclip -i -sel clip'
-eval "$(fasd --init posix-alias zsh-hook)"
 
 
 ### Plug
 zplug 'modules/helper', from:prezto
 zplug 'modules/editor', from:prezto
-zplug 'modules/git', from:prezto
 zplug 'modules/prompt', from:prezto
 
 zplug 'zsh-users/zsh-autosuggestions'

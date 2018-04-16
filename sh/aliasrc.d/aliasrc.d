@@ -1,0 +1,1 @@
+dots/sh/aliasrc.d

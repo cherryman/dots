@@ -1,2 +1,3 @@
-[include]
-    path = ~/.config/git/user.inc
+[user]
+    name = Sheheryar Parvaz
+    email = skipper308@hotmail.ca
