@@ -1,5 +1,5 @@
 # ---- Misc
-super + alt + escape
+super + alt + Escape
 	bspc quit
 
 
@@ -49,8 +49,11 @@ hyper + {t,f}
 hyper + {_, alt +,super +} {h,j,k,l}
 	bspc node -{f,s,p} {west,south,north,east}
 
+hyper + {_, alt +} q
+	bspc {desktop -f,node -d} 'next:^1'
+
 hyper + {_, alt +} {1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
+	bspc {desktop -f,node -d} 'primary:^{1-9,10}'
 
 hyper + alt + {comma,period}
 	bspc node @/ -R {270,90}

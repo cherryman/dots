@@ -42,7 +42,7 @@ bin:
 vim:
 	mkdir -p $(HOME)/.vim
 	$(LINK) $(DOTDIR)/$@/vimrc ../.vimrc
-	$(LINK) $(DOTDIR)/$@/vim-plug ../.vim/
+	$(LINK) ../$(DOTDIR)/$@/vim-plug ../.vim/
 
 sh:
 	$(LINK) $(DOTDIR)/$@/aliasrc ../.aliasrc
@@ -66,5 +66,4 @@ xorg:
 
 .PHONY: all dir xdg
 .PHONY: $(XDGC_TARGETS)
-.PHONY: i3 bspwm
-.PHONY: xorg sh zsh tmux vim bin
+.PHONY: compton bin vim sh zsh tmux xorg

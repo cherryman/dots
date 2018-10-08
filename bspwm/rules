@@ -1,9 +1,27 @@
-#! /usr/bin/env sh
+#!/bin/sh
 
 id="$1"
 class="$2"
 instance="$3"
 
-case "$class" in
-    *) ;;
-esac
+
+main() {
+    case "$class" in
+        Navigator|*Firefox*)
+            case "$instance" in
+                Dialog) echo follow=on focus=on ;;
+                Navigator) echo state=tiled follow=off desktop=primary:^2 focus=on ;;
+                *) ;;
+            esac
+            ;;
+
+        *)
+            title="$(xtitle "$id")"
+            case "$title" in
+                *Steam*) echo desktop=primary:^5 follow=off
+                    ;;
+            esac
+    esac
+}
+
+main

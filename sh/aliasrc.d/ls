@@ -1,1 +1,6 @@
+case "$os" in
+    Linux) alias ls='ls --color'
+esac
+
 alias l='ls -l'
+alias la='ls -A'

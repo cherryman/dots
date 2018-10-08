@@ -13,42 +13,40 @@ source "$ZPLUG_HOME/init.zsh"
 source "$HOME/.aliasrc"
 alias -g CLIP='| xclip -i -sel clip'
 
-
 ### Plug
 zplug 'modules/helper', from:prezto
 zplug 'modules/editor', from:prezto
 zplug 'modules/prompt', from:prezto
-
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
-
 zplug 'clvv/fasd', use:fasd, as:command
-zplug 'pepa65/tldr-bash-client', use:'tldr', as:command, rename-to:tldr
 zplug 'junegunn/fzf', use:'shell/*.zsh', if:"(( $+commands[fzf] ))", defer:1
-
-zplug 'BurntSushi/ripgrep', from:gh-r, as:command, rename-to:rg
 
 ### ZSH Settings
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
-
 setopt hist_ignore_space hist_reduce_blanks extended_history
 setopt inc_append_history_time hist_find_no_dups
 unsetopt beep
 
 bindkey -e
-
-# Prompt
 zstyle ':prezto:module:prompt' theme 'sorin'
 
 zplug load
 
-less-widget() {
-    BUFFER+=" | $PAGER"
+menu-widget() {
+    BUFFER="menu"
     zle accept-line
 }
 
+less-widget() {
+    BUFFER+=" |& $PAGER"
+    zle accept-line
+}
+
+zle -N menu-widget
 zle -N less-widget
+bindkey '\ew' menu-widget
 bindkey '\eo' less-widget

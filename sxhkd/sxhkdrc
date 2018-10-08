@@ -8,8 +8,13 @@ super + grave
 alt + shift + s; s
 	maim -s | xclip -i -sel c -t image/png
 
-alt + shift + s; d
-	maim | xclip -i -sel c -t image/png
+alt + shift + s; m
+	maim -s                                            \
+	| curl -s -X POST                                  \
+		-H 'Authorization: Client-ID $IMGUR_CLIENT_ID'  \
+		-F "image=@-" 'https://api.imgur.com/3/image'  \
+	| sed 's|.*"link":"\([^"]*\)".*|\1|;s|\\\/|\/|g' \
+	| xclip -i -sel c
 
 super + l
 	locker
@@ -17,10 +22,11 @@ super + l
 alt + shift + l
 	keymap
 
+super + button{4,5}
+	vol {inc,dec} 2
 
-### XF86 Keys
 XF86Audio{Prev,Next,Play}
-	playerctl {previous,next,play-pause}
+	mpc {cdprev,next,toggle}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
 	vol {inc 1, dec 1, mute on}

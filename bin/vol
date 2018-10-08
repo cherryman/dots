@@ -24,8 +24,8 @@ vol_alsa() {
 
     case "$cmd" in
         set)    a_cmd="set"; a_arg="$arg  unmute" ;;
-        inc)    a_cmd="set"; a_arg="$arg+ unmute" ;;
-        dec)    a_cmd="set"; a_arg="$arg- unmute" ;;
+        inc)    a_cmd="set"; a_arg="$arg%+ unmute" ;;
+        dec)    a_cmd="set"; a_arg="$arg%- unmute" ;;
         get)    a_cmd="get"; a_arg="" ;;
         mute)   a_cmd="set";
             if   [ "$arg" = "on"     ]; then a_arg="mute"
@@ -58,15 +58,14 @@ if [ $# -eq 0 ]; then
 elif [ -z "$cmd" ]; then
     err "No command provided"
     exit 1
+elif [ "$cmd" = 'help' ]; then
+    usage
+    exit 0
 fi
 
 # Only alsa supported currently
 vol_alsa
 
-# Generate notification
-if [ "$cmd" != "get" ]; then
-    notif                     \
-        -n 400                \
-        -i "$(basename "$0")" \
-        " $vol"
+if [ "$cmd" = 'get' ]; then
+    echo "$vol"
 fi

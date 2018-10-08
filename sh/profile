@@ -1,8 +1,5 @@
-have() {
-    command -v "$1" > /dev/null
-}
+have() { command -v "$1" > /dev/null; }
 
-### Environment variables
 XDG_CONFIG_HOME="$HOME/.config"
 XDG_DATA_HOME="$HOME/.local/share"
 XDG_CACHE_HOME="$HOME/.cache"
@@ -11,22 +8,24 @@ WALLPAPER="$HOME/media/pic/wallp"
 DOTDIR="$HOME/dots"
 
 LESS="-RSi"
-CARGO_HOME="$HOME/$XDG_DATA_HOME/cargo"
-RUSTUP_HOME="$HOME/$XDG_DATA_HOME/rustup"
-GOPATH="$HOME/$XDG_DATA_HOME/go"
+CARGO_HOME="$XDG_DATA_HOME/cargo"
+RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+GOPATH="$XDG_DATA_HOME/go"
+SHELLCHECK_OPTS='-e SC2016'
+
+PATH="$PATH:$CARGO_HOME/bin"
+PATH="$PATH:$GOPATH/bin"
 
 have vim   && EDITOR=vim && VISUAL=vim
 have less  && PAGER=less
 have dmenu && LAUNCHER=dmenu_run
-have cargo && PATH="$CARGO_HOME/bin:$PATH"
-have go    && PATH="$GOPATH/bin:$PATH"
 
-for t in alacritty xterm; do
-    have "$t" && export TERMINAL="$t" && break
+for t in st alacritty xterm; do
+    have "$t" && TERMINAL="$t" && break
 done
 unset t
 
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME \
        PATH WALLPAPER DOTDIR \
-       EDITOR VISUAL PAGER LAUNCHER \
-       LESS CARGO_HOME RUSTUP_HOME GOPATH
+       EDITOR VISUAL PAGER LAUNCHER TERMINAL \
+       LESS CARGO_HOME RUSTUP_HOME GOPATH SHELLCHECK_OPTS

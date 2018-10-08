@@ -3,20 +3,17 @@
 BSPWM_HOME="$(dirname "$0")"
 
 ### Workspace names
-ws_con="" # console
-ws_nav="" # navigator
-ws_com="" # comm
-ws_gam="" # game
-ws_mus="" # music
-ws_vid="" # video
-ws_mis="" # misc
-ws_pdf="" # pdf
-ws_dev="" # programming
-ws_not="" # note
+wscon=''  # console
+wsnav=''  # navigator
+wsmisc='' # misc
+wscomm='' # comm
+wsgam=''  # game
+
+wsinfo=''
 
 ### Configuration
-bspc monitor -d $ws_con $ws_nav $ws_com $ws_gam $ws_mus \
-                $ws_vid $ws_mis $ws_pdf $ws_dev $ws_not
+bspc monitor next -d "$wsinfo"
+bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
 
 bspc config border_width 2
 bspc config window_gap 0
@@ -27,33 +24,30 @@ bspc config focus_follows_pointer true
 bspc config click_to_focus
 bspc config initial_polarity second_child
 
+### Rules
 bspc config external_rules_command "$BSPWM_HOME/rules"
 
-bspc rule -a feh state=floating
-bspc rule -a mpv state=floating
-bspc rule -a Octave state=floating focus=off
-bspc rule -a mpv desktop="$ws_vid" follow=off
-bspc rule -a Firefox desktop="$ws_nav" follow=off
-bspc rule -a Navigator desktop="$ws_nav" follow=off
-bspc rule -a discord desktop="$ws_com" follow=off
-bspc rule -a Steam desktop="$ws_gam" layer=below focus=off follow=off
-bspc rule -a MuPDF desktop="$ws_pdf" follow=off
+bspc rule -a feh       state=floating
+bspc rule -a Octave    state=floating focus=off
+bspc rule -a mpv       desktop="$wsmisc" follow=off state=floating
+bspc rule -a Firefox   desktop="$wsnav"  follow=off
+bspc rule -a Navigator desktop="$wsnav"  follow=off
+bspc rule -a Steam     desktop="$wsgam"  follow=off focus=off layer=below
+bspc rule -a \*:Steam  desktop="$wsgam"  follow=off focus=off
+bspc rule -a MuPDF     desktop="$wsmisc" follow=off
+bspc rule -a Mumble    desktop="$wscomm" follow=off
+bspc rule -a discord   desktop="$wscomm" follow=off
 
 ### Monocles
-bspc desktop "$ws_nav" -l monocle
-bspc desktop "$ws_com" -l monocle
-bspc desktop "$ws_mus" -l monocle
-bspc desktop "$ws_dev" -l monocle
-bspc desktop "$ws_not" -l monocle
+bspc desktop "$wscon" -l monocle
+bspc desktop "$wsnav" -l monocle
 
-### Programn launch
+### Program launch
 sxhkd -c "$BSPWM_HOME/sxhkdrc" &
-compton &
 dunst &
 feh --bg-scale "$WALLPAPER" &
+compton -b &
 
-bspc rule -a \* -o desktop="$ws_con" && $TERMINAL &
-bspc rule -a \* -o desktop="$ws_dev" && $TERMINAL &
-bspc rule -a \* -o desktop="$ws_not" && $TERMINAL &
+bspc rule -a \* -o desktop="$wscon" && $TERMINAL &
 
 wmrc &

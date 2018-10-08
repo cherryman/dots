@@ -67,4 +67,4 @@ URxvt*secondaryWheel:	true
 ! -------------- xst --------------------
 st.tername:				Terminal
 st.background:			#0a1216
-st.font:				Hack:style=Regular:pixelsize=17
+st.font:				Hack:style=Regular:pixelsize=15

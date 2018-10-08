@@ -6,20 +6,20 @@ runtime vim-plug/plug.vim
 call plug#begin('~/.vim/plugged')
 
 " themes
-Plug 'sjl/badwolf'
-Plug 'tomasr/molokai'
-Plug 'junegunn/seoul256.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'w0ng/vim-hybrid'
-Plug 'itchyny/lightline.vim'
+Plug 'joshdick/onedark.vim'
 
 " interface
 Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'bimlas/vim-high'
 Plug 'edkolev/tmuxline.vim'
+Plug 'itchyny/lightline.vim'
+Plug 'majutsushi/tagbar'
 
 " util
+Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'embear/vim-localvimrc'
 Plug 'thaerkh/vim-workspace'
@@ -40,14 +40,17 @@ Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'nbouscal/vim-stylish-haskell'
+Plug 'dart-lang/dart-vim-plugin'
 
 call plug#end()
 
 " install missing plugins
 autocmd VimEnter *
-    \   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-    \ |     PlugInstall --sync | q
-    \ | endif
+\   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+\ |     PlugInstall --sync | q
+\ | endif
 
 "}}}
 " ---- Functions {{{
@@ -78,16 +81,15 @@ command! -nargs=1 -complete=dir FilesNoVCS
 " ---- Colours {{{
 filetype plugin on
 syntax enable
+set termguicolors
 
-let g:seoul256_background = 233
-let g:base16colorspace = 256
-"set background=dark
+" colorscheme config
+let g:onedark_terminal_italics = 0
 
 " highlight options are under 'SetHighlight()'
 autocmd ColorScheme * call SetHighlight()
 
-let g:airline_theme='base16_spacemacs'
-colorscheme base16-spacemacs
+colorscheme onedark
 
 "}}}
 " ---- Indentation {{{
@@ -98,12 +100,15 @@ set shiftwidth=4  " sw
 
 augroup indent
     au!
+    au FileType go       setl noet
     au FileType asm      setl noet ts=6 sw=6 sts=0
     au FileType make     setl noet ts=8 sw=8 sts=0
-    au FileType go       setl noet
-    au FileType *tex     setl tw=72
+    au FileType *tex     setl tw=72 ts=2 sts=2 sw=2
     au FileType markdown setl tw=72
     au FileType yaml     setl ts=2 sts=2 sw=2
+    au FileType dart     setl ts=2 sts=2 sw=2
+    au FileType dart     setl ts=2 sts=2 sw=2
+    au FileType haskell  setl formatprg=stylish-haskell
 augroup END
 
 "}}}
@@ -113,6 +118,7 @@ filetype indent on
 set number " line numbers
 set cursorline " highlight line under cursor
 set laststatus=2 " open statusline
+set noshowmode " don't show '--INSERT--'
 
 set noshowmatch " highlight matching bracket
 set incsearch " search while typing
@@ -160,17 +166,19 @@ nmap <Leader>qQ :qall!<CR>
 
 map <Leader>j <Plug>(easymotion-prefix)
 
+nmap <Leader>th :TagbarToggle<CR>
 nmap <Leader>tn :set number!<CR>
 nmap <Leader>tr :set relativenumber!<CR>
 nmap <Leader>tc :ToggleSyntax<CR>
 nmap <Leader>tl <Plug>(ale_toggle)
 nmap <Leader>ts :ToggleWorkspace<CR>
+nmap <Leader>tg :Goyo<CR>
 
 nmap <Leader>w <C-w>
 
 nmap <Leader>b :CtrlPBuffer<CR>
-nmap <Leader>[ :1bprevious<CR>
-nmap <Leader>] :1bnext<CR>
+nmap <silent> <Leader>[ :1bprevious<CR>
+nmap <silent> <Leader>] :1bnext<CR>
 nnoremap <BS> <C-^>
 
 nmap <Leader>ll <Plug>(ale_lint)
@@ -194,26 +202,29 @@ augroup plugins
 augroup END
 
 " ale
-let g:ale_sign_column_always = 1
-let g:ale_sign_info = '-'
+let g:ale_sign_column_always = 0
+let g:ale_sign_info = '--'
 let g:ale_sign_warning = '*'
 let g:ale_sign_style_warning = '>'
-let g:ale_sign_error = '>'
+let g:ale_sign_error = '>>'
 let g:ale_sign_style_error = '>'
-let g:ale_set_loclist = 0
-let g:ale_set_quickfix = 1
+let g:ale_set_loclist = 1
+let g:ale_set_quickfix = 0
 let g:ale_open_list = 0
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_filetype_changed = 0
-let g:ale_lint_on_save = 0
-let g:ale_link_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 1
+let g:ale_lint_on_filetype_changed = 1
+let g:ale_lint_on_save = 1
+let g:ale_link_on_text_changed = 'always'
+let g:ale_lint_on_insert_leave = 1
 let g:ale_enabled = 0
 let g:ale_linters = {
 \   'rust': ['cargo'],
 \   'bash': ['shellcheck'],
 \   'sh':   ['shellcheck']
 \}
+let g:ale_c_clangtidy_checks = ['']
+let g:ale_c_clang_options = '-std=c11 -Wall -Wpedantic'
+let g:ale_c_gcc_options = g:ale_c_clang_options
 
 " ctrlp
 if executable('rg')
@@ -227,6 +238,9 @@ elseif executable('find')
     let g:ctrlp_user_command = 'find %s'
 endif
 
+" dart-vim
+let g:dart_style_guide = 2
+
 " delimitMate
 let g:delimitMate_expand_cr = 1
 augroup plugins
@@ -234,22 +248,31 @@ augroup plugins
     au FileType matlab let b:delimitMate_quotes = '"'
 augroup END
 
+" haskell-vim
+let g:haskell_indent_disable = 0
+let g:haskell_indent_if = 4
+let g:haskell_indent_case = 4
+let g:haskell_indent_let = 4
+let g:haskell_indent_where = 4
+let g:haskell_indent_before_where = 2
+let g:haskell_indent_after_bare_where = 4
+let g:haskell_indent_do = 4
+let g:haskell_indent_in = 1
+let g:haskell_indent_guard = 4
+
 " local-vimrc
 let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
-let g:localvimrc_whitelist = $HOME.'/projects'
+let g:localvimrc_whitelist = $HOME . '/proj'
+let g:localvimrc_sandbox = 0
+
 
 " tmuxline
 let g:tmuxline_powerline_separators = 0
 let g:tmuxline_theme = 'lightline'
 let g:tmuxline_preset = {
     \ 'a'    : '#S',
-    \ 'b'    : ['%b %e', '%H:%M'],
-    \ 'c'    : '',
     \ 'win'  : '#I #W',
     \ 'cwin' : '#I #W',
-    \ 'x'    : '',
-    \ 'y'    : '#(id -u -n)',
-    \ 'z'    : '#H',
     \ 'options' : {
     \     'status-justify': 'centre',
     \ }
@@ -258,6 +281,8 @@ let g:tmuxline_preset = {
 " polyglot
 let g:polyglot_disabled = [
 \   'latex',
+\   'haskell',
+\   'dart',
 \ ]
 
 " vim-airline
@@ -277,8 +302,21 @@ let g:high_lighters = {
 \ }
 
 " vim-lightline
+fun! LightlineLinting()
+    return g:ale_enabled ? 'linting' : ''
+endfun
+
 let g:lightline = {
 \   'colorscheme': 'wombat',
+\   'active': {
+\       'left': [ ['mode', 'paste'],
+\                 ['readonly', 'filename', 'modified' ],
+\                 ['linting'],
+\               ],
+\   },
+\   'component_function': {
+\       'linting': 'LightlineLinting',
+\   }
 \ }
 
 " vim-pandoc
@@ -309,6 +347,8 @@ let g:workspace_autosave_ignore = [
 " ---- Misc {{{
 set modeline
 set modelines=5
+
+set nospell
 
 set hidden
 

@@ -1,10 +1,8 @@
 #! /usr/bin/env sh
 
 run() {
-    while read -r cmd arg; do
-        if command -v "$cmd" > /dev/null; then
-            eval "$cmd" "$arg" &
-        fi
+    while read -r cmd; do
+        eval "$cmd" &
     done
 }
 
@@ -13,6 +11,6 @@ find "${XDG_CONFIG_HOME:-$HOME/.config}/autostart" \
     -name '*.desktop' \
     -type f           \
     -exec             \
-        grep '^Exec=' '{}' \; |
-        cut -d= -f2-          |
+        awk '/^Exec=/{print $0; exit}' '{}' \; |
+        cut -d= -f2-                           |
         run
