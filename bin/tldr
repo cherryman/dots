@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Depends on curl
+if ! command -v curl > /dev/null; then
+    echo "curl not installed"
+    exit 1
+fi
+
+URL="cheat.sh"
+
+fetch() {
+    curl --silent "$URL"/"$1"
+}
+
+usage() {
+    fetch ":help" | "$PAGER"
+}
+
+if [ $# -lt 1 ]; then
+    usage
+    exit 0
+fi
+
+while getopts h arg; do
+    case "$arg" in
+        h|*) 
+            usage
+            exit 0
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+fetch "$1"
