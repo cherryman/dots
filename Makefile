@@ -5,8 +5,7 @@ LNFLAGS		= -s
 LINK		= $(LN) $(LNFLAGS)
 
 ### Targets
-all:		dir xdg
-
+all:		dir xdg 
 # for $XDG_CONFIG_HOME/%
 XDGC_TARGETS	= alacritty    \
 		  i3           \
@@ -32,6 +31,13 @@ dir:
 
 xdg:
 	$(LINK) $(PWD)/$@/* $(XDGC)
+
+FIREFOX_DIR	= $(HOME)/.mozilla/firefox
+firefox:
+	mkdir -p '$(FIREFOX_DIR)/profile/chrome'
+	cp $@/profiles.ini '$(HOME)/.mozilla/firefox'
+	cd '$(FIREFOX_DIR)/profile/chrome' && \
+	    $(LINK) ../../../../$(DOTDIR)/$@/*.css .
 
 compton:
 	$(LINK) $(PWD)/$@/* $(XDGC)
