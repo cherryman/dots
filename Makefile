@@ -30,7 +30,7 @@ dir:
 	cd '$(HOME)'; mkdir -p $(HOME_DIRS)
 
 xdg:
-	$(LINK) $(PWD)/$@/* $(XDGC)
+	$(LINK) ../$(DOTDIR)/$@/user-dirs.dirs $(XDGC)
 
 FIREFOX_DIR	= $(HOME)/.mozilla/firefox
 firefox:

@@ -13,5 +13,5 @@ wm="$2"
 if [ -z "$wm" ]; then
     exit 1
 fi
-#exec "$wm"
-exec bspwm
+
+exec "$wm"

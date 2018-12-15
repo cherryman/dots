@@ -12,8 +12,8 @@ wsgam=''  # game
 wsinfo=''
 
 ### Configuration
-bspc monitor next -d "$wsinfo"
 bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
+bspc monitor next -d "$wsinfo"
 
 bspc config border_width 2
 bspc config window_gap 0
@@ -29,12 +29,11 @@ bspc config external_rules_command "$BSPWM_HOME/rules"
 
 bspc rule -a feh       state=floating
 bspc rule -a Octave    state=floating focus=off
-bspc rule -a mpv       desktop="$wsmisc" follow=off state=floating
+bspc rule -a Soffice   state=tiled # libreoffice
 bspc rule -a Firefox   desktop="$wsnav"  follow=off
 bspc rule -a Navigator desktop="$wsnav"  follow=off
 bspc rule -a Steam     desktop="$wsgam"  follow=off focus=off layer=below
 bspc rule -a \*:Steam  desktop="$wsgam"  follow=off focus=off
-bspc rule -a MuPDF     desktop="$wsmisc" follow=off
 bspc rule -a Mumble    desktop="$wscomm" follow=off
 bspc rule -a discord   desktop="$wscomm" follow=off
 
