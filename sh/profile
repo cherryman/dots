@@ -18,12 +18,11 @@ PATH="$PATH:$GOPATH/bin"
 
 have vim   && EDITOR=vim && VISUAL=vim
 have less  && PAGER=less
-have dmenu && LAUNCHER=dmenu_run
+have rofi  && LAUNCHER="rofi -show run"
 
 for t in st alacritty xterm; do
     have "$t" && TERMINAL="$t" && break
-done
-unset t
+done; unset t
 
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME \
        PATH WALLPAPER DOTDIR \
