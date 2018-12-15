@@ -1,24 +1,6 @@
-/* Some elements on navbar hover */
-#nav-bar #back-button,
-#nav-bar #forward-button,
-#nav-bar #stop-reload-button
-{
-  transition: 150ms !important;
-  transition-delay: 100ms !important;
-  opacity: 0 !important;
-  -moz-margin-end: -2.6em !important;
-}
-
-:root :hover > #nav-bar #back-button,
-:root :hover > #nav-bar #forward-button,
-:root :hover > #nav-bar #stop-reload-button
-{
-  transition: 150ms !important;
-  opacity: 1 !important;
-  -moz-margin-end: initial !important;
-}
-
 /** Hide various elements */
+#main-menubar,              /* Menubar */
+
 /* Menu */
 /*#appMenu-fxa-container,*/ /* Sign in to Sync */
 #appMenu-fxa-container+toolbarseparator,
