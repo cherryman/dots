@@ -1,4 +1,4 @@
-rofi.modi: run
+rofi.modi: run,drun
 rofi.theme: ~/.config/rofi/main.rasi
 rofi.fullscreen: true
 rofi.disable-history:	false

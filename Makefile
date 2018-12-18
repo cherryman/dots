@@ -4,9 +4,12 @@ LN		= ln
 LNFLAGS		= -s
 LINK		= $(LN) $(LNFLAGS)
 
-### Targets
-all:		dir xdg 
-# for $XDG_CONFIG_HOME/%
+HOME_DIRS	= .config bin                               \
+		  .local .local/share .local/src .local/bin \
+		  doc doc/desk doc/www                      \
+		  media media/pic
+
+# for $XDG_CONFIG_HOME/* type targets
 XDGC_TARGETS	= alacritty    \
 		  i3           \
 		  bspwm        \
@@ -17,14 +20,12 @@ XDGC_TARGETS	= alacritty    \
 		  nvim         \
 		  git
 
+### Targets
+all:		dir xdg
+
 $(XDGC_TARGETS):
 	$(LINK) $(PWD)/$@ $(XDGC)/$(@F)
 
-# basic directories in home
-HOME_DIRS	= .config bin                               \
-		  .local .local/share .local/src .local/bin \
-		  doc doc/desk doc/www                      \
-		  media media/pic
 
 dir:
 	cd '$(HOME)'; mkdir -p $(HOME_DIRS)

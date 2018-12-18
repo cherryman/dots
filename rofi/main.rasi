@@ -26,6 +26,7 @@
 }
 #listview {
     border: 1px 0px 0px;
+    padding: 6px 0px 0px;
 }
 #element {
     border: 0;

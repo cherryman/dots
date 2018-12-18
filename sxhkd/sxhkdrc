@@ -1,6 +1,6 @@
 ### Programs
-alt + shift + e
-	$LAUNCHER
+alt + shift + {d,e}
+	rofi -show {drun,run}
 
 super + grave
 	$TERMINAL
@@ -20,7 +20,7 @@ super + l
 	locker
 
 alt + shift + l
-	keymap
+	keymap us ca
 
 super + button{4,5}
 	vol {inc,dec} 2

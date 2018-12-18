@@ -3,7 +3,7 @@ have() { command -v "$1" > /dev/null; }
 XDG_CONFIG_HOME="$HOME/.config"
 XDG_DATA_HOME="$HOME/.local/share"
 XDG_CACHE_HOME="$HOME/.cache"
-PATH="$HOME/bin:$HOME/.local/bin:/usr/games:$PATH"
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 WALLPAPER="$HOME/media/pic/wallp"
 DOTDIR="$HOME/dots"
 
@@ -18,7 +18,6 @@ PATH="$PATH:$GOPATH/bin"
 
 have vim   && EDITOR=vim && VISUAL=vim
 have less  && PAGER=less
-have rofi  && LAUNCHER="rofi -show run"
 
 for t in st alacritty xterm; do
     have "$t" && TERMINAL="$t" && break
