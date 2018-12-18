@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#!/bin/sh
 
 err() { log "$@" 1>&2; }
 log() { echo "$@"; }

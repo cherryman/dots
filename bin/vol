@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#!/bin/sh
 
 err() { echo "$@" 1>&2; }
 

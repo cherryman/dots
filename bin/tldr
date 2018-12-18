@@ -1,19 +1,19 @@
 #!/bin/sh
 
+URL="cheat.sh"
+
 # Depends on curl
 if ! command -v curl > /dev/null; then
-    echo "curl not installed"
+    echo "curl not installed" >&2
     exit 1
 fi
 
-URL="cheat.sh"
-
 fetch() {
-    curl --silent "$URL"/"$1"
+    curl --silent "$URL/$*"
 }
 
 usage() {
-    fetch ":help" | "$PAGER"
+    fetch ":help" | "${PAGER:-more}"
 }
 
 if [ $# -lt 1 ]; then

@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#!/bin/sh
 
 run() {
     while read -r cmd; do
