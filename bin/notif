@@ -1,29 +1,42 @@
 #!/bin/sh
 
-err() { log "$@" 1>&2; }
-log() { echo "$@"; }
-
 usage() {
 cat << EOF
-Usage: $(basename "$0") [OPTION] ...
+Usage: $(basename "$0") [option]... <summary> [body]
 
 Generate a notification. Currently uses dunstify
 to generate the notification.
 
 Options:
-  -h            Show this help.
-  -n DELAY      Delay in ms to keep the notification.
-  -i NAME       If a notification with the same name exists,
-                replace it.
+  -h         Show this help.
+  -t TIME    Time in ms to keep the notification.
+  -i ICON    Icon filename or stock icon to display.
+  -r NAME    If a notification with the same name exists,
+             replace it.
+
+Depends on: dunstify
 EOF
 }
 
-delay=2000
+# Dependency check
+if ! command -v dunstify > /dev/null; then
+    echo 'dunstify not found.'
+    exit 1
+fi
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
+fi
+
 id=
-while getopts "i:n:h" opt; do
+delay=
+icon=
+while getopts "r:t:i:h" opt; do
     case "$opt" in
-        i)  id="$OPTARG"    ;;
-        n)  delay="$OPTARG" ;;
+        r)  id="$OPTARG"    ;;
+        t)  delay="$OPTARG" ;;
+        i)  icon="$OPTARG"  ;;
         h)
             usage
             exit 1
@@ -34,20 +47,22 @@ while getopts "i:n:h" opt; do
 done
 
 shift $((OPTIND - 1))
-text="$*"
 
-### Main
-if command -v dunstify > /dev/null; then
-
-    if [ ! -z "$id" ]; then
-
-        id_file="/tmp/notif_${USER}_${id}"
-        if [ -f "$id_file" ]; then
-            d_args="-r \"$(cat "$id_file")\""
-        else
-            d_args="-p > '$id_file'"
-        fi
-    fi
-
-    eval dunstify -t "$delay" $d_args '"$text"'
+if [ $# -lt 1 ]; then
+    echo 'Not enough arguments.'
+    exit 1
 fi
+
+summary="$1"; shift
+body="$*"
+
+if [ -n "$id" ]; then
+    id_file="/tmp/notif_${USER}_${id}"
+    if [ -f "$id_file" ]; then
+        args="-r \"$(cat "$id_file")\""
+    else
+        args="-p > '$id_file'"
+    fi
+fi
+
+eval dunstify ${icon:+-i "$icon"} ${delay:+-t "$delay"} $args -- "'$summary'" "'$body'"

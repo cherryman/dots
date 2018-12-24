@@ -48,7 +48,7 @@ command -v xmodmap > /dev/null &&
 # Generate notification
 text="$(echo $curr_keymap | tr '[:lower:]' '[:upper:]')"
 notif                     \
-    -n 1000               \
-    -i "$(basename "$0")" \
+    -t 1000               \
+    -r "$(basename "$0")" \
     " $text"
 
