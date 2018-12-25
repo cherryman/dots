@@ -4,8 +4,7 @@ usage() {
 cat << EOF
 Usage: $(basename "$0") [option]... <summary> [body]
 
-Generate a notification. Currently uses dunstify
-to generate the notification.
+Generate a notification using gdbus.
 
 Options:
   -h         Show this help.
@@ -14,13 +13,13 @@ Options:
   -r NAME    If a notification with the same name exists,
              replace it.
 
-Depends on: dunstify
+Depends on: gdbus
 EOF
 }
 
 # Dependency check
-if ! command -v dunstify > /dev/null; then
-    echo 'dunstify not found.'
+if ! command -v gdbus > /dev/null; then
+    echo 'gdbus not found.'
     exit 1
 fi
 
@@ -29,12 +28,12 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
-id=
-delay=
+name= # id used for replacing notification
+delay=-1 # -1 delay is default delay
 icon=
 while getopts "r:t:i:h" opt; do
     case "$opt" in
-        r)  id="$OPTARG"    ;;
+        r)  name="$OPTARG"    ;;
         t)  delay="$OPTARG" ;;
         i)  icon="$OPTARG"  ;;
         h)
@@ -56,13 +55,22 @@ fi
 summary="$1"; shift
 body="$*"
 
-if [ -n "$id" ]; then
-    id_file="/tmp/notif_${USER}_${id}"
-    if [ -f "$id_file" ]; then
-        args="-r \"$(cat "$id_file")\""
-    else
-        args="-p > '$id_file'"
-    fi
+### Generate notification
+id=0 # if id=0, a new id is returned
+id_file="/tmp/notif_${USER}_${name}"
+
+if [ -f "$id_file" ]; then
+    id="$(cat "$id_file")"
 fi
 
-eval dunstify ${icon:+-i "$icon"} ${delay:+-t "$delay"} $args -- "'$summary'" "'$body'"
+newid=$(gdbus call --session                              \
+    --dest org.freedesktop.Notifications                  \
+    --object-path /org/freedesktop/Notifications          \
+    --method org.freedesktop.Notifications.Notify         \
+    -- '' "$id" "$icon" "$summary" "$body" [] {} "$delay" \
+    | sed 's/(uint32 \([0-9]*\),)/\1/g') # extract new id
+
+# Store new id if necessary
+if [ -n "$name" ]; then
+    echo "$id" > "$id_file"
+fi
