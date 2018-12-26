@@ -9,6 +9,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'chriskempson/base16-vim'
 Plug 'w0ng/vim-hybrid'
 Plug 'joshdick/onedark.vim'
+Plug 'drewtempelmeyer/palenight.vim'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -42,7 +43,6 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'nbouscal/vim-stylish-haskell'
-Plug 'dart-lang/dart-vim-plugin'
 
 call plug#end()
 
@@ -83,12 +83,13 @@ filetype plugin on
 syntax enable
 set termguicolors
 
-" colorscheme config
-let g:onedark_terminal_italics = 0
-
 " highlight options are under 'SetHighlight()'
 autocmd ColorScheme * call SetHighlight()
 
+let g:onedark_terminal_italics = 1
+let g:palenight_terminal_italics = 1
+
+"colorscheme onedark
 colorscheme onedark
 
 "}}}
@@ -281,7 +282,6 @@ let g:tmuxline_preset = {
 let g:polyglot_disabled = [
 \   'latex',
 \   'haskell',
-\   'dart',
 \ ]
 
 " vim-airline
@@ -306,7 +306,7 @@ fun! LightlineLinting()
 endfun
 
 let g:lightline = {
-\   'colorscheme': 'wombat',
+\   'colorscheme': 'onedark',
 \   'active': {
 \       'left': [ ['mode', 'paste'],
 \                 ['readonly', 'filename', 'modified' ],

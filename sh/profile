@@ -1,29 +1,24 @@
 have() { command -v "$1" > /dev/null; }
 
-XDG_CONFIG_HOME="$HOME/.config"
-XDG_DATA_HOME="$HOME/.local/share"
-XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+export DOTFILES_DIR="$HOME/dots"
+export WALLPAPER="$HOME/media/pic/wallp"
+export WALLPAPER_DIR="$HOME/media/pic/wallp.d"
+export SCREENSHOT_DIR="$HOME/media/pic/sshot"
+
+export LESS="-RSi"
+export SHELLCHECK_OPTS='-e SC2016'
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+export GOPATH="$XDG_DATA_HOME/go"
+
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-WALLPAPER="$HOME/media/pic/wallp"
-DOTDIR="$HOME/dots"
-
-LESS="-RSi"
-CARGO_HOME="$XDG_DATA_HOME/cargo"
-RUSTUP_HOME="$XDG_DATA_HOME/rustup"
-GOPATH="$XDG_DATA_HOME/go"
-SHELLCHECK_OPTS='-e SC2016'
-
 PATH="$PATH:$CARGO_HOME/bin"
 PATH="$PATH:$GOPATH/bin"
+export PATH
 
 have vim   && EDITOR=vim && VISUAL=vim
 have less  && PAGER=less
-
-for t in st alacritty xterm; do
-    have "$t" && TERMINAL="$t" && break
-done; unset t
-
-export XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME \
-       PATH WALLPAPER DOTDIR \
-       EDITOR VISUAL PAGER LAUNCHER TERMINAL \
-       LESS CARGO_HOME RUSTUP_HOME GOPATH SHELLCHECK_OPTS

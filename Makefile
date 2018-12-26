@@ -44,7 +44,7 @@ compton:
 	$(LINK) $(PWD)/$@/* $(XDGC)
 
 bin:
-	$(LINK) $@/bin/* $(HOME)/bin/
+	cd $(HOME)/bin && $(LINK) ../$(DOTDIR)/$@/* .
 
 vim:
 	mkdir -p $(HOME)/.vim
