@@ -1,9 +1,0 @@
-rofi.modi: run,drun
-rofi.theme: ~/.config/rofi/main.rasi
-rofi.fullscreen: true
-rofi.disable-history:	false
-rofi.monitor:	0
-
-!					bg			fg			bgalt		hlbg		hlfg
-!rofi.color-normal:	#1d1f21, 	#d5d8d6, 	#1d1f21, 	#6a758a, 	#efefef
-!rofi.color-window:	#1d1f21,	#1d1f21

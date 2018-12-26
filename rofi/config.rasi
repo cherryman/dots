@@ -1,0 +1,6 @@
+@import "main.rasi"
+
+configuration {
+    modi: "run,drun";
+    disable-history: false;
+}
