@@ -3,17 +3,17 @@ alt + shift + {d,e}
 	rofi -show {drun,run}
 
 super + grave
-	$TERMINAL
+	st
 
-alt + shift + s; s
-	maim -s | xclip -i -sel c -t image/png
+alt + shift + s; {c,s}
+	sshot {copy,save}
 
 alt + shift + s; m
-	maim -s                                            \
+	sshot out                                          \
 	| curl -s -X POST                                  \
-		-H "Authorization: Client-ID $IMGUR_CLIENT_ID"  \
+		-H "Authorization: Client-ID $IMGUR_CLIENT_ID" \
 		-F "image=@-" 'https://api.imgur.com/3/image'  \
-	| sed 's|.*"link":"\([^"]*\)".*|\1|;s|\\\/|\/|g' \
+	| sed 's|.*"link":"\([^"]*\)".*|\1|;s|\\\/|\/|g'   \
 	| xclip -i -sel c
 
 super + l

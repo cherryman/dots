@@ -1,0 +1,51 @@
+#!/bin/sh
+
+usage() {
+cat << EOF
+Usage: $(basename "$0") <command>
+
+Take screenshots and generate a notification.
+
+Commands:
+  out     Output raw image data.
+  save    Store image into a file.
+  copy    Copy image data to clipboard.
+
+Depends on: maim, xclip
+EOF
+}
+
+if [ $# -ne 1 ]; then
+    usage
+    exit 0
+fi
+
+copy_img() { xclip -i -sel clip -t image/png; }
+scrot() { maim -su; }
+
+case "$1" in
+    out) scrot ;;
+
+    copy)
+        scrot | copy_img &&
+            notify-send 'Screenshot copied'
+        ;;
+
+    save)
+        fname="$(date +%Y-%m-%d_%H:%M:%S).png"
+        if [ -n "$SCREENSHOT_DIR" ]; then
+            mkdir -p "$SCREENSHOT_DIR"
+            fname="$SCREENSHOT_DIR/$fname"
+        fi
+
+        shortname="$(echo "$fname" | sed "s|^$HOME|~|")" # replace $HOME with ~
+
+        scrot > "$fname" &&
+            notify-send 'Screenshot taken' "$shortname"
+        ;;
+
+    *)
+        echo "Invalid command $1"
+        exit 1
+        ;;
+esac
