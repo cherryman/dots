@@ -12,7 +12,12 @@ wsgam=''  # game
 wsinfo=''
 
 ### Configuration
-bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
+if [ "$(uname -n)" = "CherryPC" ]; then
+    bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
+else
+    bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc"
+fi
+
 bspc monitor next -d "$wsinfo"
 
 bspc config border_width 2
