@@ -6,7 +6,7 @@ super + b
 	filelaunch "$HOME/doc/Books" pdf
 
 super + grave
-	st
+	$TERMINAL
 
 alt + shift + s; {c,s}
 	sshot {copy,save}

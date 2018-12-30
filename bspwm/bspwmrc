@@ -12,11 +12,14 @@ wsgam=''  # game
 wsinfo=''
 
 ### Configuration
-if [ "$(uname -n)" = "CherryPC" ]; then
-    bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
-else
-    bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc"
-fi
+case "$(uname -n)" in
+    CherryPC)
+        bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
+        ;;
+    *)
+        bspc monitor primary -d  "$wscon" "$wsmisc" "$wsnav"
+        ;;
+esac
 
 bspc monitor next -d "$wsinfo"
 
@@ -32,24 +35,19 @@ bspc config initial_polarity second_child
 ### Rules
 bspc config external_rules_command "$BSPWM_HOME/rules"
 
-bspc rule -a feh       state=floating
-bspc rule -a Octave    state=floating focus=off
 bspc rule -a Soffice   state=tiled # libreoffice
-bspc rule -a Firefox   desktop="$wsnav"  follow=off
-bspc rule -a Navigator desktop="$wsnav"  follow=off
 bspc rule -a Steam     desktop="$wsgam"  follow=off focus=off layer=below
 bspc rule -a \*:Steam  desktop="$wsgam"  follow=off focus=off
 bspc rule -a Mumble    desktop="$wscomm" follow=off
 bspc rule -a discord   desktop="$wscomm" follow=off
 
 ### Monocles
-bspc desktop "$wscon" -l monocle
 bspc desktop "$wsnav" -l monocle
 
 ### Program launch
 sxhkd -c "$BSPWM_HOME/sxhkdrc" &
 dunst &
-feh --bg-scale "$WALLPAPER" &
+feh --bg-fill --no-fehbg "$WALLPAPER" &
 compton -b &
 
 bspc rule -a \* -o desktop="$wscon" && $TERMINAL &
