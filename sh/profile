@@ -20,7 +20,7 @@ PATH="$PATH:$CARGO_HOME/bin"
 PATH="$PATH:$GOPATH/bin"
 export PATH
 
-TERMINAL=st
+export TERMINAL=st
 
 have vim   && EDITOR=vim && VISUAL=vim
 have less  && PAGER=less

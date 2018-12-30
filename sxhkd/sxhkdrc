@@ -3,10 +3,10 @@ alt + shift + {d,e}
 	rofi -show {drun,run}
 
 super + b
-	filelaunch "$HOME/doc/Books" pdf
+	dlaunch "$HOME/doc/Books" xdg-open pdf
 
 super + grave
-	st
+	$TERMINAL
 
 alt + shift + s; {c,s}
 	sshot {copy,save}

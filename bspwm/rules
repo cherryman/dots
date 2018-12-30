@@ -4,23 +4,25 @@ id="$1"
 class="$2"
 instance="$3"
 
-main() {
-    case "$class" in
-        Navigator|*Firefox*)
-            case "$instance" in
-                Dialog) echo follow=on focus=on ;;
-                Navigator) echo state=tiled follow=off desktop=primary:^2 focus=on ;;
-                *) ;;
-            esac
-            ;;
+case "$instance" in
+    feh|imv|pcmanfm)
+        echo state=floating
+        ;;
 
-        *)
-            title="$(xtitle "$id")"
-            case "$title" in
-                *Steam*) echo desktop=primary:^5 follow=off
-                    ;;
-            esac
-    esac
-}
+    Navigator)
+        echo state=tiled follow=off focus=on
 
-main
+        case "$(uname -n)" in
+            CherryPC) echo desktop=primary:^2 ;;
+            CherryLT) echo desktop=primary:^3 ;;
+        esac
+        ;;
+
+    Dialog)
+        echo follow=on focus=on
+        ;;
+
+    Steam)
+        echo follow=off focus=off layer=below
+        echo desktop=primary:^5
+esac

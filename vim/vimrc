@@ -244,6 +244,7 @@ let g:dart_style_guide = 2
 " delimitMate
 let g:delimitMate_expand_cr = 1
 augroup plugins
+    au FileType scheme let b:delimitMate_quotes = '"'
     au FileType *verilog let b:delimitMate_quotes = '"'
     au FileType matlab let b:delimitMate_quotes = '"'
 augroup END
