@@ -1,0 +1,70 @@
+#!/bin/sh
+# Launch a file selected with rofi.
+
+usage() {
+cat << EOF
+Usage: $(basename "$0") <dir> <cmd> [ext]
+
+Recursively list files in dir with the given
+extensions in rofi, and execute them with cmd.
+If an extension is specified, it will be stripped
+from the results.
+EOF
+}
+
+if [ $# -lt 2 ]; then
+    usage
+    exit 0
+fi
+
+dir="$1"
+cmd="$2"
+ext="$3"
+
+cd "$dir" || {
+    echo >&2 "Failed to enter directory $dir"
+    exit 1
+}
+
+basedir="$(pwd)"
+
+sel() {
+    {
+        # If already in a subdirectory, list ..
+        [ "$(pwd)" != "$basedir" ] && echo ..
+
+        # First, list directories
+        find . -maxdepth 1 -type d ! -path . |
+            sed 's|$|/|'
+
+        # Then list files in curr dir.
+        # If ext is specified, add '-name "*.$ext"'
+        find . -maxdepth 1 -type f ${ext:+-name "*.$ext"}
+    } |
+
+    # Remove leading ./ and if ext is specified,
+    # remove the extension as well.
+    sed -e 's|^\./||' ${ext:+-e "s|\.$ext\$||"} |
+    rofi -i -dmenu |
+
+    {
+        # Detect if a directory is chosen. If
+        # it is, then recurse into the directory.
+        # If .. is chosen, recurse up a directory.
+        read -r selection
+
+        if [ -z "$selection" ]; then
+            exit 0
+        elif [ "$selection" = '..' ]; then
+            cd ..
+            sel
+        elif echo "$selection" | grep -Eq '/$'; then
+            cd "$selection"
+            sel
+        else
+            eval "$cmd" "'$selection'${ext:+.$ext}"
+        fi
+    }
+}
+
+sel
