@@ -46,8 +46,7 @@ bspc desktop "$wsnav" -l monocle
 
 ### Program launch
 sxhkd -c "$BSPWM_HOME/sxhkdrc" &
-dunst &
-feh --bg-fill --no-fehbg "$WALLPAPER" &
+wallp &
 compton -b &
 
 bspc rule -a \* -o desktop="$wscon" && $TERMINAL &

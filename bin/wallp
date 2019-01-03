@@ -6,13 +6,13 @@ die() { err "$*"; exit 1; }
 
 usage() {
 cat << EOF
-Usage: $(basename "$0") <path>
+Usage: $(basename "$0") [absolute path]
 
-Symlink \$WALLPAPER to <path> and then set the
-wallpaper using feh.
+Set the wallpaper using feh. If path
+is given, point \$WALLPAPER to it. The
+path must be absolute, or ln fails.
 
 NOTE: Will override \$WALLPAPER with the symlink.
-
 Depends on: feh
 EOF
 }
@@ -20,7 +20,7 @@ EOF
 path="$1"
 
 ### Validate arguments
-if [ $# -ne 1 ]; then
+if [ $# -gt 1 ]; then
     usage
     exit 0
 elif [ -z "$WALLPAPER" ]; then
@@ -28,8 +28,10 @@ elif [ -z "$WALLPAPER" ]; then
 fi
 
 ### Link and set wallpaper
-ln -sfn "$path" "$WALLPAPER" ||
-    die "Failed to symlink '$WALLPAPER' to '$path'"
+if [ -n "$path" ]; then
+    ln -sfn "$path" "$WALLPAPER" ||
+        die "Failed to symlink '$WALLPAPER' to '$path'"
+fi
 
 if [ -n "$DISPLAY" ]; then # test for X session
     feh --bg-fill --no-fehbg "$WALLPAPER"
