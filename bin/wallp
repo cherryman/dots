@@ -1,0 +1,38 @@
+#!/bin/sh
+# Set the wallpaper
+
+err() { echo "$*" >&2; }
+die() { err "$*"; exit 1; }
+
+usage() {
+cat << EOF
+Usage: $(basename "$0") <path>
+
+Symlink \$WALLPAPER to <path> and then set the
+wallpaper using feh.
+
+NOTE: Will override \$WALLPAPER with the symlink.
+
+Depends on: feh
+EOF
+}
+
+path="$1"
+
+### Validate arguments
+if [ $# -ne 1 ]; then
+    usage
+    exit 0
+elif [ -z "$WALLPAPER" ]; then
+    die '$WALLPAPER must be set.'
+fi
+
+### Link and set wallpaper
+ln -sfn "$path" "$WALLPAPER" ||
+    die "Failed to symlink '$WALLPAPER' to '$path'"
+
+if [ -n "$DISPLAY" ]; then # test for X session
+    feh --bg-fill --no-fehbg "$WALLPAPER"
+else
+    die '$DISPLAY is unset'
+fi

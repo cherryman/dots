@@ -1,8 +1,8 @@
 XDGC		= $(HOME)/.config
 DOTDIR		= dots
 LN		= ln
-LNFLAGS		= -s
-LINK		= $(LN) $(LNFLAGS)
+LNFLAGS		=
+LINK		= $(LN) -sfn $(LNFLAGS)
 
 HOME_DIRS	= .config bin                               \
 		  .local .local/share .local/src .local/bin \

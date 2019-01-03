@@ -1,0 +1,82 @@
+#!/bin/sh
+
+have() { command -v "$1" > /dev/null; }
+err()  { echo "$@" >&2; }
+die()  { err "$@"; exit 1; }
+
+usage() {
+cat << EOF
+Usage: $(basename "$0") [OPTION]
+
+Take a screen capture from a selected window or region.
+
+Options:
+  -f    Framerate
+  -o    Output file. Default is '$(date +%Y-%m-%dT%H:%M:%S).mp4'
+EOF
+}
+
+# Depends on slop and ffmpeg
+if ! have slop || ! have ffmpeg; then
+    die slop or ffmpeg not installed
+fi
+
+# Make sure $DISPLAY is set
+[ -z "$DISPLAY" ] &&
+    die '$DISPLAY not set'
+
+frate=30
+outfile="$(date +%Y-%m-%dT%H:%M:%S).mp4"
+while getopts "f:o:h" opt; do
+    case "$opt" in
+        h)
+            usage
+            exit 0
+            ;;
+        f) frate="$OPTARG" ;;
+        o) outfile="$OPTARG" ;;
+        *)
+            ;;
+    esac
+done
+
+### Functions
+capture() {
+    vidsize="$1" # w x h
+    pos="$2"     # x,y
+
+    ffmpeg \
+        -loglevel warning      \
+        -video_size "$vidsize" \
+        -framerate "$frate"    \
+        -f x11grab             \
+        -i "$DISPLAY+$pos"     \
+        -y                     \
+        "$outfile" &
+
+    # Used to stop ffmpeg later
+    ffmpeg_pid="$!"
+}
+
+get_coords() {
+    # Separated by tab chars
+    slop --format '%wx%h	%x,%y'
+}
+
+### Main
+coords="$(get_coords)"
+
+if [ -z "$coords" ]; then
+    die Cancelled
+fi
+
+vidsize="$(echo "$coords" | cut -f1)"
+pos="$(echo "$coords" | cut -f2)"
+
+capture "$vidsize" "$pos" # Runs in bg
+
+# For some reason, ffmpeg fails when SIGINT is trapped,
+# but works when it isn't, so it is left out.
+trap "kill '$ffmpeg_pid'" TERM
+
+wait

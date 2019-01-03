@@ -3,67 +3,106 @@
 
 usage() {
 cat << EOF
-Usage: $(basename "$0") <dir> <cmd> [ext]
+Usage: $(basename "$0") [options]... <dir> <cmd>
+
+Options:
+  -s    Strip file extensions.
 
 Recursively list files in dir with the given
 extensions in rofi, and execute them with cmd.
 If an extension is specified, it will be stripped
 from the results.
+
+Depends on: rofi
 EOF
 }
 
-if [ $# -lt 2 ]; then
+stripext= # extension is stripped if set
+while getopts 'sh' opt; do
+    case "$opt" in
+        s) stripext=1 ;;
+        h|*) usage; exit 0 ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+if [ $# -ne 2 ]; then
     usage
     exit 0
 fi
 
 dir="$1"
 cmd="$2"
-ext="$3"
 
 cd "$dir" || {
     echo >&2 "Failed to enter directory $dir"
     exit 1
 }
 
-basedir="$(pwd)"
+# Directory where the script starts.
+basedir="$PWD"
 
-sel() {
+# List files in current directory, with directories
+# suffixed with '/', followed by files.
+list_files() {
+
+    # If already in a subdirectory, list ..
+    [ "$PWD" != "$basedir" ] && echo ..
+
     {
-        # If already in a subdirectory, list ..
-        [ "$(pwd)" != "$basedir" ] && echo ..
-
-        # First, list directories
+        # First, list directories suffixed with '/'.
         find . -maxdepth 1 -type d ! -path . |
             sed 's|$|/|'
 
         # Then list files in curr dir.
-        # If ext is specified, add '-name "*.$ext"'
-        find . -maxdepth 1 -type f ${ext:+-name "*.$ext"}
-    } |
+        find . -maxdepth 1 -type f
 
-    # Remove leading ./ and if ext is specified,
-    # remove the extension as well.
-    sed -e 's|^\./||' ${ext:+-e "s|\.$ext\$||"} |
-    rofi -i -dmenu |
+    } | sed 's|^\./||' # strip leading ./
+}
+
+# Launch a rofi dialog with the content of the current dir,
+# with directories sufffixed with a '/', followed by the
+# files. The extension is optionally removed.
+sel() {
+
+    # Store a list of files and directories.
+    files="$(list_files)"
+
+    echo "$files" |
+
+    # Strip the extension if needed.
+    sed -e '' ${stripext:+-e 's|\([^./]\+\)\.[^/ \t]\+$|\1|'} |
+
+    # In -format, d provides the index (1-N) and s the string.
+    # -i disables case sensitivity.
+    rofi -dmenu -i -format 'd:s' |
 
     {
         # Detect if a directory is chosen. If
         # it is, then recurse into the directory.
         # If .. is chosen, recurse up a directory.
-        read -r selection
+        IFS=:
+        read -r index selection
 
-        if [ -z "$selection" ]; then
-            exit 0
-        elif [ "$selection" = '..' ]; then
-            cd ..
-            sel
-        elif echo "$selection" | grep -Eq '/$'; then
-            cd "$selection"
-            sel
-        else
-            eval "$cmd" "'$selection'${ext:+.$ext}"
-        fi
+        case "$selection" in
+            '') exit 0 ;;
+            ..) cd .. && sel ;;
+            */) cd "$selection" && sel;;
+            *)
+                if [ "$stripext" != 1 ]; then
+                    eval "$cmd" "'$PWD/$selection'"
+                else
+                    # Get name of Nth file in list.
+                    fname="$(
+                        echo "$files"     |
+                        tail -n +"$index" |
+                        head -n 1
+                    )"
+                    eval "$cmd" "'$PWD/$fname'"
+                fi
+                ;;
+        esac
     }
 }
 

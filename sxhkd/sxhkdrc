@@ -1,12 +1,15 @@
 ### Programs
-alt + shift + {d,e}
-	rofi -show {drun,run}
-
 super + b
-	dlaunch "$HOME/doc/Books" xdg-open pdf
+	dlaunch -s "$HOME/doc/Books" xdg-open
+
+super + p
+	dlaunch -s "$WALLPAPER_DIR" wallp
 
 super + grave
 	$TERMINAL
+
+alt + shift + {d,e}
+	rofi -show {drun,run}
 
 alt + shift + s; {c,s}
 	sshot {copy,save}
