@@ -7,7 +7,7 @@ LINK		= $(LN) -sfn $(LNFLAGS)
 HOME_DIRS	= .config bin                               \
 		  .local .local/share .local/src .local/bin \
 		  doc doc/desk doc/www                      \
-		  media media/pic
+		  media media/pic media/vid media/music
 
 # for $XDG_CONFIG_HOME/* type targets
 XDGC_TARGETS	= alacritty    \

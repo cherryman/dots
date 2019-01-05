@@ -4,7 +4,7 @@ xmodmap "$HOME/.Xmodmap"
 # xset m 1 0
 
 # Programs
-redshift -t6500:3400 -b1.0:0.9 &
+redshift -t6500:3600 &
 sxhkd &
 
-(sleep 1; polybar example) &
+(sleep 1; polybar -r example) &
