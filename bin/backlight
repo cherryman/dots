@@ -3,10 +3,10 @@
 case $1 in
 
 	down)
-		xbacklight -dec 5%
+		xbacklight -dec 2%
 		;;
 
 	up)
-		xbacklight -inc 5%
+		xbacklight -inc 2%
 		;;
 esac	

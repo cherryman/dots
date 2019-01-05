@@ -19,7 +19,7 @@
     background-color: @bg;
 }
 #mainbox {
-    padding: 35% 40%;
+    padding: 30% 35%;
 }
 #prompt {
     enabled: false;

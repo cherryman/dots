@@ -1,6 +1,10 @@
-@import "main.rasi"
+@import "sidebar.rasi"
 
 configuration {
     modi: "run,drun";
     disable-history: false;
+    font: "Source Sans Pro 14";
+    matching: "normal";
 }
+
+/* vim: set ft=css: */
