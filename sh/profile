@@ -1,5 +1,35 @@
-have() { command -v "$1" > /dev/null; }
+alias have='command -v > /dev/null'
 
+min_path() {
+    dir="$1"
+
+    case "$dir" in
+        "$HOME")
+            echo '~'
+            return ;;
+        "$HOME"*)
+            dir="${dir#$HOME}"
+            minpath='~' ;;
+    esac
+
+    dir="${dir#/}"
+    while [ "$dir" != "${dir##*/}" ]; do
+        d="${dir%%/*}"
+        minpath="$minpath/${d%${d#?}}"
+        dir="${dir#*/}"
+    done
+
+    echo "$minpath/$dir"
+    unset minpath dir d
+}
+
+# Set prompt
+ESC="" # escape character
+COLOR_BLUE="${ESC}[34m"
+COLOR_RST="${ESC}[00m"
+export PS1='[$(min_path $PWD)] ' # colors added in shell's rc
+
+# Env
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
@@ -22,5 +52,5 @@ export PATH
 
 export TERMINAL=st
 
-have vim   && EDITOR=vim && VISUAL=vim
-have less  && PAGER=less
+have vim   && export EDITOR=vim && export VISUAL=vim
+have less  && export PAGER=less
