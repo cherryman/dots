@@ -3,22 +3,21 @@ export BASE16_SHELL="$HOME/.config/base16-shell"
 export ZPLUG_HOME="$HOME/.config/zplug"
 
 ### Source
-source "$HOME/.profile"
-
 source "$ZPLUG_HOME/init.zsh"
 [ -n "$PS1" ] \
     && [ -s $BASE16_SHELL/profile_helper.sh ] \
     && eval "$($BASE16_SHELL/profile_helper.sh)"
 
+source "$HOME/.profile"
+source "$HOME/.aliasrc"
+
+### Prompt
+PS1="%{$COLOR_BLUE%}${PS1}%{$COLOR_RST%}"
 
 ### Alias
-source "$HOME/.aliasrc"
 alias -g CLIP='| xclip -i -sel clip'
 
 ### Plug
-zplug 'modules/helper', from:prezto
-zplug 'modules/editor', from:prezto
-zplug 'modules/prompt', from:prezto
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
@@ -31,8 +30,8 @@ zstyle ':completion:*' completer _expand _complete _ignored _correct _approximat
 zstyle ':completion:*' menu select
 setopt hist_ignore_space hist_reduce_blanks extended_history
 setopt inc_append_history_time hist_find_no_dups
+setopt promptsubst # interpolate PS1
 unsetopt beep
-zstyle ':prezto:module:prompt' theme 'sorin'
 
 bindkey -e
 
