@@ -1,0 +1,15 @@
+#!/bin/sh
+
+run() {
+    while read -r cmd; do
+        eval "$cmd" &
+    done
+}
+
+find "${XDG_CONFIG_HOME:-$HOME/.config}/autostart" \
+  -maxdepth 1       \
+  -name '*.desktop' \
+  -type f           \
+  -exec             \
+    sed -n '/^\[Desktop Entry\]/,/^Exec=/s/^Exec=//p' '{}' \; |
+    run

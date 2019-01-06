@@ -1,38 +1,30 @@
 * {
-    none: rgba(0, 0, 0, 0);
-    fg: #eeeeee;
-    bg: #222222;
+    fg:               #eeeeee;
+    bg:               #222222;
 
-    sel-bg: #404040;
-    sel-fg: @fg;
+    sel-bg:           #404040;
+    sel-fg:           @fg;
 
-    background-color: @none;
-    border-color: @fg;
-    text-color: @fg;
-
-    line-margin: 2;
-    line-padding: 2;
+    background-color: @bg;
+    border-color:     @fg;
+    text-color:       @fg;
 }
 
 #window {
-    anchor:   west;
-    location: west;
-    height: 100%;
-    width:    25%;
-    orientation: horizontal;
-    children: [mainbox];
+    anchor:      west;
+    location:    west;
+    height:      100%;
+    width:       25%;
+    children:    [mainbox];
 }
 
 #mainbox {
-    background-color: @bg;
-    children: [entry, listview];
-    spacing: 0em;
+    children:         [entry, listview];
 }
 
 #entry {
-    expand: false;
-    vertical-align: 1;
-    padding: 1.4em;
+    expand:         false;
+    padding:        1.4em;
 }
 
 #element {
@@ -45,6 +37,7 @@
 
 #element.selected {
     background-color: @sel-bg;
+    text-color:       @sel-fg;
 }
 
 /* vim: set ft=css: */

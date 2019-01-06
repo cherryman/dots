@@ -1,10 +1,13 @@
 xmodmap "$HOME/.Xmodmap"
 
-# Disable mouse accel
-# xset m 1 0
+case "$(uname -n)" in
+    CherryPC)
+        xset m 1 0 # Disable mouse accel
+        ;;
+    CherryLT)
+        (sleep 0.5; polybar example) &
+        ;;
+esac
 
-# Programs
 redshift -t6500:3600 &
 sxhkd &
-
-(sleep 1; polybar -r example) &

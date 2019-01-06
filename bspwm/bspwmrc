@@ -51,4 +51,4 @@ compton -b &
 
 bspc rule -a \* -o desktop="$wscon" && $TERMINAL &
 
-wmrc &
+xdg-autostart &
