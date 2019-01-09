@@ -1,38 +1,10 @@
 alias have='command -v > /dev/null'
 
-min_path() {
-    dir="$1"
-
-    case "$dir" in
-        "$HOME")
-            echo '~'
-            return ;;
-        "$HOME"*)
-            dir="${dir#$HOME}"
-            minpath='~' ;;
-    esac
-
-    dir="${dir#/}"
-    while [ "$dir" != "${dir##*/}" ]; do
-        d="${dir%%/*}"
-        minpath="$minpath/${d%${d#?}}"
-        dir="${dir#*/}"
-    done
-
-    echo "$minpath/$dir"
-    unset minpath dir d
-}
-
-# Set prompt
-ESC="" # escape character
-COLOR_BLUE="${ESC}[34m"
-COLOR_RST="${ESC}[00m"
-export PS1='[$(min_path $PWD)] ' # colors added in shell's rc
-
-# Env
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
+
+export ENV="$XDG_CONFIG_HOME/shell/shrc"
 
 export DOTFILES_DIR="$HOME/dots"
 export WALLPAPER="$HOME/media/pic/wallp"
@@ -40,6 +12,7 @@ export WALLPAPER_DIR="$HOME/media/pic/wallp.d"
 export SCREENSHOT_DIR="$HOME/media/pic/sshot"
 
 export LESS="-RSi"
+export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
 export SHELLCHECK_OPTS='-e SC2016'
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"

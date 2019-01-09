@@ -1,5 +1,5 @@
-{{ have fzf && FZF_BIN=fzf } ||
-{ have fzy && FZF_BIN=fzy }} &&
+{ { have fzf && FZF_BIN=fzf; } ||
+{ have fzy && FZF_BIN=fzy; } } &&
 
 menu() {
     progs="vim mail files mon"
@@ -19,7 +19,7 @@ menu() {
 
     result="$(
         echo "$progs"       |
-        tr '[:space:]' "\n" |
+        tr '[:space:]' '\n' |
         eval "$FZF_BIN"
     )"
 

@@ -53,8 +53,7 @@ vim:
 
 sh:
 	$(LINK) $(DOTDIR)/$@/aliasrc ../.aliasrc
-	$(LINK) $(DOTDIR)/$@/aliasrc.d ../.aliasrc.d
-	$(LINK) $(DOTDIR)/$@/profile ../.profile
+	$(LINK) ../$(DOTDIR)/$@/shell $(XDGC)
 
 zsh:	base16-shell
 	$(LINK) $(DOTDIR)/$@/zshrc ../.zshrc

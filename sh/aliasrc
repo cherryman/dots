@@ -1,8 +1,0 @@
-os="$(uname)"
-alias have='command -v > /dev/null'
-
-for f in "$HOME"/.aliasrc.d/*; do
-    [ -f "$f" ] && . "$f"
-done
-
-unset os
