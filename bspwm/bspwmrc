@@ -6,15 +6,14 @@ BSPWM_HOME="$(dirname "$0")"
 wscon=''  # console
 wsnav=''  # navigator
 wsmisc='' # misc
-wscomm='' # comm
 wsgam=''  # game
-
 wsinfo=''
 
 ### Configuration
 case "$(uname -n)" in
     CherryPC)
-        bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wscomm" "$wsgam"
+        bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wsgam"
+        bspc monitor next -d "$wsinfo"
         ;;
     *)
         bspc monitor primary -d  "$wscon" "$wsmisc" "$wsnav"
@@ -32,14 +31,7 @@ bspc config focus_follows_pointer true
 bspc config click_to_focus
 bspc config initial_polarity second_child
 
-### Rules
 bspc config external_rules_command "$BSPWM_HOME/rules"
-
-bspc rule -a Soffice   state=tiled # libreoffice
-bspc rule -a Steam     desktop="$wsgam"  follow=off focus=off layer=below
-bspc rule -a \*:Steam  desktop="$wsgam"  follow=off focus=off
-bspc rule -a Mumble    desktop="$wscomm" follow=off
-bspc rule -a discord   desktop="$wscomm" follow=off
 
 ### Monocles
 bspc desktop "$wsnav" -l monocle

@@ -1,7 +1,7 @@
 os="$(uname -s)"
 alias have='command -v > /dev/null'
 
-for f in "$XDG_CONFIG_HOME/shell/shrc.d"/*.sh; do
+for f in "$ENV".d/*.sh; do
     . "$f"
 done
 

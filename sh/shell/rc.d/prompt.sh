@@ -21,14 +21,17 @@ min_path() {
     unset minpath dir d
 }
 
-ESC="" # escape character
-CLR_BLUE="${ESC}[34m"
-CLR_RST="${ESC}[00m"
-PS1='[$(min_path $PWD)] ' # colors added in shell's rc
+esc_print() {
+    if   [ "$BASH" ];     then echo "\[$*\]"
+    elif [ "$ZSH_NAME" ]; then echo "%{$*%}"
+    else echo "$*"
+    fi
+}
 
-if   [ "$BASH" ];     then PS1="\[$CLR_BLUE\]$PS1\[$CLR_RST\]"
-elif [ "$ZSH_NAME" ]; then PS1="%{$CLR_BLUE%}$PS1%{$CLR_RST%}"
-else PS1="$CLR_BLUE$PS1$CLR_RST"
-fi
+esc="" # escape character
+clr_blue="${esc}[34m"
+clr_rst="${esc}[00m"
+PS1='[$(min_path "$PWD")] ' # colors added in shell's rc
+PS1="$(esc_print "$clr_blue")$PS1$(esc_print "$clr_rst")"
 
-unset ESC CLR_BLUE CLR_RST
+unset esc clr_blue clr_rst

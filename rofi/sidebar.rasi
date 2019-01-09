@@ -11,20 +11,19 @@
 }
 
 #window {
-    anchor:      west;
-    location:    west;
-    height:      100%;
-    width:       25%;
-    children:    [mainbox];
+    anchor:   east;
+    location: east;
+    height:   100%;
+    width:    25%;
 }
 
 #mainbox {
-    children:         [entry, listview];
+    children: [entry, listview];
 }
 
 #entry {
-    expand:         false;
-    padding:        1.4em;
+    expand:  false;
+    padding: 1.4em;
 }
 
 #element {

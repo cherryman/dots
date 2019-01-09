@@ -105,6 +105,7 @@ augroup indent
     au FileType asm      setl noet ts=6 sw=6 sts=0
     au FileType make     setl noet ts=8 sw=8 sts=0
     au FileType *tex     setl tw=72 ts=2 sts=2 sw=2
+    au FileType context  setl tw=72 ts=2 sts=2 sw=2
     au FileType markdown setl tw=72
     au FileType yaml     setl ts=2 sts=2 sw=2
     au FileType scheme   setl ts=2 sts=2 sw=2
@@ -348,14 +349,20 @@ let g:workspace_autosave_ignore = [
 " ---- Misc {{{
 set modeline
 set modelines=5
-
 set nospell
-
 set hidden
-
 set scrolloff=3
-
 set backspace=indent,eol,start
+
+if !empty($XDG_CACHE_HOME)
+    if !isdirectory($XDG_CACHE_HOME.'/vim')
+        call mkdir($XDG_CACHE_HOME.'/vim', 'p')
+    endif
+    set directory=$XDG_CACHE_HOME/vim,.,/var/tmp,/tmp,
+    set backupdir=$XDG_CACHE_HOME/vim,.,~/
+    set viminfofile=$XDG_CACHE_HOME/vim/viminfo
+endif
+
 "}}}
 
 " vim:foldmethod=marker:foldlevel=0

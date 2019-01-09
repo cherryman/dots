@@ -22,7 +22,16 @@ case "$instance" in
         echo follow=on focus=on
         ;;
 
+    mumble|discord)
+        echo desktop=primary:^3
+        ;;
+
+    Minecraft*)
+        echo desktop=primary:^4
+        ;;
+
     Steam)
         echo follow=off focus=off layer=below
-        echo desktop=primary:^5
+        echo desktop=primary:^4
+        ;;
 esac
