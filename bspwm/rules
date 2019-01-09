@@ -24,5 +24,10 @@ case "$instance" in
 
     Steam)
         echo follow=off focus=off layer=below
-        echo desktop=primary:^5
+        echo desktop=primary:^4
+        ;;
+
+    mumble|discord)
+        echo desktop=primary:^3
+        ;;
 esac

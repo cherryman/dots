@@ -1,6 +1,5 @@
-@import "sidebar.rasi"
-
 configuration {
+    theme: "sidebar.rasi";
     modi: "run,drun";
     disable-history: false;
     font: "Source Sans Pro 14";
