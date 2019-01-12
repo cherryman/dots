@@ -47,7 +47,7 @@ bin:
 	cd $(HOME)/bin && $(LINK) ../$(DOTDIR)/$@/* .
 
 vim:
-	mkdir -p $(HOME)/.vim
+	mkdir -p $(HOME)/.vim $(HOME)/.cache/vim
 	$(LINK) $(DOTDIR)/$@/vimrc ../.vimrc
 	$(LINK) ../$(DOTDIR)/$@/vim-plug ../.vim/
 
