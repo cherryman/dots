@@ -4,6 +4,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
+export CDPATH=".:$HOME:$HOME/proj"
 export ENV="$XDG_CONFIG_HOME/shell/rc"
 
 export DOTFILES_DIR="$HOME/dots"
