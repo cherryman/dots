@@ -20,21 +20,20 @@ Plug 'itchyny/lightline.vim'
 Plug 'majutsushi/tagbar'
 
 " util
-Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'embear/vim-localvimrc'
 Plug 'thaerkh/vim-workspace'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'jpalardy/vim-slime'
 Plug 'tpope/vim-dispatch'
 
 " edit
 Plug 'Raimondi/delimitMate'
-Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-endwise'
 
 " lang
 Plug 'sheerun/vim-polyglot'
@@ -101,16 +100,18 @@ set shiftwidth=4  " sw
 
 augroup indent
     au!
-    au FileType go       setl noet
-    au FileType asm      setl noet ts=6 sw=6 sts=0
-    au FileType make     setl noet ts=8 sw=8 sts=0
-    au FileType *tex     setl tw=72 ts=2 sts=2 sw=2
-    au FileType context  setl tw=72 ts=2 sts=2 sw=2
-    au FileType markdown setl tw=72
-    au FileType yaml     setl ts=2 sts=2 sw=2
-    au FileType scheme   setl ts=2 sts=2 sw=2
-    au FileType dart     setl ts=2 sts=2 sw=2 cino=m1
-    au FileType haskell  setl formatprg=stylish-haskell
+    au FileType go          setl noet
+    au FileType javascript* setl ts=2 sts=2 sw=2
+    au FileType html        setl ts=2 sts=2 sw=2
+    au FileType asm         setl noet ts=6 sw=6 sts=0
+    au FileType make        setl noet ts=8 sw=8 sts=0
+    au FileType *tex        setl tw=72 ts=2 sts=2 sw=2
+    au FileType context     setl tw=72 ts=2 sts=2 sw=2
+    au FileType markdown    setl tw=72
+    au FileType yaml        setl ts=2 sts=2 sw=2
+    au FileType scheme      setl ts=2 sts=2 sw=2
+    au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
+    au FileType haskell     setl formatprg=stylish-haskell
 augroup END
 
 "}}}
@@ -158,13 +159,10 @@ nmap <Leader>cc :CtrlPClearCache<CR>
 nmap <Leader>ff :CtrlP .<CR>
 nmap <Leader>fF :FilesNoVCS .<CR>
 nmap <Leader>fp :CtrlP<CR>
-nmap <Leader>ft :NERDTreeToggle<CR>
+nmap <Leader>ft :NERDTreeFocus<CR>
+nmap <Leader>fc :NERDTreeClose<CR>
 nmap <Leader>fs :write<CR>
 nmap <Leader>fS :wall<CR>
-
-nmap <Leader>qq :qall<CR>
-nmap <Leader>qs :wqall<CR>
-nmap <Leader>qQ :qall!<CR>
 
 map <Leader>j <Plug>(easymotion-prefix)
 
@@ -174,7 +172,6 @@ nmap <Leader>tr :set relativenumber!<CR>
 nmap <Leader>tc :ToggleSyntax<CR>
 nmap <Leader>tl <Plug>(ale_toggle)
 nmap <Leader>ts :ToggleWorkspace<CR>
-nmap <Leader>tg :Goyo<CR>
 
 nmap <Leader>w <C-w>
 
@@ -192,10 +189,6 @@ nmap <Leader>sq :CtrlPQuickfix<CR>
 
 nmap <Leader>df :CtrlPBookmarkDir<CR>
 nmap <Leader>da :CtrlPBookmarkDirAdd<CR>
-
-xmap <C-c><C-c> <Plug>SlimeRegionSend
-nmap <C-c><C-c> <Plug>SlimeParagraphSend
-nmap <C-c>v <Plug>SlimeConfig
 
 "}}}
 " ---- Plugin Configuration {{{
@@ -272,14 +265,6 @@ let g:localvimrc_sandbox = 0
 " tmuxline
 let g:tmuxline_powerline_separators = 0
 let g:tmuxline_theme = 'lightline'
-let g:tmuxline_preset = {
-    \ 'a'    : '#S',
-    \ 'win'  : '#I #W',
-    \ 'cwin' : '#I #W',
-    \ 'options' : {
-    \     'status-justify': 'centre',
-    \ }
-\ }
 
 " polyglot
 let g:polyglot_disabled = [
@@ -324,18 +309,6 @@ let g:lightline = {
 " vim-pandoc
 let g:pandoc#folding#level = 6
 let g:pandoc#folding#fdc = 0
-
-" vim-slime
-let g:slime_no_mappings = 1
-let g:slime_dont_ask_default = 1
-let g:slime_paste_file = "$HOME/.slime_paste"
-if !empty($TMUX)
-    let g:slime_target = "tmux"
-    let g:slime_default_config = {
-    \   'socket_name': split($TMUX, ",")[0],
-    \   'target_pane': ":.1"
-    \ }
-endif
 
 " vim-workspace
 let g:workspace_session_name = 'Session.vim'
