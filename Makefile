@@ -52,7 +52,7 @@ vim:
 	$(LINK) ../$(DOTDIR)/$@/vim-plug ../.vim/
 
 sh:
-	$(LINK) $(DOTDIR)/$@/aliasrc ../.aliasrc
+	$(LINK) $(DOTDIR)/$@/profile ../.profile
 	$(LINK) ../$(DOTDIR)/$@/shell $(XDGC)
 
 zsh:	base16-shell

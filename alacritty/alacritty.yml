@@ -14,18 +14,19 @@ env:
   # `infocmp xterm-256color`.
   TERM: xterm-256color
 
-# Window dimensions in character columns and lines
-# (changes require restart)
-dimensions:
-  columns: 80
-  lines: 24
+window:
+  # Window dimensions in character columns and lines
+  # (changes require restart)
+  dimensions:
+    columns: 80
+    lines: 24
 
-# Adds this many blank pixels of padding around the window
-# Units are physical pixels; this is not DPI aware.
-# (change requires restart)
-padding:
-  x: 2
-  y: 2
+  # Adds this many blank pixels of padding around the window
+  # Units are physical pixels; this is not DPI aware.
+  # (change requires restart)
+  padding:
+    x: 2
+    y: 2
 
 # The FreeType rasterizer needs to know the device DPI for best results
 # (changes require restart)
@@ -60,20 +61,20 @@ font:
     # style: Italic
 
   # Point size of the font
-  size: 11.5
+  size: 18.0
 
   # Offset is the extra space around each character. offset.y can be thought of
   # as modifying the linespacing, and offset.x as modifying the letter spacing.
   offset:
-    x: 0.0
-    y: 0.0
+    x: 0
+    y: 0
 
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increase the x offset to move the glyph to
   # the right, increase the y offset to move the glyph upward.
   glyph_offset:
-    x: 0.0
-    y: 0.0
+    x: 0
+    y: 0
 
   # OS X only: use thin stroke font rendering. Thin strokes are suitable
   # for retina displays, but for non-retina you probably want this set to
@@ -82,10 +83,6 @@ font:
 
 # Should display the render timer
 render_timer: false
-
-# Use custom cursor colors. If true, display the cursor in the cursor.foreground
-# and cursor.background colors, otherwise invert the colors of the cursor.
-custom_cursor_colors: true
 
 # Colors (Tomorrow Night Bright)
 colors:
@@ -243,6 +240,17 @@ key_bindings:
   - { key: Back,     mods: Alt,     chars: "\x1b\x7f"                    }
   - { key: Insert,                  chars: "\x1b[2~"                     }
   - { key: Delete,                  chars: "\x1b[3~"                     }
+  - { key: A,        mods: Alt,     chars: "\x1ba"                       }
+  - { key: B,        mods: Alt,     chars: "\x1bb"                       }
+  - { key: D,        mods: Alt,     chars: "\x1bd"                       }
+  - { key: F,        mods: Alt,     chars: "\x1bf"                       }
+  - { key: H,        mods: Alt,     chars: "\x1bh"                       }
+  - { key: J,        mods: Alt,     chars: "\x1bj"                       }
+  - { key: K,        mods: Alt,     chars: "\x1bk"                       }
+  - { key: L,        mods: Alt,     chars: "\x1bl"                       }
+  - { key: O,        mods: Alt,     chars: "\x1bo"                       }
+  - { key: Q,        mods: Alt,     chars: "\x1bq"                       }
+  - { key: W,        mods: Alt,     chars: "\x1bw"                       }
 
 # Mouse bindings
 #
@@ -266,10 +274,10 @@ mouse:
   double_click: { threshold: 300 }
   triple_click: { threshold: 300 }
 
+  hide_when_typing: false
+
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>"
-
-hide_cursor_when_typing: false
 
 # Shell
 #
