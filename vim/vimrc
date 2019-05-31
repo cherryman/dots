@@ -53,16 +53,6 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
-
-" set the colorscheme highlight values
-function! SetHighlight()
-    "highlight GitGutterAdd ctermfg=2 ctermbg=none
-    "highlight GitGutterChange ctermfg=3 ctermbg=none
-    "highlight GitGutterDelete ctermfg=1 ctermbg=none
-    "highlight GitGutterChangeDelete ctermfg=3 ctermbg=none
-endfunction
-
-" commands
 command! ToggleSyntax
 \   if exists("g:syntax_on")
 \ |     syntax off
@@ -82,13 +72,9 @@ filetype plugin on
 syntax enable
 set termguicolors
 
-" highlight options are under 'SetHighlight()'
-autocmd ColorScheme * call SetHighlight()
-
 let g:onedark_terminal_italics = 1
 let g:palenight_terminal_italics = 1
 
-"colorscheme onedark
 colorscheme onedark
 
 "}}}
@@ -154,7 +140,6 @@ xmap <Leader>ea <Plug>(EasyAlign)
 " not $MYVIMRC because of nvim
 nmap <Leader>ce :edit ~/.vimrc<CR>
 nmap <Leader>cr :source ~/.vimrc<CR>
-nmap <Leader>cc :CtrlPClearCache<CR>
 
 nmap <Leader>ff :CtrlP .<CR>
 nmap <Leader>fF :FilesNoVCS .<CR>
@@ -184,11 +169,6 @@ nmap <Leader>ll <Plug>(ale_lint)
 nmap <Leader>li <Plug>(ale_detail)
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
-nmap <Leader>st :CtrlPBufTag<CR>
-nmap <Leader>sq :CtrlPQuickfix<CR>
-
-nmap <Leader>df :CtrlPBookmarkDir<CR>
-nmap <Leader>da :CtrlPBookmarkDirAdd<CR>
 
 "}}}
 " ---- Plugin Configuration {{{
@@ -213,13 +193,15 @@ let g:ale_link_on_text_changed = 'always'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_enabled = 0
 let g:ale_linters = {
-\   'rust': ['cargo'],
-\   'bash': ['shellcheck'],
-\   'sh':   ['shellcheck']
+\   'rust':   ['cargo'],
+\   'bash':   ['shellcheck'],
+\   'sh':     ['shellcheck'],
+\   'elixir': ['elixir-ls']
 \}
 let g:ale_c_clangtidy_checks = ['']
 let g:ale_c_clang_options = '-std=c11 -Wall -Wpedantic'
 let g:ale_c_gcc_options = g:ale_c_clang_options
+let g:ale_elixir_elixir_ls_release = $HOME . '/.local/src/elixir-ls/release'
 
 " ctrlp
 if executable('rg')
@@ -239,9 +221,9 @@ let g:dart_style_guide = 2
 " delimitMate
 let g:delimitMate_expand_cr = 1
 augroup plugins
-    au FileType scheme let b:delimitMate_quotes = '"'
+    au FileType scheme   let b:delimitMate_quotes = '"'
     au FileType *verilog let b:delimitMate_quotes = '"'
-    au FileType matlab let b:delimitMate_quotes = '"'
+    au FileType matlab   let b:delimitMate_quotes = '"'
 augroup END
 
 " haskell-vim
@@ -261,21 +243,11 @@ let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
 let g:localvimrc_whitelist = $HOME . '/proj'
 let g:localvimrc_sandbox = 0
 
-
-" tmuxline
-let g:tmuxline_powerline_separators = 0
-let g:tmuxline_theme = 'lightline'
-
 " polyglot
 let g:polyglot_disabled = [
 \   'latex',
 \   'haskell',
 \ ]
-
-" vim-airline
-" colour set under 'Colours'
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
 
 " vim-gitgutter
 let g:gitgutter_override_sign_column_highlight = 0
