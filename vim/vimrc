@@ -98,6 +98,7 @@ augroup indent
     au FileType scheme      setl ts=2 sts=2 sw=2
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
     au FileType haskell     setl formatprg=stylish-haskell
+    au FileType elixir      setl formatprg=mix\ format\ -
 augroup END
 
 "}}}
