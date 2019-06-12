@@ -72,7 +72,7 @@ sel() {
     echo "$files" |
 
     # Strip the extension if needed.
-    sed -e '' ${stripext:+-e 's|\([^./]\+\)\.[^/ \t]\+$|\1|'} |
+    sed -e '' ${stripext:+-e 's|\([^/]\+\)\.[^/ \t]\+$|\1|'} |
 
     # In -format, d provides the index (1-N) and s the string.
     # -i disables case sensitivity.
