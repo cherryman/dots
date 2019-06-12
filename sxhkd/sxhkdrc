@@ -5,6 +5,9 @@ super + {q,w,e}
 super + p
 	dlaunch -s "$WALLPAPER_DIR" wallp
 
+super + b
+	pcmanfm
+
 super + grave
 	$TERMINAL
 

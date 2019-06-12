@@ -93,6 +93,7 @@ augroup indent
     au FileType *tex        setl tw=72 ts=2 sts=2 sw=2
     au FileType context     setl tw=72 ts=2 sts=2 sw=2
     au FileType markdown    setl tw=72
+    au FileType pandoc      setl tw=72
     au FileType yaml        setl ts=2 sts=2 sw=2
     au FileType scheme      setl ts=2 sts=2 sw=2
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
