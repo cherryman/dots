@@ -9,6 +9,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'chriskempson/base16-vim'
 Plug 'joshdick/onedark.vim'
 Plug 'drewtempelmeyer/palenight.vim'
+Plug 'tomasr/molokai'
+Plug 'lifepillar/vim-solarized8'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -70,10 +72,9 @@ set termguicolors
 let g:onedark_terminal_italics = 1
 let g:palenight_terminal_italics = 1
 
-set background=light
-
-colorscheme base16-solarized-light
-let g:lightline_colorscheme = 'solarized'
+set background=dark
+let g:lightline_colorscheme = 'palenight'
+colorscheme palenight
 
 "}}}
 " ---- Indentation {{{
