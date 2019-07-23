@@ -50,6 +50,12 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
+fun! Preserve(cmd)
+    let w = winsaveview()
+    exec a:cmd
+    call winrestview(w)
+endfun
+
 command! ToggleSyntax
 \   if exists("g:syntax_on")
 \ |     syntax off
@@ -73,8 +79,9 @@ let g:onedark_terminal_italics = 1
 let g:palenight_terminal_italics = 1
 
 set background=dark
-let g:lightline_colorscheme = 'palenight'
-colorscheme palenight
+
+colorscheme onedark
+let g:lightline_colorscheme = 'onedark'
 
 "}}}
 " ---- Indentation {{{
@@ -87,6 +94,7 @@ augroup indent
     au!
     au FileType go          setl noet
     au FileType javascript* setl ts=2 sts=2 sw=2
+    au FileType typescript* setl ts=2 sts=2 sw=2
     au FileType html        setl ts=2 sts=2 sw=2
     au FileType asm         setl noet ts=6 sw=6 sts=0
     au FileType make        setl noet ts=8 sw=8 sts=0
