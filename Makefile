@@ -64,6 +64,9 @@ tmux:
 	$(LINK) $(DOTDIR)/$@/tmux.conf ../.tmux.conf
 	$(LINK) ../../$(DOTDIR)/$@/tpm ../.tmux/plugins/tpm
 
+npm:
+	$(LINK) $(DOTDIR)/$@/npmrc ../.npmrc
+
 xorg:
 	$(LINK) $(DOTDIR)/$@/Xmodmap ../.Xmodmap
 	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources
