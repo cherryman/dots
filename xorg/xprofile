@@ -1,4 +1,4 @@
-xmodmap "$HOME/.Xmodmap"
+setxkbmap -option custom:caps_hyper
 
 case "$(uname -n)" in
     CherryPC)

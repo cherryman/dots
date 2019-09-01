@@ -39,12 +39,6 @@ curr_keymap=$(echo "$keymaps" | awk -v curr_keymap="$curr_keymap" '{
 
 setxkbmap "$curr_keymap"
 
-# Reload xmodmap
-[ -n "$DISPLAY" ]              &&
-[ -f "$HOME/.Xmodmap" ]        &&
-command -v xmodmap > /dev/null &&
-    xmodmap "$HOME/.Xmodmap" &
-
 # Generate notification
 text="$(echo $curr_keymap | tr '[:lower:]' '[:upper:]')"
 notif                     \

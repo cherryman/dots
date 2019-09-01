@@ -67,11 +67,13 @@ tmux:
 npm:
 	$(LINK) $(DOTDIR)/$@/npmrc ../.npmrc
 
-xorg:
-	$(LINK) $(DOTDIR)/$@/Xmodmap ../.Xmodmap
+xorg: xkb
 	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources
 	$(LINK) $(DOTDIR)/$@/xprofile ../.xprofile
 	$(LINK) $(DOTDIR)/$@/xinitrc ../.xinitrc
+
+xkb:
+	(cd / && sudo patch -u -p0 < "$(PWD)/$@/patch")
 
 .PHONY: all dir xdg
 .PHONY: $(XDGC_TARGETS)
