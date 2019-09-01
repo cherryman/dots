@@ -77,4 +77,4 @@ xkb:
 
 .PHONY: all dir xdg
 .PHONY: $(XDGC_TARGETS)
-.PHONY: compton bin vim sh zsh tmux xorg
+.PHONY: firefox compton bin vim sh zsh tmux npm xorg xkb

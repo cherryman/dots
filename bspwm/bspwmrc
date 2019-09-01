@@ -12,11 +12,12 @@ wsinfo=''
 ### Configuration
 case "$(uname -n)" in
     CherryPC)
-        bspc monitor primary -d  "$wscon" "$wsnav" "$wsmisc" "$wsgam"
-        bspc monitor next -d "$wsinfo"
+        bspc monitor primary -d "$wscon" "$wsnav" "$wsmisc" "$wsgam"
+        bspc monitor next    -d "$wsinfo"
         ;;
     *)
-        bspc monitor primary -d  "$wscon" "$wsmisc" "$wsnav"
+        bspc monitor primary -d "$wscon" "$wsmisc" "$wsnav"
+        bspc monitor next    -d "$wsinfo"
         ;;
 esac
 

@@ -11,3 +11,5 @@ Session.vim
 .DS_Store
 
 .elixir_ls/
+
+.idea/

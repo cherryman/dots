@@ -11,6 +11,8 @@ Plug 'joshdick/onedark.vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'tomasr/molokai'
 Plug 'lifepillar/vim-solarized8'
+Plug 'arcticicestudio/nord-vim'
+Plug 'ewilazarus/preto'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -50,11 +52,13 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
-fun! Preserve(cmd)
+fun! s:Preserve(cmd)
     let w = winsaveview()
     exec a:cmd
     call winrestview(w)
 endfun
+
+command! -nargs=1 Preserve call s:Preserve(<q-args>)
 
 command! ToggleSyntax
 \   if exists("g:syntax_on")
@@ -93,9 +97,9 @@ set shiftwidth=4  " sw
 augroup indent
     au!
     au FileType go          setl noet
-    au FileType javascript* setl ts=2 sts=2 sw=2
-    au FileType typescript* setl ts=2 sts=2 sw=2
-    au FileType html        setl ts=2 sts=2 sw=2
+    au FileType javascript* setl ts=2 sts=2 sw=2 formatprg=prettier\ --parser=babel
+    au FileType typescript* setl ts=2 sts=2 sw=2 formatprg=prettier\ --parser=typescript
+    au FileType html*       setl ts=2 sts=2 sw=2
     au FileType asm         setl noet ts=6 sw=6 sts=0
     au FileType make        setl noet ts=8 sw=8 sts=0
     au FileType *tex        setl tw=72 ts=2 sts=2 sw=2
@@ -155,8 +159,6 @@ nmap <Leader>fF :FilesNoVCS .<CR>
 nmap <Leader>fp :CtrlP<CR>
 nmap <Leader>ft :NERDTreeFocus<CR>
 nmap <Leader>fc :NERDTreeClose<CR>
-nmap <Leader>fs :write<CR>
-nmap <Leader>fS :wall<CR>
 
 map \ <Plug>(easymotion-prefix)
 
@@ -178,6 +180,7 @@ nmap <Leader>ll <Plug>(ale_lint)
 nmap <Leader>li <Plug>(ale_detail)
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
+nmap <Leader>gq :Preserve normal gggqG<CR>
 
 "}}}
 " ---- Plugin Configuration {{{
@@ -202,10 +205,12 @@ let g:ale_link_on_text_changed = 'always'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_enabled = 0
 let g:ale_linters = {
-\   'rust':   ['cargo'],
-\   'bash':   ['shellcheck'],
-\   'sh':     ['shellcheck'],
-\   'elixir': ['elixir-ls']
+\   'rust':       ['cargo'],
+\   'bash':       ['shellcheck'],
+\   'sh':         ['shellcheck'],
+\   'elixir':     ['elixir-ls'],
+\   'javascript': ['eslint'],
+\   'typescript': ['eslint', 'tsserver'],
 \}
 let g:ale_c_clangtidy_checks = ['']
 let g:ale_c_clang_options = '-std=c11 -Wall -Wpedantic'
