@@ -26,5 +26,10 @@ export PATH
 
 export TERMINAL=st
 
-have vim   && export EDITOR=vim && export VISUAL=vim
+if   have nvim; then EDITOR=nvim
+elif have vim;  then EDITOR=vim
+else                 EDITOR=vi
+fi
+
+export EDITOR VISUAL="$EDITOR"
 have less  && export PAGER=less

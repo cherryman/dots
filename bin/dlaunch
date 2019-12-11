@@ -53,10 +53,12 @@ list_files() {
     {
         # First, list directories suffixed with '/'.
         find . -maxdepth 1 -type d ! -path . |
-            sed 's|$|/|'
+            sed 's|$|/|' |
+            sort
 
         # Then list files in curr dir.
-        find . -maxdepth 1 -type f
+        find . -maxdepth 1 -type f |
+            sort
 
     } | sed 's|^\./||' # strip leading ./
 }

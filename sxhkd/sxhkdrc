@@ -1,6 +1,6 @@
 ### Programs
-super + {q,w,e}
-	dlaunch -s "$HOME/doc/{Books,Specs,Study}" xdg-open
+super + {q,w}
+	dlaunch -s "$HOME/{doc/Books,media/vid}" xdg-open
 
 super + p
 	dlaunch -s "$WALLPAPER_DIR" wallp

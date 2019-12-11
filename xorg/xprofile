@@ -9,5 +9,5 @@ case "$(uname -n)" in
         ;;
 esac
 
-redshift -t6500:3600 &
+redshift &
 sxhkd &

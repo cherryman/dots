@@ -67,6 +67,9 @@ tmux:
 npm:
 	$(LINK) $(DOTDIR)/$@/npmrc ../.npmrc
 
+redshift:
+	$(LINK) $(DOTDIR)/$@/redshift.conf $(XDGC)
+
 xorg: xkb
 	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources
 	$(LINK) $(DOTDIR)/$@/xprofile ../.xprofile

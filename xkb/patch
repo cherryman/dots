@@ -13,5 +13,5 @@ diff -ru1N /usr/share/X11/xkb/symbols/custom xkb/symbols/custom
 +hidden partial modifier_keys
 +xkb_symbols "caps_hyper" {
 +    key <CAPS> { [ Hyper_L ] };
-+    modifier_map Mod3 { <CAPS> };
++    modifier_map Mod3 { <HYPR> };
 +};

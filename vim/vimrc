@@ -6,13 +6,10 @@ runtime vim-plug/plug.vim
 call plug#begin('~/.vim/plugged')
 
 " themes
-Plug 'chriskempson/base16-vim'
 Plug 'joshdick/onedark.vim'
 Plug 'drewtempelmeyer/palenight.vim'
-Plug 'tomasr/molokai'
 Plug 'lifepillar/vim-solarized8'
 Plug 'arcticicestudio/nord-vim'
-Plug 'ewilazarus/preto'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -23,8 +20,8 @@ Plug 'itchyny/lightline.vim'
 " util
 Plug 'scrooloose/nerdtree'
 Plug 'embear/vim-localvimrc'
-Plug 'thaerkh/vim-workspace'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'tpope/vim-dispatch'
 
 " edit
 Plug 'Raimondi/delimitMate'
@@ -34,6 +31,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-endwise'
 Plug 'w0rp/ale'
+Plug 'alvan/vim-closetag'
 
 " lang
 Plug 'sheerun/vim-polyglot'
@@ -53,9 +51,9 @@ autocmd VimEnter *
 "}}}
 " ---- Functions {{{
 fun! s:Preserve(cmd)
-    let w = winsaveview()
+    let l:w = winsaveview()
     exec a:cmd
-    call winrestview(w)
+    call winrestview(l:w)
 endfun
 
 command! -nargs=1 Preserve call s:Preserve(<q-args>)
@@ -97,9 +95,9 @@ set shiftwidth=4  " sw
 augroup indent
     au!
     au FileType go          setl noet
-    au FileType javascript* setl ts=2 sts=2 sw=2 formatprg=prettier\ --parser=babel
-    au FileType typescript* setl ts=2 sts=2 sw=2 formatprg=prettier\ --parser=typescript
-    au FileType html*       setl ts=2 sts=2 sw=2
+    au FileType javascript* setl ts=2 sts=2 sw=2
+    au FileType typescript* setl ts=2 sts=2 sw=2
+    au FileType html*,css   setl ts=2 sts=2 sw=2
     au FileType asm         setl noet ts=6 sw=6 sts=0
     au FileType make        setl noet ts=8 sw=8 sts=0
     au FileType *tex        setl tw=72 ts=2 sts=2 sw=2
@@ -109,8 +107,14 @@ augroup indent
     au FileType yaml        setl ts=2 sts=2 sw=2
     au FileType scheme      setl ts=2 sts=2 sw=2
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
-    au FileType haskell     setl formatprg=stylish-haskell
-    au FileType elixir      setl formatprg=mix\ format\ -
+augroup END
+
+augroup format
+    au!
+    au FileType javascript* setl fex= formatprg=prettier\ --parser=babel
+    au FileType typescript* setl fex= formatprg=prettier\ --parser=typescript
+    au FileType haskell     setl fex= formatprg=stylish-haskell
+    au FileType elixir      setl fex= formatprg=mix\ format\ -
 augroup END
 
 "}}}
@@ -181,6 +185,7 @@ nmap <Leader>li <Plug>(ale_detail)
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>gq :Preserve normal gggqG<CR>
+nmap <Leader>= :Preserve normal gg=G<CR>
 
 "}}}
 " ---- Plugin Configuration {{{
@@ -238,6 +243,7 @@ augroup plugins
     au FileType scheme   let b:delimitMate_quotes = '"'
     au FileType *verilog let b:delimitMate_quotes = '"'
     au FileType matlab   let b:delimitMate_quotes = '"'
+    au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
 
 " haskell-vim
@@ -254,14 +260,25 @@ let g:haskell_indent_guard = 4
 
 " local-vimrc
 let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
-let g:localvimrc_whitelist = $HOME . '/proj'
+let g:localvimrc_whitelist = [$HOME . '/proj', $HOME . '/work']
 let g:localvimrc_sandbox = 0
+
+" nerdtree
+let g:NERDTreeMapHelp = ''
+let g:NERDTreeMinimalUI = 1
 
 " polyglot
 let g:polyglot_disabled = [
 \   'latex',
 \   'haskell',
 \ ]
+
+" vim-closetag
+let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx'
+let g:closetag_regions = {
+\ 'typescriptreact': 'jsxRegion,tsxRegion',
+\ 'javascriptreact': 'jsxRegion',
+\ }
 
 " vim-gitgutter
 let g:gitgutter_override_sign_column_highlight = 0
