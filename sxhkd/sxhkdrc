@@ -1,18 +1,21 @@
 ### Programs
-super + {q,w}
+alt + shift + {q,w}
 	dlaunch -s "$HOME/{doc/Books,media/vid}" xdg-open
 
 super + p
 	dlaunch -s "$WALLPAPER_DIR" wallp
 
-super + b
-	pcmanfm
+alt + shift + d
+	rofi -show drun
 
 super + grave
 	$TERMINAL
 
-alt + shift + {d,e}
-	rofi -show {drun,run}
+super + space
+	keymap us ca
+
+super + button{4,5}
+	vol {inc,dec} 2
 
 alt + shift + s; {c,s}
 	sshot {copy,save}
@@ -25,17 +28,9 @@ alt + shift + s; m
 	| sed 's|.*"link":"\([^"]*\)".*|\1|;s|\\\/|\/|g'   \
 	| xclip -i -sel c
 
-super + l
-	locker
-
-alt + shift + l
-	keymap us ca
-
-super + button{4,5}
-	vol {inc,dec} 2
-
+# -i: ignore firefox
 XF86Audio{Prev,Next,Play}
-	mpc {cdprev,next,toggle}
+	playerctl -i firefox {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
 	vol {inc 1, dec 1, mute on}

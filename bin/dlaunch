@@ -93,7 +93,7 @@ sel() {
             */) cd "$selection" && sel;;
             *)
                 if [ "$stripext" != 1 ]; then
-                    eval "$cmd" "'$PWD/$selection'"
+                    "$cmd" "$PWD/$selection"
                 else
                     # Get name of Nth file in list.
                     fname="$(
@@ -101,7 +101,7 @@ sel() {
                         tail -n +"$index" |
                         head -n 1
                     )"
-                    eval "$cmd" "'$PWD/$fname'"
+                    "$cmd" "$PWD/$fname"
                 fi
                 ;;
         esac

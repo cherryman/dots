@@ -1,8 +1,6 @@
-### ENV
 export BASE16_SHELL="$HOME/.config/base16-shell"
 export ZPLUG_HOME="$HOME/.config/zplug"
 
-### Source
 source "$ZPLUG_HOME/init.zsh"
 [[ -o interactive ]] &&
     [ -s $BASE16_SHELL/profile_helper.sh ] &&
@@ -11,16 +9,11 @@ source "$ZPLUG_HOME/init.zsh"
 [[ -o login ]] && source "$HOME/.profile"
 source "$ENV"
 
-### Alias
-alias -g CLIP='| xclip -i -sel clip'
-
-### Plug
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
 zplug 'clvv/fasd', use:fasd, as:command
 
-### ZSH Settings
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
@@ -29,21 +22,21 @@ setopt inc_append_history_time hist_find_no_dups
 setopt promptsubst # interpolate PS1
 unsetopt beep
 
-bindkey -e
+bindkey -e # emacs keybindings
 
 zplug load
-
-menu-widget() {
-    BUFFER="menu"
-    zle accept-line
-}
 
 less-widget() {
     BUFFER+=" |& $PAGER"
     zle accept-line
 }
 
+xclip-widget() {
+    BUFFER+= " | xclip -i -sel c"
+    zle accept-line
+}
+
 zle -N menu-widget
 zle -N less-widget
-bindkey '\ew' menu-widget
 bindkey '\eo' less-widget
+bindkey '\ec' xclip-widget

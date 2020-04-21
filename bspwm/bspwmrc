@@ -12,7 +12,7 @@ wsinfo=''
 ### Configuration
 case "$(uname -n)" in
     CherryPC)
-        bspc monitor primary -d "$wscon" "$wsnav" "$wsmisc" "$wsgam"
+        bspc monitor -d "$wscon" "$wsnav" "$wsmisc" "$wsgam"
         bspc monitor next    -d "$wsinfo"
         ;;
     *)
@@ -35,12 +35,14 @@ bspc config initial_polarity second_child
 bspc config external_rules_command "$BSPWM_HOME/rules"
 
 ### Monocles
+bspc desktop "$wscon" -l monocle
 bspc desktop "$wsnav" -l monocle
 
 ### Program launch
 sxhkd -c "$BSPWM_HOME/sxhkdrc" &
 wallp &
 compton -b &
+command -v > /dev/null spotifyd && spotifyd
 
 bspc rule -a \* -o desktop="$wscon" && $TERMINAL &
 

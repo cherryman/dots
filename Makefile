@@ -62,13 +62,14 @@ zsh:	base16-shell
 tmux:
 	mkdir -p $(HOME)/.tmux/plugins
 	$(LINK) $(DOTDIR)/$@/tmux.conf ../.tmux.conf
+	$(LINK) ../$(DOTDIR)/$@/scripts ../.tmux/scripts
 	$(LINK) ../../$(DOTDIR)/$@/tpm ../.tmux/plugins/tpm
 
 npm:
 	$(LINK) $(DOTDIR)/$@/npmrc ../.npmrc
 
 redshift:
-	$(LINK) $(DOTDIR)/$@/redshift.conf $(XDGC)
+	$(LINK) ../$(DOTDIR)/$@/redshift.conf $(XDGC)
 
 xorg: xkb
 	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources

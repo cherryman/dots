@@ -1,27 +1,39 @@
-# ---- Misc
+# vim: noet
+
 super + alt + Escape
 	bspc quit
 
-
-# ---- Modify window state
-super + shift + q
+super + q
 	bspc node -c
 
-super + shift + f
-	bspc query -N -n focused.floating \
-	&& bspc node focused -t tiled     \
-	|| bspc node focused -t floating
+hyper + {t,f}
+	bspc node next.local.{!,_}floating -f
 
-super + shift + s
-	bspc query -N -n focused.fullscreen \
-	&& bspc node focused -t tiled     \
-	|| bspc node focused -t fullscreen
+hyper + {_, alt +} {h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
 
-super + shift + t
-	bspc node focused -t tiled
+hyper + {_, alt +} {1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+	# bspc {desktop -f,node -d} 'primary:^{1-9,10}'
 
+hyper + {_, alt +} q
+	bspc {desktop -f,node -d} 'next:^1'
 
-# ---- Resize windows
+hyper + alt + z
+	bspc desktop focused -l next
+
+hyper + alt + {t,f,s}
+	bspc node focused -t {tiled,floating,fullscreen}
+
+hyper + alt + {comma,period}
+	bspc node @/ -R {270,90}
+
+hyper + alt + e
+	bspc node @parent -R 90
+
+hyper + super + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
 super + equal
 	[ $(( $(bspc config window_gap) <= 190)) -eq 1 ] \
 	&& bspc config window_gap $(( $(bspc config window_gap) + 10)) \
@@ -31,43 +43,3 @@ super + minus
 	[ $(( $(bspc config window_gap) >= 10)) -eq 1 ] \
 	&& bspc config window_gap $(( $(bspc config window_gap) - 10)) \
 	|| bspc config window_gap 0
-
-super + alt + {h,j,k,l}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
-
-super + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
-
-hyper + alt + equal
-	bspc node @/ -E
-
-
-# ---- Select and move windows
-hyper + {t,f}
-	bspc node next.local.{!,_}floating -f
-
-hyper + {_, alt +,super +} {h,j,k,l}
-	bspc node -{f,s,p} {west,south,north,east}
-
-hyper + {_, alt +} q
-	bspc {desktop -f,node -d} 'next:^1'
-
-hyper + {_, alt +} {1-9,0}
-	bspc {desktop -f,node -d} 'primary:^{1-9,10}'
-
-hyper + alt + {comma,period}
-	bspc node @/ -R {270,90}
-
-hyper + alt + e
-	bspc node @parent -R 90
-
-hyper + alt + z
-	bspc desktop focused -l next
-
-
-# ---- Presel
-hyper + super + q
-	bspc node -p cancel
-
-
-# vim: noet

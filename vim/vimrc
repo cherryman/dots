@@ -14,7 +14,7 @@ Plug 'arcticicestudio/nord-vim'
 " interface
 Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
-Plug 'bimlas/vim-high'
+Plug 'https://gitlab.com/bimlas/vim-high.git'
 Plug 'itchyny/lightline.vim'
 
 " util
@@ -34,6 +34,7 @@ Plug 'w0rp/ale'
 Plug 'alvan/vim-closetag'
 
 " lang
+Plug 'MaxMEllon/vim-jsx-pretty' " Must be ahead of polyglot
 Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
@@ -138,7 +139,7 @@ set mouse=a " mouse movement
 " ---- Keybinds {{{
 
 let mapleader = "\<Space>"
-" let maplocalleader = "\\"
+let maplocalleader = "\\"
 
 imap jk <esc>
 nnoremap <C-w>- <C-w>s
@@ -180,12 +181,20 @@ nmap <silent> <Leader>[ :1bprevious<CR>
 nmap <silent> <Leader>] :1bnext<CR>
 nnoremap <BS> <C-^>
 
-nmap <Leader>ll <Plug>(ale_lint)
-nmap <Leader>li <Plug>(ale_detail)
+nmap <Leader>lo :lopen<CR>
+nmap <Leader>lc :lclose<CR>
+nmap <Leader>ln :lnext<CR>
+nmap <Leader>lp :lprev<CR>
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>gq :Preserve normal gggqG<CR>
 nmap <Leader>= :Preserve normal gg=G<CR>
+
+" abbrevs
+augroup abbrevs
+    au!
+    au FileType c,cpp iab #i #include
+augroup END
 
 "}}}
 " ---- Plugin Configuration {{{
@@ -271,6 +280,7 @@ let g:NERDTreeMinimalUI = 1
 let g:polyglot_disabled = [
 \   'latex',
 \   'haskell',
+\   'jsx',
 \ ]
 
 " vim-closetag
@@ -323,6 +333,12 @@ let g:workspace_autosave_ignore = [
 \ ]
 "}}}
 " ---- Misc {{{
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+    set grepformat=%f:%l:%c:%m
+endif
+
 set modeline
 set modelines=5
 set nospell

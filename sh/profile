@@ -18,13 +18,16 @@ export SHELLCHECK_OPTS='-e SC2016'
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export GOPATH="$XDG_DATA_HOME/go"
+export TEXMFHOME="$XDG_DATA_HOME/texmf"
+export TEXMFCONFIG="$XDG_CONFIG_HOME/texmf"
+export TEXMFVAR="$XDG_CACHE_HOME/texmf"
 
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 PATH="$PATH:$CARGO_HOME/bin"
 PATH="$PATH:$GOPATH/bin"
 export PATH
 
-export TERMINAL=st
+export TERMINAL=alacritty
 
 if   have nvim; then EDITOR=nvim
 elif have vim;  then EDITOR=vim
