@@ -12,6 +12,8 @@ HOME_DIRS	= .config bin                               \
 # for $XDG_CONFIG_HOME/* type targets
 XDGC_TARGETS	= alacritty    \
 		  i3           \
+		  sway	       \
+		  waybar       \
 		  bspwm        \
 		  dunst        \
 		  rofi         \

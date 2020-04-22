@@ -7,21 +7,38 @@ Usage: $(basename "$0") <command>
 Take screenshots and generate a notification.
 
 Commands:
-  out     Output raw image data.
-  save    Store image into a file.
-  copy    Copy image data to clipboard.
+  out       Output raw image data.
+  save      Store image into a file.
+  copy      Copy image data to clipboard.
+
+Options:
+  -d<FLOAT> Delay in seconds.
 
 Depends on: maim, xclip
 EOF
 }
+
+if   [ -z "$WAYLAND_DISPLAY" ] && [ -z $DISPLAY]; then
+    echo >&2 'No X or wayland session found, aborting'
+    exit 1
+fi
 
 if [ $# -ne 1 ]; then
     usage
     exit 0
 fi
 
-copy_img() { xclip -i -sel clip -t image/png; }
-scrot() { maim -su; }
+copy_img() {
+    if [ -n "$WAYLAND_DISPLAY" ]; then wl-copy
+    elif [-n "$DISPLAY" ]; then xclip -i -sel clip -t image/png
+    fi
+}
+
+scrot() {
+    if [ -n "$WAYLAND_DISPLAY" ]; then grim -g "$(slurp)" -
+    elif [-n "$DISPLAY" ]; then maim -su
+    fi
+}
 
 case "$1" in
     out) scrot ;;

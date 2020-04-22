@@ -1,0 +1,103 @@
+set $hyp Mod3
+set $sup Mod4
+set $alt Mod1
+set $term alacritty
+set $menu wofi --show drun
+
+exec redshift
+exec mako
+exec $term
+bar swaybar_command waybar
+
+output * bg "$WALLPAPER" fill
+default_border pixel 2
+default_floating_border pixel 2
+client.focused #888888 #888888 #ffffff
+client.focused_inactive #222222 #222222 #eeeeee
+client.unfocused #222222 #222222 #eeeeee
+
+assign [app_id="firefox"] 2
+
+input type:keyboard {
+    xkb_layout us,ca
+    xkb_options caps:hyper,grp:win_space_toggle
+    xkb_numlock enable
+}
+input type:pointer {
+    natural_scroll disabled
+    accel_profile flat
+    pointer_accel 0
+}
+input type:touchpad {
+    dwt enabled
+    tap enabled
+    middle_emulation enabled
+    natural_scroll enabled
+}
+
+floating_modifier $sup normal
+
+bindsym $sup+q kill
+bindsym $sup+grave exec $term
+bindsym $alt+Shift+d exec $menu
+bindsym $alt+Shift+q exec dlaunch -s "$HOME/doc/Books" xdg-open
+bindsym $alt+Shift+w exec dlaunch -s "$HOME/media/vid" xdg-open
+
+mode "screenshot" {
+    bindsym s exec sshot save; mode default
+    bindsym c exec sshot copy; mode default
+    bindsym Escape mode default
+    bindsym Return mode default
+}
+bindsym $alt+Shift+s mode "screenshot"
+
+bindsym XF86HomePage exec firefox
+bindsym XF86AudioRaiseVolume exec vol inc 2
+bindsym XF86AudioLowerVolume exec vol dec 2
+bindsym XF86AudioMute exec vol mute on
+bindsym XF86AudioPrev exec playerctl -i firefox previous
+bindsym XF86AudioNext exec playerctl -i firefox next
+bindsym XF86AudioPlay exec playerctl -i firefox play-pause
+bindsym XF86MonBrightnessUp exec brightnessctl s 5%+
+bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
+
+bindsym $sup+Shift+c reload
+bindsym $sup+$alt+Escape exec swaynag -t warning -m 'Quit?' -b 'Yes' 'swaymsg exit'
+bindsym $hyp+h focus left
+bindsym $hyp+j focus down
+bindsym $hyp+k focus up
+bindsym $hyp+l focus right
+bindsym $hyp+$alt+h move left
+bindsym $hyp+$alt+j move down
+bindsym $hyp+$alt+k move up
+bindsym $hyp+$alt+l move right
+bindsym $hyp+Left focus left
+bindsym $hyp+Down focus down
+bindsym $hyp+Up focus up
+bindsym $hyp+Right focus right
+bindsym $hyp+$alt+Left move left
+bindsym $hyp+$alt+Down move down
+bindsym $hyp+$alt+Up move up
+bindsym $hyp+$alt+Right move right
+bindsym $hyp+1 workspace 1
+bindsym $hyp+2 workspace 2
+bindsym $hyp+3 workspace 3
+bindsym $hyp+4 workspace 4
+bindsym $hyp+$alt+1 move container to workspace 1
+bindsym $hyp+$alt+2 move container to workspace 2
+bindsym $hyp+$alt+3 move container to workspace 3
+bindsym $hyp+$alt+4 move container to workspace 4
+bindsym $hyp+backslash splith
+bindsym $hyp+minus splitv
+bindsym $hyp+$alt+s fullscreen
+bindsym $hyp+$alt+f floating toggle
+bindsym $hyp+$alt+t floating disable
+bindsym $hyp+q layout stacking
+bindsym $hyp+w layout tabbed
+bindsym $hyp+e layout toggle split
+bindsym $hyp+f focus mode_toggle
+bindsym $hyp+a focus parent
+bindsym $hyp+r scratchpad show
+bindsym $hyp+$alt+r move scratchpad
+
+include /etc/sway/config.d/*
