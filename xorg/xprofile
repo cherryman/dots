@@ -7,6 +7,6 @@ case "$(uname -n)" in
         ;;
 esac
 
-setxkbmap -option custom:caps_hyper
+setxkbmap -option caps:hyper
 redshift &
 sxhkd &
