@@ -9,6 +9,8 @@ exec mako
 exec $term
 bar swaybar_command waybar
 
+xwayland enabled
+
 output * bg "$WALLPAPER" fill
 default_border pixel 2
 default_floating_border pixel 2

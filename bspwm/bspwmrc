@@ -16,7 +16,7 @@ case "$(uname -n)" in
         bspc monitor next    -d "$wsinfo"
         ;;
     *)
-        bspc monitor primary -d "$wscon" "$wsmisc" "$wsnav"
+        bspc monitor primary -d "$wscon" "$wsnav" "$wsmisc"
         bspc monitor next    -d "$wsinfo"
         ;;
 esac

@@ -118,13 +118,14 @@ augroup indent
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
 augroup END
 
-augroup format
+augroup formatter
     au!
-    au FileType javascript* setl fex= formatprg=prettier\ --parser=babel
-    au FileType typescript* setl fex= formatprg=prettier\ --parser=typescript
-    au FileType haskell     setl fex= formatprg=stylish-haskell
-    au FileType elixir      setl fex= formatprg=mix\ format\ -
-    au FileType rust        setl fex= formatprg=rustfmt
+    au FileType javascript* setl fex= fp=prettier\ --parser=babel
+    au FileType typescript* setl fex= fp=prettier\ --parser=typescript
+    au FileType html*       setl fex= fp=tidy\ --tidy-mark\ 0\ -i\ -q\ --show-errors\ 0
+    au FileType haskell     setl fex= fp=stylish-haskell
+    au FileType elixir      setl fex= fp=mix\ format\ -
+    au FileType rust        setl fex= fp=rustfmt
 augroup END
 
 "}}}
@@ -295,8 +296,13 @@ let g:haskell_indent_guard = 4
 
 " local-vimrc
 let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
-let g:localvimrc_whitelist = [$HOME . '/proj', $HOME . '/work']
 let g:localvimrc_sandbox = 0
+let g:localvimrc_whitelist = [
+\   $HOME . '/proj',
+\   $HOME . '/work',
+\   $HOME . '/hack',
+\   $HOME . '/study',
+\]
 
 " lsp
 let g:asyncomplete_auto_popup = 0
