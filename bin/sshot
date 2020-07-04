@@ -18,7 +18,7 @@ Depends on: maim, xclip
 EOF
 }
 
-if   [ -z "$WAYLAND_DISPLAY" ] && [ -z $DISPLAY]; then
+if   [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
     echo >&2 'No X or wayland session found, aborting'
     exit 1
 fi
@@ -30,13 +30,13 @@ fi
 
 copy_img() {
     if [ -n "$WAYLAND_DISPLAY" ]; then wl-copy
-    elif [-n "$DISPLAY" ]; then xclip -i -sel clip -t image/png
+    elif [ -n "$DISPLAY" ]; then xclip -i -sel clip -t image/png
     fi
 }
 
 scrot() {
     if [ -n "$WAYLAND_DISPLAY" ]; then grim -g "$(slurp)" -
-    elif [-n "$DISPLAY" ]; then maim -su
+    elif [ -n "$DISPLAY" ]; then maim -su
     fi
 }
 
