@@ -1,0 +1,10 @@
+{
+    "React Native": {
+        "prefix": ["rn"],
+        "body": [
+            "import React from 'react';",
+            "$0"
+        ],
+        "description": "React Native template."
+    }
+}

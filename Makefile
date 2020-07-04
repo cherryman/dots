@@ -52,6 +52,7 @@ vim:
 	mkdir -p $(HOME)/.vim $(HOME)/.cache/vim
 	$(LINK) $(DOTDIR)/$@/vimrc ../.vimrc
 	$(LINK) ../$(DOTDIR)/$@/vim-plug ../.vim/
+	$(LINK) ../$(DOTDIR)/$@/snippets ../.vim/
 
 sh:
 	$(LINK) $(DOTDIR)/$@/profile ../.profile

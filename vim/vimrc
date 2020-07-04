@@ -16,6 +16,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'https://gitlab.com/bimlas/vim-high.git'
 Plug 'itchyny/lightline.vim'
+Plug 'rhysd/git-messenger.vim'
 
 " util
 Plug 'scrooloose/nerdtree'
@@ -25,13 +26,20 @@ Plug 'tpope/vim-dispatch'
 
 " edit
 Plug 'Raimondi/delimitMate'
-Plug 'tpope/vim-commentary'
+Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'tpope/vim-endwise'
-Plug 'w0rp/ale'
 Plug 'alvan/vim-closetag'
+
+Plug 'w0rp/ale'
+Plug 'prabirshrestha/async.vim' " vim-lsp
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " lang
 Plug 'MaxMEllon/vim-jsx-pretty' " Must be ahead of polyglot
@@ -116,6 +124,7 @@ augroup format
     au FileType typescript* setl fex= formatprg=prettier\ --parser=typescript
     au FileType haskell     setl fex= formatprg=stylish-haskell
     au FileType elixir      setl fex= formatprg=mix\ format\ -
+    au FileType rust        setl fex= formatprg=rustfmt
 augroup END
 
 "}}}
@@ -190,6 +199,20 @@ nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>gq :Preserve normal gggqG<CR>
 nmap <Leader>= :Preserve normal gg=G<CR>
 
+imap <expr> <C-j> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-j>'
+imap <expr> <C-k> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-k>'
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
+imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
+imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
+
+nmap gcc <Plug>NERDCommenterToggle
+nmap gyy <Plug>NERDCommenterYank
+xmap gc <Plug>NERDCommenterToggle
+xmap gy <Plug>NERDCommenterYank
+
+nmap <Leader>gm <Plug>(git-messenger)
+
 " abbrevs
 augroup abbrevs
     au!
@@ -219,7 +242,9 @@ let g:ale_link_on_text_changed = 'always'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_enabled = 0
 let g:ale_linters = {
-\   'rust':       ['cargo'],
+\   'c':          ['clangd'],
+\   'cpp':        ['clangd'],
+\   'rust':       ['rls'],
 \   'bash':       ['shellcheck'],
 \   'sh':         ['shellcheck'],
 \   'elixir':     ['elixir-ls'],
@@ -232,6 +257,7 @@ let g:ale_c_gcc_options = g:ale_c_clang_options
 let g:ale_elixir_elixir_ls_release = $HOME . '/.local/src/elixir-ls/release'
 
 " ctrlp
+let g:ctrlp_map = ''
 if executable('rg')
     let g:ctrlp_user_command = 'rg %s --files --hidden --color never -g "!.git/*"'
     let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " --no-ignore"
@@ -243,9 +269,6 @@ elseif executable('find')
     let g:ctrlp_user_command = 'find %s'
 endif
 
-" dart-vim
-let g:dart_style_guide = 2
-
 " delimitMate
 let g:delimitMate_expand_cr = 1
 augroup plugins
@@ -254,6 +277,9 @@ augroup plugins
     au FileType matlab   let b:delimitMate_quotes = '"'
     au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
+
+" git-messenger
+let g:git_messenger_no_default_mappings = v:true
 
 " haskell-vim
 let g:haskell_indent_disable = 0
@@ -272,9 +298,18 @@ let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
 let g:localvimrc_whitelist = [$HOME . '/proj', $HOME . '/work']
 let g:localvimrc_sandbox = 0
 
+" lsp
+let g:asyncomplete_auto_popup = 0
+let g:lsp_diagnostics_enabled = 0
+let g:lsp_fold_enabled = 0
+
+" nerdcommenter
+let g:NERDCreateDefaultMappings = 0
+
 " nerdtree
 let g:NERDTreeMapHelp = ''
 let g:NERDTreeMinimalUI = 1
+let g:NERDTreeCaseSensitiveSort = 1
 
 " polyglot
 let g:polyglot_disabled = [
@@ -331,6 +366,10 @@ let g:workspace_autosave_untrailspaces = 0
 let g:workspace_autosave_ignore = [
 \   'gitcommit',
 \ ]
+
+" vim-vsnip
+let g:vsnip_snippet_dir = $HOME . '/.vim/snippets'
+
 "}}}
 " ---- Misc {{{
 

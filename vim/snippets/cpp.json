@@ -1,0 +1,26 @@
+{
+  "CP": {
+    "prefix": ["cp"],
+    "body": [
+      "#include <iostream>",
+      "#include <algorithm>",
+      "#include <utility>",
+      "#include <vector>",
+      "using namespace std;",
+      "typedef long long ll;",
+      "typedef pair<int, int> pi;",
+      "typedef vector<int> vi;",
+      "typedef vector<pi> vpi;",
+      "",
+      "int main() {",
+      "\tios::sync_with_stdio(0);",
+      "\tcin.tie(0);",
+      "",
+      "\t$0",
+      "",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "Class definition template."
+  }
+}
