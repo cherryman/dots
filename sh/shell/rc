@@ -1,8 +1,9 @@
-os="$(uname -s)"
 alias have='command -v > /dev/null'
+alias tw=timew
+alias t=task
 
+os="$(uname -s)"
 for f in "$ENV".d/*.sh; do
     . "$f"
 done
-
 unset os

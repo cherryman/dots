@@ -32,11 +32,11 @@ less-widget() {
 }
 
 xclip-widget() {
-    BUFFER+= " | xclip -i -sel c"
+    BUFFER+=" | xclip -i -sel c"
     zle accept-line
 }
 
-zle -N menu-widget
 zle -N less-widget
+zle -N xclip-widget
 bindkey '\eo' less-widget
 bindkey '\ec' xclip-widget

@@ -59,6 +59,9 @@ window:
   # Set this to `None` to use the default theme variant.
   gtk_theme_variant: None
 
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
+
 scrolling:
   # Specifying '0' will disable scrolling.
   history: 0
@@ -228,9 +231,6 @@ background_opacity: 1.0
 
   # When set to `true`, selected text will be copied to the primary clipboard.
   #save_to_clipboard: false
-
-# Allow terminal applications to change Alacritty's window title.
-dynamic_title: true
 
 cursor:
   # Values for `style`:
