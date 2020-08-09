@@ -15,6 +15,7 @@ XDGC_TARGETS	= alacritty    \
 		  i3           \
 		  sway	       \
 		  waybar       \
+		  picom        \
 		  bspwm        \
 		  dunst        \
 		  rofi         \

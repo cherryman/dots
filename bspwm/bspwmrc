@@ -39,11 +39,9 @@ bspc desktop "$wscon" -l monocle
 bspc desktop "$wsnav" -l monocle
 
 ### Program launch
-sxhkd -c "$BSPWM_HOME/sxhkdrc" &
 wallp &
-compton -b &
-command -v > /dev/null spotifyd && spotifyd
-
+sxhkd -c "$BSPWM_HOME/sxhkdrc" &
+picom -b &
 bspc rule -a \* -o desktop="$wscon" && $TERMINAL &
-
+command -v > /dev/null spotifyd && spotifyd
 xdg-autostart &
