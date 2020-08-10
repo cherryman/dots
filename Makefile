@@ -72,10 +72,11 @@ zsh:	base16-shell
 
 .PHONY: tmux
 tmux:
-	mkdir -p $(HOME)/.tmux/plugins
-	$(LINK) $(DOTDIR)/$@/tmux.conf ../.tmux.conf
-	$(LINK) ../$(DOTDIR)/$@/scripts ../.tmux/scripts
-	$(LINK) ../../$(DOTDIR)/$@/tpm ../.tmux/plugins/tpm
+	mkdir -p $(XDGC)/tmux
+	mkdir -p $(XDGC)/tmux/plugins
+	$(LINK) ../../$(DOTDIR)/$@/tmux.conf $(XDGC)/$@/tmux.conf
+	$(LINK) ../../$(DOTDIR)/$@/scripts $(XDGC)/$@/scripts
+	$(LINK) ../../../$(DOTDIR)/$@/tpm $(XDGC)/$@/plugins/tpm
 
 .PHONY: npm
 npm:
