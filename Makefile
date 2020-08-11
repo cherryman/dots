@@ -68,6 +68,7 @@ sh:
 .PHONY: zsh
 zsh:	base16-shell
 	$(LINK) $(DOTDIR)/$@/zshrc ../.zshrc
+	$(LINK) $(DOTDIR)/$@/zshenv ../.zshenv
 	$(LINK) ../$(DOTDIR)/$@/zplug $(XDGC)
 
 .PHONY: tmux

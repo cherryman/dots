@@ -34,4 +34,4 @@ else                 EDITOR=vi
 fi
 
 export EDITOR VISUAL="$EDITOR"
-have less  && export PAGER=less
+have less && export PAGER=less

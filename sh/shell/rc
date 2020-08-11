@@ -1,9 +1,70 @@
+# vim:set ft=sh:
 alias have='command -v > /dev/null'
+
+case "$(uname -s)" in
+    Linux) alias ls='ls --color';;
+    FreeBSD) alias ls='ls --color';;
+    Darwin) alias ls='ls -G';;
+esac
+
+alias l='ls -l'
+alias la='ls -A'
+alias lla='ls -Al'
+
 alias tw=timew
 alias t=task
 
-os="$(uname -s)"
-for f in "$ENV".d/*.sh; do
-    . "$f"
-done
-unset os
+alias g=git
+alias gws='git status --short'
+alias gwS='git status --long'
+alias gwd='git diff'
+alias gwD='git diff --word-diff'
+
+### fasd
+if have fasd; then
+    if   [ "$BASH" ];     then eval "$(fasd --init bash-hook)"
+    elif [ "$ZSH_NAME" ]; then eval "$(fasd --init zsh-hook)"
+    else eval "$(fasd --init posix-hook)"
+    fi
+
+    z()  { cd "$(fasd -d "$@")"; }
+    zz() { cd "$(fasd -d -i "$@")"; }
+fi
+
+### Prompt
+min_path() {
+    dir="$1"
+
+    case "$dir" in
+        "$HOME")
+            echo '~'
+            return ;;
+        "$HOME"*)
+            dir="${dir#$HOME}"
+            minpath='~' ;;
+    esac
+
+    dir="${dir#/}"
+    while [ "$dir" != "${dir##*/}" ]; do
+        d="${dir%%/*}"
+        minpath="$minpath/${d%${d#?}}"
+        dir="${dir#*/}"
+    done
+
+    echo "$minpath/$dir"
+    unset minpath dir d
+}
+
+esc_print() {
+    if   [ "$BASH" ];     then echo "\[$*\]"
+    elif [ "$ZSH_NAME" ]; then echo "%{$*%}"
+    else echo "$*"
+    fi
+}
+
+esc="" # escape character
+clr_blue="${esc}[34m"
+clr_rst="${esc}[00m"
+PS1='[$(min_path "$PWD")] ' # colors added in shell's rc
+PS1="$(esc_print "$clr_blue")$PS1$(esc_print "$clr_rst")"
+unset esc clr_blue clr_rst
