@@ -1,12 +1,9 @@
-export BASE16_SHELL="$HOME/.config/base16-shell"
 export ZPLUG_HOME="$HOME/.config/zplug"
 
 source "$ZPLUG_HOME/init.zsh"
 [[ -o interactive ]] &&
     [ -s $BASE16_SHELL/profile_helper.sh ] &&
     eval "$($BASE16_SHELL/profile_helper.sh)"
-
-[[ -o login ]] && source "$HOME/.profile"
 
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'

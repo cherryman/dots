@@ -1,1 +1,2 @@
+[[ -o login ]] && source "$HOME/.profile"
 source "$ENV"

@@ -5,6 +5,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 export ENV="$XDG_CONFIG_HOME/shell/rc"
+export BASE16_SHELL="$HOME/.config/base16-shell"
 
 export DOTFILES_DIR="$HOME/dots"
 export WALLPAPER="$HOME/media/pic/wallp"
