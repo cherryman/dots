@@ -21,6 +21,7 @@ XDGC_TARGETS	= alacritty    \
 		  rofi         \
 		  sxhkd        \
 		  base16-shell \
+		  htop         \
 		  nvim         \
 		  git
 
