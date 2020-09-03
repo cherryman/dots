@@ -31,15 +31,16 @@ Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'alvan/vim-closetag'
-
-Plug 'w0rp/ale'
-Plug 'prabirshrestha/async.vim' " vim-lsp
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
+Plug 'tpope/vim-obsession'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'dense-analysis/ale'
+
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'yami-beta/asyncomplete-omni.vim'
 
 " lang
 Plug 'MaxMEllon/vim-jsx-pretty' " Must be ahead of polyglot
@@ -48,6 +49,7 @@ Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'neovimhaskell/haskell-vim'
+Plug 'ziglang/zig.vim'
 
 call plug#end()
 
@@ -59,13 +61,27 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
-fun! s:Preserve(cmd)
+fun! Preserve(cmd)
     let l:w = winsaveview()
     exec a:cmd
     call winrestview(l:w)
 endfun
 
-command! -nargs=1 Preserve call s:Preserve(<q-args>)
+fun! Format()
+    if !&fp | ret | endif
+    mkview!
+
+    silent let out = systemlist(&fp, getline(1, '$'))
+    if v:shell_error == 0
+        silent! exe len(out) . ',' line('$') . 'delete _'
+        call setline(1, l:out)
+    else
+        echo 'Failed to format'
+    endif
+    silent! loadview
+endfun
+
+command! -nargs=0 Format call Format()
 
 command! ToggleSyntax
 \   if exists("g:syntax_on")
@@ -107,6 +123,7 @@ augroup indent
     au FileType javascript* setl ts=2 sts=2 sw=2
     au FileType typescript* setl ts=2 sts=2 sw=2
     au FileType html*,css   setl ts=2 sts=2 sw=2
+    au FileType scss,less   setl ts=2 sts=2 sw=2
     au FileType asm         setl noet ts=6 sw=6 sts=0
     au FileType make        setl noet ts=8 sw=8 sts=0
     au FileType *tex        setl tw=72 ts=2 sts=2 sw=2
@@ -123,27 +140,52 @@ augroup formatter
     au FileType javascript* setl fex= fp=prettier\ --parser=babel
     au FileType typescript* setl fex= fp=prettier\ --parser=typescript
     au FileType html*       setl fex= fp=tidy\ --tidy-mark\ 0\ -i\ -q\ --show-errors\ 0
+    au FileType css         setl fex= fp=prettier\ --parser=css
+    au FileType scss        setl fex= fp=prettier\ --parser=scss
+    au FileType less        setl fex= fp=prettier\ --parser=less
     au FileType haskell     setl fex= fp=stylish-haskell
     au FileType elixir      setl fex= fp=mix\ format\ -
     au FileType rust        setl fex= fp=rustfmt
+    au FileType zig         setl fex= fp=zig\ fmt\ --stdin
 augroup END
 
 "}}}
-" ---- Interface {{{
+" ---- Meta {{{
 filetype indent on
 
 set number " line numbers
 set cursorline " highlight line under cursor
 set laststatus=2 " open statusline
 set noshowmode " don't show '--INSERT--'
-
 set noshowmatch " highlight matching bracket
 set incsearch " search while typing
 set hlsearch " highlight search
-
 set splitbelow " open below instead of above
-
 set mouse=a " mouse movement
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+    set grepformat=%f:%l:%c:%m
+endif
+
+set modeline
+set nospell
+set hidden
+set scrolloff=3
+set autoread
+set completeopt=menuone,noinsert,noselect,preview
+
+if !empty($XDG_CACHE_HOME)
+    if !isdirectory($XDG_CACHE_HOME.'/vim')
+        call mkdir($XDG_CACHE_HOME.'/vim', 'p')
+    endif
+    set directory=$XDG_CACHE_HOME/vim,.,/var/tmp,/tmp,
+    set backupdir=$XDG_CACHE_HOME/vim,.,~/
+
+    if !has('nvim')
+        set viminfofile=$XDG_CACHE_HOME/vim/viminfo
+    endif
+endif
 
 "}}}
 " ---- Keybinds {{{
@@ -197,8 +239,8 @@ nmap <Leader>ln :lnext<CR>
 nmap <Leader>lp :lprev<CR>
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
-nmap <Leader>gq :Preserve normal gggqG<CR>
-nmap <Leader>= :Preserve normal gg=G<CR>
+nmap <Leader>gq :Format<CR>
+nmap <expr> <Leader>= Preserve('norm gg=G')
 
 imap <expr> <C-j> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-j>'
 imap <expr> <C-k> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-k>'
@@ -206,6 +248,9 @@ imap <c-space> <Plug>(asyncomplete_force_refresh)
 imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
 imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
+
+nmap <silent> u :call Preserve('undo')<CR>
+nmap <silent> <C-r> :call Preserve('redo')<CR>
 
 nmap gcc <Plug>NERDCommenterToggle
 nmap gyy <Plug>NERDCommenterYank
@@ -308,6 +353,16 @@ let g:localvimrc_whitelist = [
 let g:asyncomplete_auto_popup = 0
 let g:lsp_diagnostics_enabled = 0
 let g:lsp_fold_enabled = 0
+let g:asyncomplete_auto_completeopt = 0
+au User asyncomplete_setup call asyncomplete#register_source({
+\ 'name': 'omni',
+\ 'allowlist': ['tex'],
+\ 'completor': function('asyncomplete#sources#omni#completor'),
+\ 'config': {
+\   'show_source_kind': 1
+\ },
+\ 'refresh_pattern': '\%(\k\|\.\)',
+\})
 
 " nerdcommenter
 let g:NERDCreateDefaultMappings = 0
@@ -316,6 +371,7 @@ let g:NERDCreateDefaultMappings = 0
 let g:NERDTreeMapHelp = ''
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeCaseSensitiveSort = 1
+let g:NERDTreeWinSize = 25
 
 " polyglot
 let g:polyglot_disabled = [
@@ -325,10 +381,11 @@ let g:polyglot_disabled = [
 \ ]
 
 " vim-closetag
-let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx'
+let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx,*.js'
 let g:closetag_regions = {
 \ 'typescriptreact': 'jsxRegion,tsxRegion',
 \ 'javascriptreact': 'jsxRegion',
+\ 'javascript': 'jsxRegion',
 \ }
 
 " vim-gitgutter
@@ -344,7 +401,11 @@ let g:high_lighters = {
 
 " vim-lightline
 fun! LightlineLinting()
-    return g:ale_enabled ? 'linting' : ''
+    return g:ale_enabled ? 'lint' : ''
+endfun
+
+fun! LightlineSession()
+    return ObsessionStatus('sess', '')
 endfun
 
 let g:lightline = {
@@ -352,11 +413,12 @@ let g:lightline = {
 \   'active': {
 \       'left': [ ['mode', 'paste'],
 \                 ['readonly', 'filename', 'modified' ],
-\                 ['linting'],
+\                 ['session', 'linting'],
 \               ],
 \   },
 \   'component_function': {
 \       'linting': 'LightlineLinting',
+\       'session': 'LightlineSession',
 \   }
 \ }
 
@@ -364,44 +426,14 @@ let g:lightline = {
 let g:pandoc#folding#level = 6
 let g:pandoc#folding#fdc = 0
 
-" vim-workspace
-let g:workspace_session_name = 'Session.vim'
-let g:workspace_autosave = 0
-let g:workspace_autosave_always = 0
-let g:workspace_autosave_untrailspaces = 0
-let g:workspace_autosave_ignore = [
-\   'gitcommit',
-\ ]
+" vimtex
+let g:tex_flavor = 'latex'
 
 " vim-vsnip
 let g:vsnip_snippet_dir = $HOME . '/.vim/snippets'
 
-"}}}
-" ---- Misc {{{
-
-if executable('rg')
-    set grepprg=rg\ --vimgrep
-    set grepformat=%f:%l:%c:%m
-endif
-
-set modeline
-set modelines=5
-set nospell
-set hidden
-set scrolloff=3
-set backspace=indent,eol,start
-
-if !empty($XDG_CACHE_HOME)
-    if !isdirectory($XDG_CACHE_HOME.'/vim')
-        call mkdir($XDG_CACHE_HOME.'/vim', 'p')
-    endif
-    set directory=$XDG_CACHE_HOME/vim,.,/var/tmp,/tmp,
-    set backupdir=$XDG_CACHE_HOME/vim,.,~/
-
-    if !has('nvim')
-        set viminfofile=$XDG_CACHE_HOME/vim/viminfo
-    endif
-endif
+" zig
+let g:zig_fmt_autosave = 0
 
 "}}}
 
