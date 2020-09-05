@@ -21,6 +21,7 @@ XDGC_TARGETS	= alacritty    \
 		  rofi         \
 		  sxhkd        \
 		  base16-shell \
+		  tmux         \
 		  htop         \
 		  nvim         \
 		  git
@@ -71,14 +72,6 @@ zsh:	base16-shell
 	$(LINK) $(DOTDIR)/$@/zshrc ../.zshrc
 	$(LINK) $(DOTDIR)/$@/zshenv ../.zshenv
 	$(LINK) ../$(DOTDIR)/$@/zplug $(XDGC)
-
-.PHONY: tmux
-tmux:
-	mkdir -p $(XDGC)/tmux
-	mkdir -p $(XDGC)/tmux/plugins
-	$(LINK) ../../$(DOTDIR)/$@/tmux.conf $(XDGC)/$@/tmux.conf
-	$(LINK) ../../$(DOTDIR)/$@/scripts $(XDGC)/$@/scripts
-	$(LINK) ../../../$(DOTDIR)/$@/tpm $(XDGC)/$@/plugins/tpm
 
 .PHONY: npm
 npm:
