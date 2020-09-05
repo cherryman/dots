@@ -1,13 +1,16 @@
 XDGC		= $(HOME)/.config
 DOTDIR		= dots
-LN		= ln
 LNFLAGS		=
-LINK		= $(LN) -sfn $(LNFLAGS)
+LINK		= ln -sfn $(LNFLAGS)
 
 HOME_DIRS	= .config bin                               \
 		  .local .local/share .local/src .local/bin \
 		  doc doc/desk doc/www                      \
 		  media media/pic media/vid media/music
+
+### Targets
+.PHONY: all
+all: dir xdg
 
 # for $XDG_CONFIG_HOME/* type targets
 XDGC_TARGETS	= alacritty    \
@@ -26,13 +29,9 @@ XDGC_TARGETS	= alacritty    \
 		  nvim         \
 		  git
 
-### Targets
-.PHONY: all
-all: dir xdg
-
 .PHONY: $(XDGC_TARGETS)
 $(XDGC_TARGETS):
-	$(LINK) $(PWD)/$@ $(XDGC)/$(@F)
+	$(LINK) ../$(DOTDIR)/$@ $(XDGC)/$(@F)
 
 
 .PHONY: dir
