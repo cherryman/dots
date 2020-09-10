@@ -411,10 +411,16 @@ endfun
 let g:lightline = {
 \   'colorscheme': g:lightline_colorscheme,
 \   'active': {
-\       'left': [ ['mode', 'paste'],
-\                 ['readonly', 'filename', 'modified' ],
-\                 ['session', 'linting'],
-\               ],
+\       'left': [
+\           ['mode', 'paste'],
+\           ['readonly', 'filename', 'modified'],
+\           ['session', 'linting'],
+\       ],
+\       'right': [
+\           ['lineinfo'],
+\           ['percent'],
+\           ['fileformat', 'fileencoding', 'filetype'],
+\       ],
 \   },
 \   'component_function': {
 \       'linting': 'LightlineLinting',

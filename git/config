@@ -1,3 +1,6 @@
 [user]
     name = Sheheryar Parvaz
     email = skipper308@hotmail.ca
+
+[pull]
+	ff = only

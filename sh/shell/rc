@@ -11,6 +11,7 @@ alias l='ls -l'
 alias la='ls -A'
 alias lla='ls -Al'
 
+alias tm=tmux
 alias tw=timew
 alias t=task
 
