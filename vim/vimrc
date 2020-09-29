@@ -10,6 +10,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'arcticicestudio/nord-vim'
+Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -104,11 +105,13 @@ set termguicolors
 
 let g:onedark_terminal_italics = 1
 let g:palenight_terminal_italics = 1
+let g:material_terminal_italics = 1
+let g:material_theme_style = 'default'
 
 set background=dark
 
-colorscheme onedark
-let g:lightline_colorscheme = 'onedark'
+colorscheme material
+let g:lightline_colorscheme = 'material'
 
 "}}}
 " ---- Indentation {{{
