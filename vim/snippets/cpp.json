@@ -16,7 +16,40 @@
       "\tcin.tie(0); cout.precision(20);",
       "",
       "}"
-    ],
-    "description": "Class definition template."
+    ]
+  },
+  "CP binary exponentiation": {
+      "prefix": ["pow"],
+      "body": [
+          "ll bpow(ll a, ll b, ll m) {",
+          "\ta %= m;",
+          "\tll r = 1;",
+          "\twhile (b) {",
+          "\t\tif (b & 1) r = r * a % m;",
+          "\t\ta = a * a % m;",
+          "\t\tb >>= 1;",
+          "\t}",
+          "\treturn r;",
+          "}",
+          "$0"
+      ]
+  },
+  "CP manacher's": {
+      "prefix": ["manacher"],
+      "body": [
+          "template <typename T>",
+          "void manacher(const string &s, T &d, bool even) {",
+          "\tfor (int i = 0, l = 0, r = -1; i < s.size(); ++i) {",
+          "\t\tint k = (i > r) ? !even : min(d[l+r-i+even], r-i+1);",
+          "\t\twhile (i-k-even >= 0 && i+k < s.size() && s[i-k-even] == s[i+k]) ++k;",
+          "\t\td[i] = k--;",
+          "\t\tif (i+k > r) {",
+          "\t\t\tl = i - k - even;",
+          "\t\t\tr = i + k;",
+          "\t\t}",
+          "\t}",
+          "}",
+          "$0"
+      ]
   }
 }

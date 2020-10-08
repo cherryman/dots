@@ -44,12 +44,10 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'yami-beta/asyncomplete-omni.vim'
 
 " lang
-Plug 'MaxMEllon/vim-jsx-pretty' " Must be ahead of polyglot
 Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'neovimhaskell/haskell-vim'
 Plug 'ziglang/zig.vim'
 
 call plug#end()
@@ -101,7 +99,13 @@ command! -nargs=1 -complete=dir FilesNoVCS
 " ---- Colours {{{
 filetype plugin on
 syntax enable
+
 set termguicolors
+if !has('nvim')
+    " fix for termguicolors
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
 
 let g:onedark_terminal_italics = 1
 let g:palenight_terminal_italics = 1
@@ -177,6 +181,8 @@ set hidden
 set scrolloff=3
 set autoread
 set completeopt=menuone,noinsert,noselect,preview
+set wildignore+=*.o,*.pyc,*.class
+set wildignore+=*.DS_Store
 
 if !empty($XDG_CACHE_HOME)
     if !isdirectory($XDG_CACHE_HOME.'/vim')
@@ -304,6 +310,7 @@ let g:ale_c_clangtidy_checks = ['']
 let g:ale_c_clang_options = '-std=c11 -Wall -Wpedantic'
 let g:ale_c_gcc_options = g:ale_c_clang_options
 let g:ale_elixir_elixir_ls_release = $HOME . '/.local/src/elixir-ls/release'
+let g:ale_java_javalsp_executable = '/usr/bin/java-language-server'
 
 " ctrlp
 let g:ctrlp_map = ''
@@ -374,14 +381,8 @@ let g:NERDCreateDefaultMappings = 0
 let g:NERDTreeMapHelp = ''
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeCaseSensitiveSort = 1
+let g:NERDTreeRespectWildIgnore = 1
 let g:NERDTreeWinSize = 25
-
-" polyglot
-let g:polyglot_disabled = [
-\   'latex',
-\   'haskell',
-\   'jsx',
-\ ]
 
 " vim-closetag
 let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx,*.js'
@@ -434,6 +435,9 @@ let g:lightline = {
 " vim-pandoc
 let g:pandoc#folding#level = 6
 let g:pandoc#folding#fdc = 0
+
+" python-mode
+let g:python_highlight_space_errors = 0
 
 " vimtex
 let g:tex_flavor = 'latex'
