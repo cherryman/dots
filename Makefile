@@ -23,6 +23,7 @@ XDGC_TARGETS	= alacritty    \
 		  dunst        \
 		  rofi         \
 		  sxhkd        \
+		  fontconfig   \
 		  base16-shell \
 		  tmux         \
 		  htop         \
