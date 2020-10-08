@@ -53,6 +53,7 @@ firefox:
 
 .PHONY: bin
 bin:
+	mkdir -p $(HOME)/bin
 	cd $(HOME)/bin && $(LINK) ../$(DOTDIR)/$@/* .
 
 .PHONY: vim
@@ -65,7 +66,7 @@ vim:
 .PHONY: sh
 sh:
 	$(LINK) $(DOTDIR)/$@/profile ../.profile
-	$(LINK) ../$(DOTDIR)/$@/shell $(XDGC)
+	$(LINK) $(DOTDIR)/$@/env ../.env
 
 .PHONY: zsh
 zsh:	base16-shell

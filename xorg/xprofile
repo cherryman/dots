@@ -7,6 +7,7 @@ case "$(uname -n)" in
         ;;
 esac
 
+ibus-daemon -drx
 setxkbmap -option caps:hyper
 redshift &
 sxhkd &

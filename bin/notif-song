@@ -1,0 +1,19 @@
+#!/bin/sh
+
+usage() {
+cat << EOF
+Usage: $(basename "$0")
+
+Depends on: playerctl
+EOF
+}
+
+if ! command -v playerctl > /dev/null; then
+    echo >&2 playerctl not found
+    exit 1
+fi
+
+set -e
+title=$(playerctl -p spotifyd metadata xesam:title)
+artist=$(playerctl -p spotifyd metadata xesam:artist)
+notif -r notif-song -i music "$title" "$artist"

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+readonly MAX=100
+
 err() { echo "$@" 1>&2; }
 
 usage() {
@@ -7,22 +9,17 @@ cat << EOF
 usage: $(basename "$0") <command> [<args>]
 
 Commands:
+  get
   set  <vol>
   inc  <amount>          Increase the volume
   dec  <amount>          Decrease the volume
-  get
   mute <on|off|toggle>   Mute, unmute or toggle
 EOF
 }
 
-
-### Volume backends
-#
-# Each should return the changed volume to use it to generate
-# a notification.
 vol_alsa() {
-
-    case "$cmd" in
+    arg="$2"
+    case "$1" in
         set)    a_cmd="set"; a_arg="$arg  unmute" ;;
         inc)    a_cmd="set"; a_arg="$arg%+ unmute" ;;
         dec)    a_cmd="set"; a_arg="$arg%- unmute" ;;
@@ -33,7 +30,7 @@ vol_alsa() {
             elif [ "$arg" = "toggle" ]; then a_arg="toggle"
             fi ;;
         *)
-            err "Invalid command $cmd provided"
+            err "Invalid command $1"
             exit 1
             ;;
     esac
@@ -43,29 +40,51 @@ vol_alsa() {
         | sed -n 's/.*\[\([0-9][0-9]*\)%\].*/\1/p' \
         | head -1
     )"
+
+    if [ "$1" = get ]; then
+        echo "$vol"
+    fi
 }
 
+vol_pulse() {
+    case "$1" in
+        get) vol_alsa get ;;
+        set|inc|dec)
+            case "$1" in
+                set) arg="$(($2 < MAX ? $2 : MAX))%" ;;
+                inc)
+                    c=$(vol_pulse get)
+                    arg="+$((c + $2 < MAX ? $2 : MAX - c))%"
+                    ;;
+                dec) arg="-$2%" ;;
+            esac
 
-### Main
-cmd="$1"
-arg="$2"
+            pactl set-sink-mute @DEFAULT_SINK@ 0
+            pactl set-sink-volume @DEFAULT_SINK@ "$arg"
+            ;;
+        mute)
+            case "$2" in
+                on) arg="1" ;;
+                off) arg="2" ;;
+                toggle) arg="toggle" ;;
+            esac
+            pactl set-sink-volume @DEFAULT_SINK@ "$arg"
+            ;;
+        *)
+            err "Invalid command $1"
+            exit 1
+            ;;
+    esac
+}
 
-vol= # Volume after setting it
-
-if [ $# -eq 0 ]; then
-    usage
-    exit 0
-elif [ -z "$cmd" ]; then
-    err "No command provided"
-    exit 1
-elif [ "$cmd" = 'help' ]; then
+if [ $# -eq 0 ] || [ "$1" = help ]; then
     usage
     exit 0
 fi
 
-# Only alsa supported currently
-vol_alsa
-
-if [ "$cmd" = 'get' ]; then
-    echo "$vol"
+if pactl list > /dev/null; then vol_pulse "$1" "$2"
+elif aplay -l > /dev/null; then vol_alsa "$1" "$2"
+else
+    err No backend found
+    exit 1
 fi

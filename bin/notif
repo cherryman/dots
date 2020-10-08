@@ -72,5 +72,5 @@ newid=$(gdbus call --session                              \
 
 # Store new id if necessary
 if [ -n "$name" ]; then
-    echo "$id" > "$id_file"
+    echo "$newid" > "$id_file"
 fi

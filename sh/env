@@ -1,4 +1,3 @@
-# vim:set ft=sh:
 alias have='command -v > /dev/null'
 
 case "$(uname -s)" in
@@ -21,7 +20,8 @@ alias gwS='git status --long'
 alias gwd='git diff'
 alias gwD='git diff --word-diff'
 
-### fasd
+alias k++='c++ -std=c++17 -g'
+
 if have fasd; then
     if   [ "$BASH" ];     then eval "$(fasd --init bash-hook)"
     elif [ "$ZSH_NAME" ]; then eval "$(fasd --init zsh-hook)"
@@ -33,8 +33,8 @@ if have fasd; then
 fi
 
 ### Prompt
-min_path() {
-    dir="$1"
+prompt_pwd() {
+    dir="$PWD"
 
     case "$dir" in
         "$HOME")
@@ -56,16 +56,37 @@ min_path() {
     unset minpath dir d
 }
 
-esc_print() {
+prompt_loc() {
+    prompt_user="$(id -u -n)"
+    prompt_host="$(uname -n)"
+    [ "$prompt_user" = sheheryar ] && prompt_user=
+    case "$prompt_host" in
+        Cherry*) prompt_host= ;;
+    esac
+    prompt_loc="$prompt_user${prompt_host:+@${prompt_host}}"
+    echo "${prompt_loc:+[${prompt_loc}]}"
+    unset prompt_user prompt_host prompt_loc
+}
+
+prompt_esc() {
     if   [ "$BASH" ];     then echo "\[$*\]"
     elif [ "$ZSH_NAME" ]; then echo "%{$*%}"
     else echo "$*"
     fi
 }
 
+prompt() {
+    esc="" # escape character
+    blue=$(prompt_esc "${esc}[34m")
+    magenta=$(prompt_esc "${esc}[32m")
+    reset=$(prompt_esc"${esc}[00m")
+    echo "$magenta$(prompt_loc)$blue[\$(prompt_pwd)]$reset "
+    unset esc blue magenta reset
+}
+
 esc="" # escape character
-clr_blue="${esc}[34m"
-clr_rst="${esc}[00m"
-PS1='[$(min_path "$PWD")] ' # colors added in shell's rc
-PS1="$(esc_print "$clr_blue")$PS1$(esc_print "$clr_rst")"
-unset esc clr_blue clr_rst
+blue=$(prompt_esc "${esc}[34m")
+magenta=$(prompt_esc "${esc}[32m")
+reset=$(prompt_esc "${esc}[00m")
+PS1="${magenta}$(prompt_loc)${blue}[\$(prompt_pwd)]${reset} "
+unset esc blue magenta reset

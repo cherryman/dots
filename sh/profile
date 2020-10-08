@@ -4,23 +4,25 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-export ENV="$XDG_CONFIG_HOME/shell/rc"
+export ENV="$HOME/.env"
 export BASE16_SHELL="$HOME/.config/base16-shell"
 
-export DOTFILES_DIR="$HOME/dots"
 export WALLPAPER="$HOME/media/pic/wallp"
 export WALLPAPER_DIR="$HOME/media/pic/wallp.d"
 export SCREENSHOT_DIR="$HOME/media/pic/sshot"
 
 export LESS="-RSi"
 export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
-export SHELLCHECK_OPTS='-e SC2016'
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export GOPATH="$XDG_DATA_HOME/go"
 export TEXMFHOME="$XDG_DATA_HOME/texmf"
 export TEXMFCONFIG="$XDG_CONFIG_HOME/texmf"
 export TEXMFVAR="$XDG_CACHE_HOME/texmf"
+
+export GTK_IM_MODULE=ibus
+export QT_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
 
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 PATH="$PATH:$CARGO_HOME/bin"
