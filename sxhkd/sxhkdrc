@@ -9,7 +9,7 @@ alt + shift + d
 	rofi -show drun
 
 super + grave
-	$TERMINAL
+	term
 
 super + space
 	keymap us ca

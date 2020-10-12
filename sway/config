@@ -1,12 +1,11 @@
 set $hyp Mod3
 set $sup Mod4
 set $alt Mod1
-set $term alacritty
 set $menu wofi --show drun
 
 exec redshift
 exec mako
-exec $term
+exec term
 bar swaybar_command waybar
 
 xwayland enabled
@@ -40,7 +39,7 @@ input type:touchpad {
 floating_modifier $sup normal
 
 bindsym $sup+q kill
-bindsym $sup+grave exec $term
+bindsym $sup+grave exec term
 bindsym $alt+Shift+d exec $menu
 bindsym $alt+Shift+q exec dlaunch -s "$HOME/doc/Books" xdg-open
 bindsym $alt+Shift+w exec dlaunch -s "$HOME/media/vid" xdg-open

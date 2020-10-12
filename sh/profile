@@ -30,8 +30,6 @@ PATH="$PATH:$CARGO_HOME/bin"
 PATH="$PATH:$GOPATH/bin"
 export PATH
 
-export TERMINAL=alacritty
-
 if   have nvim; then EDITOR=nvim
 elif have vim;  then EDITOR=vim
 else                 EDITOR=vi
