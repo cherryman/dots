@@ -82,6 +82,10 @@ npm:
 redshift:
 	$(LINK) ../$(DOTDIR)/$@/redshift.conf $(XDGC)
 
+.PHONY: python
+python:
+	$(LINK) ../$(DOTDIR)/$@/pythonrc.py $(XDGC)
+
 .PHONY: xorg
 xorg: xkb
 	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources
