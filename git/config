@@ -1,6 +1,12 @@
 [user]
     name = Sheheryar Parvaz
-    email = skipper308@hotmail.ca
+    email = me@cherryman.org
 
 [pull]
 	ff = only
+
+[sendemail]
+	smtpuser = me@cherryman.org
+	smtpencryption = tls
+	smtpserver = smtp.mailbox.org
+	smtpserverport = 587
