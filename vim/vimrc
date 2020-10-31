@@ -6,10 +6,6 @@ runtime vim-plug/plug.vim
 call plug#begin('~/.vim/plugged')
 
 " themes
-Plug 'joshdick/onedark.vim'
-Plug 'drewtempelmeyer/palenight.vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'arcticicestudio/nord-vim'
 Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 
 " interface
@@ -27,7 +23,7 @@ Plug 'tpope/vim-dispatch'
 
 " edit
 Plug 'Raimondi/delimitMate'
-Plug 'preservim/nerdcommenter'
+Plug 'CherryMan/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'editorconfig/editorconfig-vim'
@@ -44,11 +40,11 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'yami-beta/asyncomplete-omni.vim'
 
 " lang
-Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'ziglang/zig.vim'
+Plug 'sheerun/vim-polyglot'
 
 call plug#end()
 
@@ -154,6 +150,7 @@ augroup formatter
     au FileType elixir      setl fex= fp=mix\ format\ -
     au FileType rust        setl fex= fp=rustfmt
     au FileType zig         setl fex= fp=zig\ fmt\ --stdin
+    au FileType python      setl fex= fp=black\ --quiet\ -
 augroup END
 
 "}}}
@@ -181,7 +178,9 @@ set hidden
 set scrolloff=3
 set autoread
 set completeopt=menuone,noinsert,noselect,preview
+
 set wildignore+=*.o,*.pyc,*.class
+set wildignore+=*.pdf
 set wildignore+=*.DS_Store
 
 if !empty($XDG_CACHE_HOME)
@@ -244,8 +243,8 @@ nnoremap <BS> <C-^>
 
 nmap <Leader>lo :lopen<CR>
 nmap <Leader>lc :lclose<CR>
-nmap <Leader>ln :lnext<CR>
-nmap <Leader>lp :lprev<CR>
+nmap ]g :lnext<CR>
+nmap [g :lprev<CR>
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>gq :Format<CR>
@@ -257,14 +256,6 @@ imap <c-space> <Plug>(asyncomplete_force_refresh)
 imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
 imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
-
-nmap <silent> u :call Preserve('undo')<CR>
-nmap <silent> <C-r> :call Preserve('redo')<CR>
-
-nmap gcc <Plug>NERDCommenterToggle
-nmap gyy <Plug>NERDCommenterYank
-xmap gc <Plug>NERDCommenterToggle
-xmap gy <Plug>NERDCommenterYank
 
 nmap <Leader>gm <Plug>(git-messenger)
 
@@ -331,6 +322,7 @@ augroup plugins
     au FileType scheme   let b:delimitMate_quotes = '"'
     au FileType *verilog let b:delimitMate_quotes = '"'
     au FileType matlab   let b:delimitMate_quotes = '"'
+    au FileType lisp     let b:delimitMate_quotes = '"'
     au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
 
@@ -374,8 +366,17 @@ au User asyncomplete_setup call asyncomplete#register_source({
 \ 'refresh_pattern': '\%(\k\|\.\)',
 \})
 
-" nerdcommenter
-let g:NERDCreateDefaultMappings = 0
+augroup plugins
+    au User lsp_buffer_enabled call s:OnLspBufferEnabled()
+augroup END
+
+function! s:OnLspBufferEnabled() abort
+    setl omnifunc=lsp#complete
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <Plug>(lsp-definition)
+    nmap <buffer> <leader>ra <Plug>(lsp-rename)
+    nmap <buffer> K <Plug>(lsp-hover)
+endfun
 
 " nerdtree
 let g:NERDTreeMapHelp = ''

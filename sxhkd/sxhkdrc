@@ -11,9 +11,6 @@ alt + shift + d
 super + grave
 	term
 
-super + space
-	keymap us ca
-
 super + button{4,5}
 	vol {inc,dec} 2
 
