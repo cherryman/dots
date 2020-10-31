@@ -10,6 +10,9 @@ Session.vim
 .undodir/
 .DS_Store
 
-.elixir_ls/
+### Emacs
+*~
+\#*\#
 
+.elixir_ls/
 .idea/

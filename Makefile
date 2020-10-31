@@ -28,6 +28,7 @@ XDGC_TARGETS	= alacritty    \
 		  tmux         \
 		  htop         \
 		  nvim         \
+		  emacs        \
 		  git
 
 .PHONY: $(XDGC_TARGETS)
