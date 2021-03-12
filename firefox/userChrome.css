@@ -1,93 +1,35 @@
-/** Hide various elements */
-#main-menubar,              /* Menubar */
-
-/* Menu */
-/*#appMenu-fxa-container,*/ /* Sign in to Sync */
-#appMenu-fxa-container+toolbarseparator,
-/*#appMenuRestoreLastSession,*/
-#appMenu-zoom-controls,
-#appMenu-zoom-controls+toolbarseparator,
-#appMenu-edit-controls,
-#appMenu-edit-controls+toolbarseparator,
-/*#appMenu-library-button,*/
-#appMenu-customize-button,
-#appMenu-customize-button+toolbarseparator,
-#appMenu-open-file-button,
-#appMenu-save-file-button,
-#appMenu-find-button,
-#appMenu-more-button,
-
-/* Navbar */
-#nav-bar #home-button,
-/* hide info icon for sites without permissions */
-#urlbar :not(.grantedPermissions) #identity-icon,
-#page-action-buttons > #pocket-button-box,
-#page-action-buttons > #userContext-icons,
-#page-action-buttons > #pageAction-urlbar-screenshots_mozilla_org,
-#page-action-buttons > #pageActionButton
-{
+#main-menubar,
+#page-action-buttons > #pocket-button,
+#page-action-buttons > #pageActionButton,
+#page-action-buttons > #pageActionSeparator,
+#tabbrowser-tabs .tab-close-button {
   display: none !important;
 }
 
-/* Remove urlbar border and background */
-#urlbar, .searchbar-textbox {
-  border: none !important;
-  box-shadow: none !important;
-  background-color: var(--top-level-bg-color) !important;
-  color: var(--main-font-color) !important;
-}
-
-/* Separator to the left of the urlbar */
-.urlbar-textbox-container {
-  margin-left: 0px !important;
-  border-left: 1px solid;
-  border-image: linear-gradient(transparent 21%,
-    var(--urlbar-separator-color) 21%,
-    var(--urlbar-separator-color) 79%,transparent 79%);
-  border-image-slice: 1 !important;
-}
-
-/* Place hamburger on left */
-#PanelUI-button {
-  -moz-box-ordinal-group: 0;
-  border-left: none !important;
-}
-
-/* Hide tab close button */
-#tabbrowser-tabs .tab-close-button {
-    display: none !important;
-}
-
-/* Set tabline colour to container colour,
- * show on hover for bg tabs
- */
-.tabbrowser-tab[usercontextid] .tab-line{
-  background-color:var(--identity-tab-color)!important;
-}
-
-.tabbrowser.tab[usercontextid] .tab-line {
-  background:var(--identity-tab-color) !important;
-}
-
-.tabbrowser-tab[usercontextid] > .tab-stack > .tab-background > .tab-bottom-line {
-  background: none !important;
-}
-
-/* Remove tab borders */
-.tabbrowser-tab::after, .tabbrowser-tab::before {
-   border-left: none !important; /* Remove borders from inactive tabs */
-}
-
 :root {
-  --tabs-border: transparent !important; /* Remove borders from active tab and below tabs */
+  /* Remove borders from active tab and below tabs */
+  --tabs-border: transparent !important;
+
+  /* Number of pixels of enlargement when URL bar is focused [0px - 7px] */
+  --mbarstyler-popout-pixels: 0px;
 }
 
-/* Move tabline to the bottom */
-.tab-line {
-  -moz-box-ordinal-group: 2;
+/* Compute new position, width, and padding */
+#urlbar[breakout][breakout-extend] {
+  top: calc(5px - var(--mbarstyler-popout-pixels)) !important;
+  left: calc(0px - var(--mbarstyler-popout-pixels)) !important;
+  width: calc(100% + (2 * var(--mbarstyler-popout-pixels))) !important;
+  padding: var(--mbarstyler-popout-pixels) !important;
+}
+[uidensity="compact"] #urlbar[breakout][breakout-extend] {
+  top: calc(3px - var(--mbarstyler-popout-pixels)) !important;
+}
+[uidensity="touch"] #urlbar[breakout][breakout-extend] {
+  top: calc(4px - var(--mbarstyler-popout-pixels)) !important;
 }
 
-/* Change default line colour */
-.tab-line[selected=true] {
-  background-color: #bfcfff !important;
+/* Prevent shift of URL bar contents */
+#urlbar[breakout][breakout-extend] > #urlbar-input-container {
+  height: var(--urlbar-height) !important;
+  padding: 0 !important;
 }

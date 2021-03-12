@@ -1,0 +1,15 @@
+{
+  "boilerplate": {
+    "prefix": ["bp"],
+    "body": [
+      "\\documentclass[12pt]{article}",
+      "\\title{Title}",
+      "\\author{Author}",
+      "\\date{Date}",
+      "",
+      "\\begin{document}",
+      "$0",
+      "\\end{document}"
+    ]
+  }
+}

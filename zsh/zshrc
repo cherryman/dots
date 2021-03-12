@@ -10,6 +10,7 @@ zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
 zplug 'clvv/fasd', use:fasd, as:command
 
+export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
@@ -28,7 +29,7 @@ less-widget() {
 }
 
 xclip-widget() {
-    BUFFER+=" | xclip -i -sel c"
+    BUFFER+=" |& xclip -i -sel c"
     zle accept-line
 }
 

@@ -5,6 +5,8 @@ runtime vim-plug/plug.vim
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'antoinemadec/FixCursorHold.nvim'
+
 " themes
 Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 
@@ -16,14 +18,16 @@ Plug 'itchyny/lightline.vim'
 Plug 'rhysd/git-messenger.vim'
 
 " util
-Plug 'scrooloose/nerdtree'
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-hijack.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-dispatch'
 
 " edit
+Plug 'wellle/targets.vim'
 Plug 'Raimondi/delimitMate'
-Plug 'CherryMan/vim-commentary'
+Plug 'CherryMan/vim-commentary-yank'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'editorconfig/editorconfig-vim'
@@ -44,6 +48,8 @@ Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'ziglang/zig.vim'
+
+let g:polyglot_disabled = ['autoindent', 'sensible']
 Plug 'sheerun/vim-polyglot'
 
 call plug#end()
@@ -63,9 +69,8 @@ fun! Preserve(cmd)
 endfun
 
 fun! Format()
-    if !&fp | ret | endif
+    if &formatprg ==# "" | return | endif
     mkview!
-
     silent let out = systemlist(&fp, getline(1, '$'))
     if v:shell_error == 0
         silent! exe len(out) . ',' line('$') . 'delete _'
@@ -142,7 +147,7 @@ augroup formatter
     au!
     au FileType javascript* setl fex= fp=prettier\ --parser=babel
     au FileType typescript* setl fex= fp=prettier\ --parser=typescript
-    au FileType html*       setl fex= fp=tidy\ --tidy-mark\ 0\ -i\ -q\ --show-errors\ 0
+    au FileType html*       setl fex= fp=prettier\ --parser=html
     au FileType css         setl fex= fp=prettier\ --parser=css
     au FileType scss        setl fex= fp=prettier\ --parser=scss
     au FileType less        setl fex= fp=prettier\ --parser=less
@@ -160,7 +165,6 @@ filetype indent on
 set number " line numbers
 set cursorline " highlight line under cursor
 set laststatus=2 " open statusline
-set noshowmode " don't show '--INSERT--'
 set noshowmatch " highlight matching bracket
 set incsearch " search while typing
 set hlsearch " highlight search
@@ -222,8 +226,7 @@ nmap <Leader>cr :source ~/.vimrc<CR>
 nmap <Leader>ff :CtrlP .<CR>
 nmap <Leader>fF :FilesNoVCS .<CR>
 nmap <Leader>fp :CtrlP<CR>
-nmap <Leader>ft :NERDTreeFocus<CR>
-nmap <Leader>fc :NERDTreeClose<CR>
+nmap <Leader>ft :Fern . -drawer<CR>
 
 map \ <Plug>(easymotion-prefix)
 
@@ -290,7 +293,7 @@ let g:ale_enabled = 0
 let g:ale_linters = {
 \   'c':          ['clangd'],
 \   'cpp':        ['clangd'],
-\   'rust':       ['rls'],
+\   'rust':       ['rls', 'cargo'],
 \   'bash':       ['shellcheck'],
 \   'sh':         ['shellcheck'],
 \   'elixir':     ['elixir-ls'],
@@ -302,18 +305,17 @@ let g:ale_c_clang_options = '-std=c11 -Wall -Wpedantic'
 let g:ale_c_gcc_options = g:ale_c_clang_options
 let g:ale_elixir_elixir_ls_release = $HOME . '/.local/src/elixir-ls/release'
 let g:ale_java_javalsp_executable = '/usr/bin/java-language-server'
+let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
+let g:ale_languagetool_options = '--http --config ~/.languagetool.cfg'
 
 " ctrlp
 let g:ctrlp_map = ''
-if executable('rg')
+if executable('fd')
+    let g:ctrlp_user_command = 'fd -t f -H -E ".git/" -c never "" %s'
+    let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " -I"
+elseif executable('rg')
     let g:ctrlp_user_command = 'rg %s --files --hidden --color never -g "!.git/*"'
     let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " --no-ignore"
-elseif executable('ag')
-    let g:ctrlp_user_command = 'ag %s -g "" --hidden --nocolor
-                        \ --ignore ".git"'
-    let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " --skip-vcs-ignores"
-elseif executable('find')
-    let g:ctrlp_user_command = 'find %s'
 endif
 
 " delimitMate
@@ -378,13 +380,6 @@ function! s:OnLspBufferEnabled() abort
     nmap <buffer> K <Plug>(lsp-hover)
 endfun
 
-" nerdtree
-let g:NERDTreeMapHelp = ''
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeCaseSensitiveSort = 1
-let g:NERDTreeRespectWildIgnore = 1
-let g:NERDTreeWinSize = 25
-
 " vim-closetag
 let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx,*.js'
 let g:closetag_regions = {
@@ -409,17 +404,13 @@ fun! LightlineLinting()
     return g:ale_enabled ? 'lint' : ''
 endfun
 
-fun! LightlineSession()
-    return ObsessionStatus('sess', '')
-endfun
-
 let g:lightline = {
 \   'colorscheme': g:lightline_colorscheme,
 \   'active': {
 \       'left': [
-\           ['mode', 'paste'],
+\           ['paste'],
 \           ['readonly', 'filename', 'modified'],
-\           ['session', 'linting'],
+\           ['linting'],
 \       ],
 \       'right': [
 \           ['lineinfo'],
@@ -429,7 +420,6 @@ let g:lightline = {
 \   },
 \   'component_function': {
 \       'linting': 'LightlineLinting',
-\       'session': 'LightlineSession',
 \   }
 \ }
 

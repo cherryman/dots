@@ -1,6 +1,6 @@
 #!/bin/sh
 
-readonly MAX=100
+readonly MAX=80
 
 err() { echo "$@" 1>&2; }
 
@@ -82,8 +82,10 @@ if [ $# -eq 0 ] || [ "$1" = help ]; then
     exit 0
 fi
 
-if pactl list > /dev/null; then vol_pulse "$1" "$2"
-elif aplay -l > /dev/null; then vol_alsa "$1" "$2"
+if pactl list > /dev/null; then
+    vol_pulse "$1" "$2"
+elif aplay -l > /dev/null; then
+    vol_alsa "$1" "$2"
 else
     err No backend found
     exit 1
