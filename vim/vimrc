@@ -37,12 +37,6 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'dense-analysis/ale'
 
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'yami-beta/asyncomplete-omni.vim'
-
 " lang
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
@@ -181,7 +175,7 @@ set nospell
 set hidden
 set scrolloff=3
 set autoread
-set completeopt=menuone,noinsert,noselect,preview
+set completeopt=menuone,noinsert,noselect
 
 set wildignore+=*.o,*.pyc,*.class
 set wildignore+=*.pdf
@@ -253,9 +247,13 @@ nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>gq :Format<CR>
 nmap <expr> <Leader>= Preserve('norm gg=G')
 
+nmap K <Plug>(ale_hover)
+nmap gd <Plug>(ale_go_to_definition)
+nmap gr <Plug>(ale_find_references)
+imap <C-Space> <Plug>(ale_complete)
+
 imap <expr> <C-j> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-j>'
 imap <expr> <C-k> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-k>'
-imap <c-space> <Plug>(asyncomplete_force_refresh)
 imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
 imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
@@ -276,11 +274,9 @@ augroup END
 
 " ale
 let g:ale_sign_column_always = 0
-let g:ale_sign_info = '--'
+let g:ale_sign_info = '-'
 let g:ale_sign_warning = '*'
-let g:ale_sign_style_warning = '>'
-let g:ale_sign_error = '>>'
-let g:ale_sign_style_error = '>'
+let g:ale_sign_error = '>'
 let g:ale_set_loclist = 1
 let g:ale_set_quickfix = 0
 let g:ale_open_list = 0
@@ -293,11 +289,11 @@ let g:ale_enabled = 0
 let g:ale_linters = {
 \   'c':          ['clangd'],
 \   'cpp':        ['clangd'],
-\   'rust':       ['rls', 'cargo'],
+\   'rust':       ['analyzer', 'cargo'],
 \   'bash':       ['shellcheck'],
 \   'sh':         ['shellcheck'],
 \   'elixir':     ['elixir-ls'],
-\   'javascript': ['eslint'],
+\   'javascript': ['eslint', 'tsserver'],
 \   'typescript': ['eslint', 'tsserver'],
 \}
 let g:ale_c_clangtidy_checks = ['']
@@ -306,7 +302,6 @@ let g:ale_c_gcc_options = g:ale_c_clang_options
 let g:ale_elixir_elixir_ls_release = $HOME . '/.local/src/elixir-ls/release'
 let g:ale_java_javalsp_executable = '/usr/bin/java-language-server'
 let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
-let g:ale_languagetool_options = '--http --config ~/.languagetool.cfg'
 
 " ctrlp
 let g:ctrlp_map = ''
@@ -352,33 +347,6 @@ let g:localvimrc_whitelist = [
 \   $HOME . '/hack',
 \   $HOME . '/study',
 \]
-
-" lsp
-let g:asyncomplete_auto_popup = 0
-let g:lsp_diagnostics_enabled = 0
-let g:lsp_fold_enabled = 0
-let g:asyncomplete_auto_completeopt = 0
-au User asyncomplete_setup call asyncomplete#register_source({
-\ 'name': 'omni',
-\ 'allowlist': ['tex'],
-\ 'completor': function('asyncomplete#sources#omni#completor'),
-\ 'config': {
-\   'show_source_kind': 1
-\ },
-\ 'refresh_pattern': '\%(\k\|\.\)',
-\})
-
-augroup plugins
-    au User lsp_buffer_enabled call s:OnLspBufferEnabled()
-augroup END
-
-function! s:OnLspBufferEnabled() abort
-    setl omnifunc=lsp#complete
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <Plug>(lsp-definition)
-    nmap <buffer> <leader>ra <Plug>(lsp-rename)
-    nmap <buffer> K <Plug>(lsp-hover)
-endfun
 
 " vim-closetag
 let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx,*.js'

@@ -50,7 +50,7 @@ mode "screenshot" {
     bindsym Escape mode default
     bindsym Return mode default
 }
-bindsym $alt+Shift+s mode "screenshot"
+bindsym $sup+Shift+s mode "screenshot"
 
 bindsym XF86HomePage exec firefox
 bindsym XF86AudioRaiseVolume exec vol inc 2

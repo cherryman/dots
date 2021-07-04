@@ -12,6 +12,7 @@ case "$class" in
     Wine|steam_app_*|*_steam|csgo_linux64|osu!) echo desktop=^4 follow=off ;;
     Steam) echo desktop=^4 follow=off focus=off layer=below ;;
     Lutris) echo desktop=^4 ;;
+    Minecraft*) echo desktop=^4 ;;
     discord|Mumble|Rocket.Chat|Slack|Microsoft\ Teams*|obs|zoom) echo desktop=^3 follow=off focus=off ;;
     Deluge) echo desktop=^3 ;;
 esac

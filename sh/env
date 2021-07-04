@@ -61,7 +61,7 @@ prompt_loc() {
     prompt_host="$(uname -n)"
     [ "$prompt_user" = sheheryar ] && prompt_user=
     case "$prompt_host" in
-        Cherry*) prompt_host= ;;
+        [Cc]herry*) prompt_host= ;;
     esac
     prompt_loc="$prompt_user${prompt_host:+@${prompt_host}}"
     echo "${prompt_loc:+[${prompt_loc}]}"

@@ -14,10 +14,10 @@ super + grave
 super + button{4,5}
 	vol {inc,dec} 2
 
-alt + shift + s; {c,s}
+super + shift + s; {c,s}
 	sshot {copy,save}
 
-alt + shift + s; m
+super + shift + s; m
 	sshot out                                          \
 	| curl -s -X POST                                  \
 		-H "Authorization: Client-ID $IMGUR_CLIENT_ID" \

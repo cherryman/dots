@@ -11,16 +11,13 @@ wsinfo=''
 
 ### Configuration
 case "$(uname -n)" in
-    CherryPC)
+    cherrypc)
         bspc monitor -d "$wscon" "$wsnav" "$wsmisc" "$wsgam"
-        bspc monitor next    -d "$wsinfo"
         ;;
     *)
         bspc monitor primary -d "$wscon" "$wsnav" "$wsmisc"
-        bspc monitor next    -d "$wsinfo"
         ;;
 esac
-
 bspc monitor next -d "$wsinfo"
 
 bspc config border_width 1
@@ -42,6 +39,7 @@ bspc desktop "$wsnav" -l monocle
 wallp &
 sxhkd -c "$BSPWM_HOME/sxhkdrc" &
 picom -b &
+bspc rule -a \* -o desktop="$wscon" && emacs ~/doc/notes.org &
 bspc rule -a \* -o desktop="$wscon" && term &
 command -v > /dev/null spotifyd && spotifyd
 xdg-autostart &
