@@ -79,6 +79,10 @@ zsh:	base16-shell
 npm:
 	$(LINK) $(DOTDIR)/$@/npmrc ../.npmrc
 
+.PHONY: restic
+restic:
+	$(LINK) $(DOTDIR)/$@/exclude ../.resticexclude
+
 .PHONY: redshift
 redshift:
 	$(LINK) ../$(DOTDIR)/$@/redshift.conf $(XDGC)

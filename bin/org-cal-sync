@@ -1,0 +1,36 @@
+#!/bin/sh
+
+: ${XDG_CACHE_HOME:=$HOME/.cache}
+
+readonly SCRIPT_PATH="$XDG_CACHE_HOME/ical2org.awk"
+readonly SCRIPT_URL="https://raw.githubusercontent.com/msherry/ical2org/master/ical2org.awk"
+
+if [ $# -ne 0 ]; then
+cat >&2 << EOF
+Download .ics files from the URLs in \$ICAL_URLS and
+convert them to an .org file.
+EOF
+exit 0
+fi
+
+if [ -z "$ICAL_URLS" ]; then
+    echo >&2 "\$ICAL_URLS not set, exiting"
+    exit 1
+fi
+
+set -e
+if ! [ -f "$SCRIPT_PATH" ]; then
+    mkdir -p -- "$(dirname "$SCRIPT_PATH")"
+    curl --silent --output "$SCRIPT_PATH" -- "$SCRIPT_URL"
+fi
+
+{
+    for url in $ICAL_URLS; do
+        curl --silent "$url"
+    done
+
+    echo "# Local Variables:"
+    echo "# eval: (auto-revert-mode)"
+    echo "# End:"
+} |
+awk -f "$SCRIPT_PATH"

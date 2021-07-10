@@ -1,0 +1,19 @@
+$HOME/.cache
+$HOME/.config/**/Cache
+$HOME/.config/**/GPUCache
+$HOME/.config/**/Code Cache
+$HOME/.config/**/CacheStorage
+$HOME/.config/**/ScriptCache
+$HOME/**/__pycache__
+$HOME/.davfs2/cache
+
+$HOME/.local/share
+$HOME/.local/opt
+$HOME/.local/lib
+$HOME/.local/libexec
+$HOME/.local/man
+$HOME/.local/include
+$HOME/.mozilla/firefox/*/storage
+$HOME/.mozilla/firefox/*/minidumps
+$HOME/.mozilla/firefox/Crash Reports
+$HOME/.wine
