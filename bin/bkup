@@ -1,5 +1,10 @@
 #!/bin/sh
 set -e
 restic snapshots > /dev/null # ensure repo is initialised
+
 set -x
-restic backup "$HOME" --exclude-file="$HOME/.resticexclude" --verbose
+restic backup \
+    --verbose \
+    --exclude-caches \
+    --exclude-file="$HOME/.resticexclude" \
+    "$HOME"

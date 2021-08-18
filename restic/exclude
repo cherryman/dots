@@ -1,12 +1,9 @@
 $HOME/.cache
-$HOME/.config/**/Cache
-$HOME/.config/**/GPUCache
-$HOME/.config/**/Code Cache
-$HOME/.config/**/CacheStorage
-$HOME/.config/**/ScriptCache
+$HOME/.config/**/*Cache*
 $HOME/**/__pycache__
 $HOME/.davfs2/cache
 
+$HOME/.local/state
 $HOME/.local/share
 $HOME/.local/opt
 $HOME/.local/lib

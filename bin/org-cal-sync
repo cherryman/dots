@@ -28,9 +28,9 @@ fi
     for url in $ICAL_URLS; do
         curl --silent "$url"
     done
-
-    echo "# Local Variables:"
-    echo "# eval: (auto-revert-mode)"
-    echo "# End:"
 } |
 awk -f "$SCRIPT_PATH"
+
+echo "# Local Variables:"
+echo "# eval: (auto-revert-mode)"
+echo "# End:"

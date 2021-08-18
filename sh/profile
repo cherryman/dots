@@ -2,6 +2,7 @@ alias have='command -v > /dev/null'
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 export ENV="$HOME/.env"
@@ -12,7 +13,7 @@ export WALLPAPER="$HOME/media/pic/wallp"
 export WALLPAPER_DIR="$HOME/media/pic/wallp.d"
 export SCREENSHOT_DIR="$HOME/media/pic/sshot"
 
-export LESSHISTFILE="$XDG_CACHE_HOME/lesshst"
+export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export GOPATH="$XDG_DATA_HOME/go"
@@ -24,6 +25,8 @@ export CABAL_CONFIG="$XDG_CONFIG_HOME/cabal/config"
 export CABAL_DIR="$XDG_CACHE_HOME/cabal"
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export STACK_ROOT="$XDG_DATA_HOME/stack"
+export OCTAVE_HISTFILE="$XDG_STATE_HOME/octave_hist"
+export PSQL_HISTORY="$XDG_CACHE_HOME/psql_history"
 
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus

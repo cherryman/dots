@@ -10,10 +10,21 @@ Plug 'antoinemadec/FixCursorHold.nvim'
 " themes
 Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 
+" defaults
+Plug 'tpope/vim-repeat'
+Plug 'farmergreg/vim-lastplace'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-abolish'
+Plug 'CherryMan/vim-commentary-yank'
+Plug 'wellle/targets.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'junegunn/vim-easy-align'
+Plug 'tpope/vim-obsession'
+Plug 'editorconfig/editorconfig-vim'
+
 " interface
 Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
-Plug 'https://gitlab.com/bimlas/vim-high.git'
 Plug 'itchyny/lightline.vim'
 Plug 'rhysd/git-messenger.vim'
 
@@ -22,17 +33,10 @@ Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'tpope/vim-dispatch'
+Plug 'christoomey/vim-tmux-navigator'
 
 " edit
-Plug 'wellle/targets.vim'
-Plug 'Raimondi/delimitMate'
-Plug 'CherryMan/vim-commentary-yank'
-Plug 'tpope/vim-surround'
-Plug 'junegunn/vim-easy-align'
-Plug 'editorconfig/editorconfig-vim'
 Plug 'alvan/vim-closetag'
-Plug 'tpope/vim-obsession'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'dense-analysis/ale'
@@ -56,12 +60,6 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
-fun! Preserve(cmd)
-    let l:w = winsaveview()
-    exec a:cmd
-    call winrestview(l:w)
-endfun
-
 fun! Format()
     if &formatprg ==# "" | return | endif
     mkview!
@@ -135,6 +133,7 @@ augroup indent
     au FileType yaml        setl ts=2 sts=2 sw=2
     au FileType scheme      setl ts=2 sts=2 sw=2
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
+    au FileType lua         setl ts=2 sts=2 sw=2
 augroup END
 
 augroup formatter
@@ -170,6 +169,9 @@ if executable('rg')
     set grepformat=%f:%l:%c:%m
 endif
 
+set ignorecase
+set smartcase
+set timeoutlen=500
 set modeline
 set nospell
 set hidden
@@ -177,8 +179,8 @@ set scrolloff=3
 set autoread
 set completeopt=menuone,noinsert,noselect
 
-set wildignore+=*.o,*.pyc,*.class
-set wildignore+=*.pdf
+set wildignore+=*.o,*.so,*.pyc,*.class
+set wildignore+=*.png,*.jpg,*.zip,*.pdf
 set wildignore+=*.DS_Store
 
 if !empty($XDG_CACHE_HOME)
@@ -202,6 +204,8 @@ let maplocalleader = "\\"
 imap jk <esc>
 nnoremap <C-w>- <C-w>s
 nnoremap <C-w>\ <C-w>v
+nmap <Leader>w <C-w>
+nnoremap <BS> <C-^>
 
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -210,46 +214,28 @@ cnoremap <C-b> <Left>
 cnoremap <A-f> <S-Right>
 cnoremap <A-b> <S-Left>
 
-nmap <Leader>ea <Plug>(EasyAlign)
-xmap <Leader>ea <Plug>(EasyAlign)
-
-" not $MYVIMRC because of nvim
-nmap <Leader>ce :edit ~/.vimrc<CR>
-nmap <Leader>cr :source ~/.vimrc<CR>
+nmap <Leader>la <Plug>(EasyAlign)
+xmap <Leader>la <Plug>(EasyAlign)
+map \ <Plug>(easymotion-prefix)
+nmap <Leader>gm <Plug>(git-messenger)
 
 nmap <Leader>ff :CtrlP .<CR>
 nmap <Leader>fF :FilesNoVCS .<CR>
 nmap <Leader>fp :CtrlP<CR>
-nmap <Leader>ft :Fern . -drawer<CR>
+nmap <Leader>ft :Fern . -drawer -toggle<CR>
 
-map \ <Plug>(easymotion-prefix)
-
-nmap <Leader>th :TagbarToggle<CR>
 nmap <Leader>tn :set number!<CR>
 nmap <Leader>tr :set relativenumber!<CR>
 nmap <Leader>tc :ToggleSyntax<CR>
 nmap <Leader>tl <Plug>(ale_toggle)
-nmap <Leader>ts :ToggleWorkspace<CR>
-
-nmap <Leader>w <C-w>
-
-nmap <Leader>b :CtrlPBuffer<CR>
-nmap <silent> <Leader>[ :1bprevious<CR>
-nmap <silent> <Leader>] :1bnext<CR>
-nnoremap <BS> <C-^>
-
-nmap <Leader>lo :lopen<CR>
-nmap <Leader>lc :lclose<CR>
-nmap ]g :lnext<CR>
-nmap [g :lprev<CR>
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <Leader>gq :Format<CR>
-nmap <expr> <Leader>= Preserve('norm gg=G')
 
-nmap K <Plug>(ale_hover)
 nmap gd <Plug>(ale_go_to_definition)
 nmap gr <Plug>(ale_find_references)
+nmap K <Plug>(ale_hover)
+nmap <Leader>er <Plug>(ale_rename)
 imap <C-Space> <Plug>(ale_complete)
 
 imap <expr> <C-j> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-j>'
@@ -258,7 +244,14 @@ imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
 imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
 
-nmap <Leader>gm <Plug>(git-messenger)
+noremap <silent> <A-h> :TmuxNavigateLeft<CR>
+noremap <silent> <A-j> :TmuxNavigateDown<CR>
+noremap <silent> <A-k> :TmuxNavigateUp<CR>
+noremap <silent> <A-l> :TmuxNavigateRight<CR>
+inoremap <silent> <A-h> <C-o>:TmuxNavigateLeft<CR>
+inoremap <silent> <A-j> <C-o>:TmuxNavigateDown<CR>
+inoremap <silent> <A-k> <C-o>:TmuxNavigateUp<CR>
+inoremap <silent> <A-l> <C-o>:TmuxNavigateRight<CR>
 
 " abbrevs
 augroup abbrevs
@@ -357,15 +350,8 @@ let g:closetag_regions = {
 \ }
 
 " vim-gitgutter
+let g:gitgutter_map_keys = 0
 let g:gitgutter_override_sign_column_highlight = 0
-
-" vim-high
-let g:high_lighters = {
-\   '_': {
-\       'blacklist': ['help', 'qf', 'lf', 'vim-plug'],
-\   },
-\   'long_line': {},
-\ }
 
 " vim-lightline
 fun! LightlineLinting()
@@ -394,6 +380,9 @@ let g:lightline = {
 " vim-pandoc
 let g:pandoc#folding#level = 6
 let g:pandoc#folding#fdc = 0
+
+" vim-tmux-navigator
+let g:tmux_navigator_no_mappings = 1
 
 " python-mode
 let g:python_highlight_space_errors = 0

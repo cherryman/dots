@@ -64,8 +64,7 @@
     "C-k" #'forward-kill-line
     "C-S-v" #'clipboard-yank
     "<escape>" #'keyboard-escape-quit
-    )
-  )
+    ))
 
 (use-package org
   :config
@@ -73,12 +72,19 @@
     '((C . t)
       (python . t)))
 
-  (setq org-agenda-files '("~/doc/notes.org"
-                           "~/doc/cook.org"
-                           "~/doc/cal.org")
+  (defun org-agenda-reload ()
+    (save-window-excursion (org-agenda nil "a")))
+
+  (defun org-agenda-reload-timer ()
+    (run-with-idle-timer 900 t #'org-agenda-reload))
+
+  (setq org-directory "~/doc"
+        org-agenda-files '("~/doc")
+        org-default-notes-file "~/doc/notes.org"
         org-adapt-indentation nil
-        org-log-done 'time)
-)
+        org-log-done 'time
+        org-agenda-todo-ignore-with-date t
+        org-tags-column 0))
 
 (use-package org-chef)
 
@@ -157,7 +163,8 @@
            "C-u"   #'evil-scroll-up)
 
   (:states '(insert)
-           "C-u" #'evil-delete-back-to-indentation)
+           "C-u" #'evil-delete-back-to-indentation
+           "TAB" #'tab-to-tab-stop)
 
   :config
   (evil-mode 1))
@@ -182,6 +189,7 @@
 (use-package evil-org
   :after org
   :general
+  ("C-c a" #'org-agenda)
   (:states '(normal visual)
            "g x" #'org-open-at-point)
   :init
