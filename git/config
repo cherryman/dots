@@ -5,6 +5,9 @@
 [pull]
 	ff = only
 
+[init]
+    defaultBranch = master
+
 [sendemail]
 	smtpuser = me@cherryman.org
 	smtpencryption = tls

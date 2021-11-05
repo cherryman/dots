@@ -291,6 +291,8 @@ require('which-key').register({
     v = 'which_key_ignore',
     s = 'which_key_ignore',
   },
-  ['[t'] = { ':tabprev', 'Previous tab' },
-  [']t'] = { ':tabnext', 'Next tab' },
+  ['[t'] = { ':tabprev<CR>', 'Previous tab' },
+  [']t'] = { ':tabnext<CR>', 'Next tab' },
+  ['[c'] = { ':GitGutterPrevHunk<CR>', 'Previous hunk' },
+  [']c'] = { ':GitGutterNextHunk<CR>', 'Next hunk' },
 })

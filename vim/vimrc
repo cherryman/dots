@@ -134,6 +134,7 @@ augroup indent
     au FileType scheme      setl ts=2 sts=2 sw=2
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
     au FileType lua         setl ts=2 sts=2 sw=2
+    au FileType ocaml       setl ts=2 sts=2 sw=2
 augroup END
 
 augroup formatter
@@ -230,7 +231,8 @@ nmap <Leader>tc :ToggleSyntax<CR>
 nmap <Leader>tl <Plug>(ale_toggle)
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
-nmap <Leader>gq :Format<CR>
+nmap <silent> <Leader>gq :Format<CR>
+nmap <silent> <Leader>y :%y+<CR>
 
 nmap gd <Plug>(ale_go_to_definition)
 nmap gr <Plug>(ale_find_references)
