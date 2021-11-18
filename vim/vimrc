@@ -39,7 +39,6 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'alvan/vim-closetag'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
-Plug 'dense-analysis/ale'
 
 " lang
 Plug 'lervag/vimtex'
@@ -60,6 +59,8 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
+let g:linting = 0
+
 fun! Format()
     if &formatprg ==# "" | return | endif
     mkview!
@@ -228,17 +229,10 @@ nmap <Leader>ft :Fern . -drawer -toggle<CR>
 nmap <Leader>tn :set number!<CR>
 nmap <Leader>tr :set relativenumber!<CR>
 nmap <Leader>tc :ToggleSyntax<CR>
-nmap <Leader>tl <Plug>(ale_toggle)
 
 nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <silent> <Leader>gq :Format<CR>
 nmap <silent> <Leader>y :%y+<CR>
-
-nmap gd <Plug>(ale_go_to_definition)
-nmap gr <Plug>(ale_find_references)
-nmap K <Plug>(ale_hover)
-nmap <Leader>er <Plug>(ale_rename)
-imap <C-Space> <Plug>(ale_complete)
 
 imap <expr> <C-j> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-j>'
 imap <expr> <C-k> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-k>'
@@ -266,37 +260,6 @@ augroup END
 augroup plugins
     au!
 augroup END
-
-" ale
-let g:ale_sign_column_always = 0
-let g:ale_sign_info = '-'
-let g:ale_sign_warning = '*'
-let g:ale_sign_error = '>'
-let g:ale_set_loclist = 1
-let g:ale_set_quickfix = 0
-let g:ale_open_list = 0
-let g:ale_lint_on_enter = 1
-let g:ale_lint_on_filetype_changed = 1
-let g:ale_lint_on_save = 1
-let g:ale_link_on_text_changed = 'always'
-let g:ale_lint_on_insert_leave = 1
-let g:ale_enabled = 0
-let g:ale_linters = {
-\   'c':          ['clangd'],
-\   'cpp':        ['clangd'],
-\   'rust':       ['analyzer', 'cargo'],
-\   'bash':       ['shellcheck'],
-\   'sh':         ['shellcheck'],
-\   'elixir':     ['elixir-ls'],
-\   'javascript': ['eslint', 'tsserver'],
-\   'typescript': ['eslint', 'tsserver'],
-\}
-let g:ale_c_clangtidy_checks = ['']
-let g:ale_c_clang_options = '-std=c11 -Wall -Wpedantic'
-let g:ale_c_gcc_options = g:ale_c_clang_options
-let g:ale_elixir_elixir_ls_release = $HOME . '/.local/src/elixir-ls/release'
-let g:ale_java_javalsp_executable = '/usr/bin/java-language-server'
-let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
 
 " ctrlp
 let g:ctrlp_map = ''
@@ -357,7 +320,7 @@ let g:gitgutter_override_sign_column_highlight = 0
 
 " vim-lightline
 fun! LightlineLinting()
-    return g:ale_enabled ? 'lint' : ''
+    return g:linting ? 'lint' : ''
 endfun
 
 let g:lightline = {

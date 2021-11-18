@@ -2,6 +2,40 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
+local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+
+if fn.empty(fn.glob(install_path)) > 0 then
+  fn.system({'git', 'clone',
+    'https://github.com/wbthomason/packer.nvim', install_path})
+  vim.cmd('packadd packer.nvim')
+end
+
+require('packer').startup(function()
+  use 'wbthomason/packer.nvim'
+  use 'nvim-lua/plenary.nvim' -- common dependency
+  use 'nvim-lua/popup.nvim' -- telescope.nvim
+  use 'neovim/nvim-lspconfig'
+  use 'jose-elias-alvarez/null-ls.nvim'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/nvim-cmp'
+  use 'mfussenegger/nvim-dap'
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
+  use 'nvim-telescope/telescope.nvim'
+  use 'nvim-telescope/telescope-dap.nvim'
+  use 'folke/which-key.nvim'
+  use 'sindrets/diffview.nvim'
+  use 'TimUntersberger/neogit'
+  use 'kristijanhusak/orgmode.nvim'
+  use 'tjdevries/astronauta.nvim'
+end).install()
+
+require('astronauta.keymap')
+
+vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
+vim.o.packpath = vim.o.runtimepath
+vim.cmd('source ~/.vimrc')
+
 function merge(x, y)
   return vim.tbl_extend("force", x, y)
 end
@@ -43,38 +77,6 @@ function splitunquoted(s)
   return t
 end
 
-local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
-
-if fn.empty(fn.glob(install_path)) > 0 then
-  fn.system({'git', 'clone',
-    'https://github.com/wbthomason/packer.nvim', install_path})
-  vim.cmd('packadd packer.nvim')
-end
-
-require('packer').startup(function()
-  use 'wbthomason/packer.nvim'
-  use 'nvim-lua/plenary.nvim' -- common dependency
-  use 'nvim-lua/popup.nvim' -- telescope.nvim
-  use 'neovim/nvim-lspconfig'
-  use 'nvim-lua/completion-nvim'
-  use 'mfussenegger/nvim-dap'
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use 'JoosepAlviste/nvim-ts-context-commentstring'
-  use 'nvim-telescope/telescope.nvim'
-  use 'nvim-telescope/telescope-dap.nvim'
-  use 'folke/which-key.nvim'
-  use 'sindrets/diffview.nvim'
-  use 'TimUntersberger/neogit'
-  use 'kristijanhusak/orgmode.nvim'
-  use 'tjdevries/astronauta.nvim'
-end).install()
-
-require('astronauta.keymap')
-
-vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
-vim.o.packpath = vim.o.runtimepath
-vim.cmd('source ~/.vimrc')
-
 require('nvim-treesitter.configs').setup {
   ensure_installed = "all",
   ignore_install = {},
@@ -110,9 +112,6 @@ require('telescope').load_extension('dap')
 
 local diffview_cb = require('diffview.config').diffview_callback
 require('diffview').setup {
-  file_panel = {
-    use_icons = false,
-  },
   key_bindings = {
     view = {
       ['q'] = diffview_cb('focus_files'),
@@ -127,11 +126,45 @@ vim.g.completion_enable_auto_popup = 0
 vim.g.completion_confirm_key = ''
 
 vim.cmd [[
-  sign define LspDiagnosticsSignInformation text=- texthl=Todo linehl= numhl=
-  sign define LspDiagnosticsSignHint text=* texthl=Todo linehl= numhl=
-  sign define LspDiagnosticsSignWarning text=* texthl=Todo linehl= numhl=
-  sign define LspDiagnosticsSignError text=> texthl=WarningMsg linehl= numhl=
+  sign define DiagnosticSignInformation text=- texthl=Todo linehl= numhl=
+  sign define DiagnosticSignHint text=* texthl=Todo linehl= numhl=
+  sign define DiagnosticSignWarning text=* texthl=Todo linehl= numhl=
+  sign define DiagnosticSignError text=> texthl=WarningMsg linehl= numhl=
 ]]
+
+local cmp = require('cmp')
+cmp.setup({
+    mapping = {
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          fallback()
+        end
+      end,
+      ['<S-Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end,
+    },
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+    }),
+    completion = {
+      autocomplete = false,
+    },
+})
+
+require("null-ls").config({
+    sources = {
+        require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.diagnostics.shellcheck,
+    },
+})
 
 local lspconfig = require('lspconfig')
 local lspattach = function(client, bufnr)
@@ -143,15 +176,8 @@ local lspattach = function(client, bufnr)
     vim.keymap.imap(merge(x, { buffer = bufnr }))
   end
 
-  require('completion').on_attach(client, bufnr)
-
-  api.nvim_buf_set_var(bufnr, 'ale_enabled', 0)
-  api.nvim_buf_set_var(bufnr, 'ale_disable_lsp', 1)
-  api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  nmap { 'gd', lsp.buf.definition }
+  nmap { 'gd', require('telescope.builtin').lsp_definitions }
   nmap { 'K', lsp.buf.hover }
-  iremap { '<C-space>', '<Plug>(completion_trigger)' }
 
   if client.resolved_capabilities.declaration then
     nmap { 'gD', lsp.buf.declaration }
@@ -161,43 +187,60 @@ local lspattach = function(client, bufnr)
 
   require('which-key').register({
     ['<Leader>l'] = {
-      r = { vim.lsp.buf.rename, 'Rename' },
-      R = { require('telescope.builtin').lsp_references, 'References' },
-      D = { lsp.buf.type_definition, 'Type definition' },
+      r = { require('telescope.builtin').lsp_references, 'References' },
+      R = { vim.lsp.buf.rename, 'Rename' },
+      D = { require('telescope.builtin').lsp_type_definitions, 'Type definition' },
     },
-    ['[d'] = { vim.lsp.diagnostic.goto_prev, 'Previous error' },
-    [']d'] = { vim.lsp.diagnostic.goto_next, 'Next error' },
+    ['[d'] = { vim.diagnostic.goto_prev, 'Previous error' },
+    [']d'] = { vim.diagnostic.goto_next, 'Next error' },
   }, { buffer = bufnr })
 end
 
 local function lspenabled(_bufnr, _client_id)
-  return vim.api.nvim_get_var('ale_enabled') ~= 0
+  return vim.g.linting ~= 0
 end
 
+vim.g.linting = 0
+vim.diagnostic.disable()
+
+local function togglelsp()
+  if vim.g.linting == 0 then
+    vim.diagnostic.enable()
+    vim.g.linting = 1
+  else
+    vim.diagnostic.disable()
+    vim.g.linting = 0
+  end
+end
+
+vim.diagnostic.config({
+    virtual_text = false,
+})
 lspconfig.util.default_config = merge(
   lspconfig.util.default_config,
   {
     on_attach = lspattach,
-    handlers = {
-      -- Disable diagnostics
-      ['textDocument/publishDiagnostics'] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, {
-          virtual_text = false,
-          underline = lspenabled,
-          signs = lspenabled,
-        }
-      ),
-    }
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    -- handlers = {
+    --   ['textDocument/publishDiagnostics'] = vim.lsp.with(
+    --     vim.lsp.diagnostic.on_publish_diagnostics, {
+    --       virtual_text = false,
+    --       -- underline = lspenabled,
+    --       -- signs = lspenabled,
+    --     }
+    --   ),
+    -- },
   }
 )
 
 local lspservers = {
   {'elixirls', {cmd = {'elixir-ls'}}},
   'pyright',
-  'rust_analyzer',
+  'rls',
   'texlab',
   'tsserver',
   'zls',
+  'null-ls',
 }
 for _, lsp in ipairs(lspservers) do
   if type(lsp) == 'table' then
@@ -254,6 +297,11 @@ nmap { '<A-J>', dap.step_over }
 nmap { '<A-H>', dap.step_out }
 nmap { '<A-L>', dap.step_into }
 
+require('which-key').setup({
+    plugins = {
+        presets = false,
+    },
+})
 require('which-key').register({
   ['<Leader>f'] = {
     name = "find",
@@ -290,6 +338,9 @@ require('which-key').register({
     name = 'window',
     v = 'which_key_ignore',
     s = 'which_key_ignore',
+  },
+  ['<leader>t'] = {
+    l = { togglelsp, 'Toggle linting' }
   },
   ['[t'] = { ':tabprev<CR>', 'Previous tab' },
   [']t'] = { ':tabnext<CR>', 'Next tab' },
