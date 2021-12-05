@@ -46,9 +46,6 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'ziglang/zig.vim'
 
-let g:polyglot_disabled = ['autoindent', 'sensible']
-Plug 'sheerun/vim-polyglot'
-
 call plug#end()
 
 " install missing plugins

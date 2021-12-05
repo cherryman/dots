@@ -27,6 +27,7 @@ require('packer').startup(function()
   use 'sindrets/diffview.nvim'
   use 'TimUntersberger/neogit'
   use 'kristijanhusak/orgmode.nvim'
+  use 'ggandor/lightspeed.nvim'
   use 'tjdevries/astronauta.nvim'
 end).install()
 
@@ -122,9 +123,6 @@ require('diffview').setup {
   },
 }
 
-vim.g.completion_enable_auto_popup = 0
-vim.g.completion_confirm_key = ''
-
 vim.cmd [[
   sign define DiagnosticSignInformation text=- texthl=Todo linehl= numhl=
   sign define DiagnosticSignHint text=* texthl=Todo linehl= numhl=
@@ -178,26 +176,13 @@ local lspattach = function(client, bufnr)
 
   nmap { 'gd', require('telescope.builtin').lsp_definitions }
   nmap { 'K', lsp.buf.hover }
+  nmap { 'gt', require('telescope.builtin').lsp_type_definitions }
 
   if client.resolved_capabilities.declaration then
     nmap { 'gD', lsp.buf.declaration }
   else
     nmap { 'gD', lsp.buf.definition }
   end
-
-  require('which-key').register({
-    ['<Leader>l'] = {
-      r = { require('telescope.builtin').lsp_references, 'References' },
-      R = { vim.lsp.buf.rename, 'Rename' },
-      D = { require('telescope.builtin').lsp_type_definitions, 'Type definition' },
-    },
-    ['[d'] = { vim.diagnostic.goto_prev, 'Previous error' },
-    [']d'] = { vim.diagnostic.goto_next, 'Next error' },
-  }, { buffer = bufnr })
-end
-
-local function lspenabled(_bufnr, _client_id)
-  return vim.g.linting ~= 0
 end
 
 vim.g.linting = 0
@@ -221,15 +206,6 @@ lspconfig.util.default_config = merge(
   {
     on_attach = lspattach,
     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-    -- handlers = {
-    --   ['textDocument/publishDiagnostics'] = vim.lsp.with(
-    --     vim.lsp.diagnostic.on_publish_diagnostics, {
-    --       virtual_text = false,
-    --       -- underline = lspenabled,
-    --       -- signs = lspenabled,
-    --     }
-    --   ),
-    -- },
   }
 )
 
@@ -281,12 +257,26 @@ local neogit = require('neogit')
 local nmap = vim.keymap.nnoremap
 local remap = vim.keymap.map
 local nremap = vim.keymap.nmap
+local xremap = vim.keymap.xmap
 
 function _G.comment_run(mapping)
   pcall(require('ts_context_commentstring.internal')
     .update_commentstring)
   return termcode('<Plug>' .. mapping)
 end
+
+-- lightspeed setup
+vim.g.surround_no_mappings = 1
+nremap { 'ds', '<Plug>Dsurround' }
+nremap { 'cs', '<Plug>Csurround' }
+nremap { 'cS', '<Plug>CSurround' }
+nremap { 'ys', '<Plug>Ysurround' }
+nremap { 'yS', '<Plug>YSurround' }
+nremap { 'yss', '<Plug>Yssurround' }
+nremap { 'ySs', '<Plug>YSsurround' }
+nremap { 'ySS', '<Plug>YSsurround' }
+xremap { 'S', '<Plug>VSurround' }
+xremap { 'gS', '<Plug>VgSurround' }
 
 remap { 'gc', 'v:lua.comment_run("Commentary")', expr = true }
 remap { 'gy', 'v:lua.comment_run("(CommentaryYank)")', expr = true  }
@@ -333,6 +323,10 @@ require('which-key').register({
   ['<Leader>l'] = {
     name = 'code',
     a = { '<Plug>(EasyAlign)', 'Align' },
+    r = { require('telescope.builtin').lsp_references, 'References' },
+    R = { vim.lsp.buf.rename, 'Rename' },
+    d = { require('telescope.builtin').lsp_document_diagnostics, 'Diagnostics' },
+    D = { require('telescope.builtin').lsp_workspace_diagnostics, 'Workspace diagnostics' },
   },
   ['<leader>w'] = {
     name = 'window',
@@ -346,4 +340,6 @@ require('which-key').register({
   [']t'] = { ':tabnext<CR>', 'Next tab' },
   ['[c'] = { ':GitGutterPrevHunk<CR>', 'Previous hunk' },
   [']c'] = { ':GitGutterNextHunk<CR>', 'Next hunk' },
+  ['[d'] = { vim.diagnostic.goto_prev, 'Previous error' },
+  [']d'] = { vim.diagnostic.goto_next, 'Next error' },
 })
