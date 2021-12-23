@@ -1,7 +1,4 @@
-local api = vim.api
-local fn = vim.fn
-local lsp = vim.lsp
-
+local api, fn, lsp = vim.api, vim.fn, vim.lsp
 local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
@@ -13,16 +10,15 @@ end
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'
   use 'nvim-lua/plenary.nvim' -- common dependency
-  use 'nvim-lua/popup.nvim' -- telescope.nvim
+  use 'nvim-lua/popup.nvim'
   use 'neovim/nvim-lspconfig'
   use 'jose-elias-alvarez/null-ls.nvim'
+  use 'ojroques/nvim-lspfuzzy'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
   use 'mfussenegger/nvim-dap'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'JoosepAlviste/nvim-ts-context-commentstring'
-  use 'nvim-telescope/telescope.nvim'
-  use 'nvim-telescope/telescope-dap.nvim'
   use 'folke/which-key.nvim'
   use 'sindrets/diffview.nvim'
   use 'TimUntersberger/neogit'
@@ -46,7 +42,7 @@ function termcode(x)
 end
 
 -- Using several tricks from https://www.lua.org/pil/20.html.
-function splitunquoted(s)
+function shellsplit(s)
   -- Characters that can be '\' escaped.
   local esc = '\'"%s\\'
 
@@ -75,6 +71,7 @@ function splitunquoted(s)
     w = string.gsub(w, '\\([' .. esc .. '])', '%1')
     table.insert(t, w)
   end
+
   return t
 end
 
@@ -90,26 +87,6 @@ require('nvim-treesitter.configs').setup {
     enable_autocmd = false,
   },
 }
-
-require('telescope').setup {
-  defaults = {
-    mappings = {
-      i = {
-        ["<C-u>"] = false,
-        ["<Esc>"] = require('telescope.actions').close,
-      },
-    },
-    layout_strategy = 'horizontal',
-    layout_config = {
-      horizontal = {
-        width = 0.95,
-        height = 0.95,
-        preview_width = 0.55,
-      },
-    },
-  },
-}
-require('telescope').load_extension('dap')
 
 local diffview_cb = require('diffview.config').diffview_callback
 require('diffview').setup {
@@ -149,6 +126,11 @@ cmp.setup({
         end
       end,
     },
+    snippet = {
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body)
+      end,
+    },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
     }),
@@ -157,7 +139,9 @@ cmp.setup({
     },
 })
 
-require("null-ls").config({
+require('lspfuzzy').setup({})
+
+require("null-ls").setup({
     sources = {
         require("null-ls").builtins.diagnostics.eslint,
         require("null-ls").builtins.diagnostics.shellcheck,
@@ -174,9 +158,9 @@ local lspattach = function(client, bufnr)
     vim.keymap.imap(merge(x, { buffer = bufnr }))
   end
 
-  nmap { 'gd', require('telescope.builtin').lsp_definitions }
+  nmap { 'gd', lsp.buf.definition }
   nmap { 'K', lsp.buf.hover }
-  nmap { 'gt', require('telescope.builtin').lsp_type_definitions }
+  nmap { 'gt', lsp.buf.type_definition }
 
   if client.resolved_capabilities.declaration then
     nmap { 'gD', lsp.buf.declaration }
@@ -216,7 +200,6 @@ local lspservers = {
   'texlab',
   'tsserver',
   'zls',
-  'null-ls',
 }
 for _, lsp in ipairs(lspservers) do
   if type(lsp) == 'table' then
@@ -244,14 +227,12 @@ dap.configurations.rust = {
       return fn.input('Executable: ', fn.getcwd() .. '/target/debug/', 'file')
     end,
     args = function()
-      return splitunquoted(fn.input('Args: '))
+      return shellsplit(fn.input('Args: '))
     end,
   },
 }
 
 local dap_widgets = require('dap.ui.widgets')
-local telescope = require('telescope.builtin')
-local telescope_ext = require('telescope').extensions
 local neogit = require('neogit')
 
 local nmap = vim.keymap.nnoremap
@@ -295,9 +276,9 @@ require('which-key').setup({
 require('which-key').register({
   ['<Leader>f'] = {
     name = "find",
-    f = { telescope.find_files, 'Find files' },
-    g = { telescope.live_grep, 'Live grep' },
-    b = { telescope.buffers, 'Buffers' },
+    f = 'Files',
+    g = 'Grep',
+    b = 'Buffers',
     t = 'Tree',
   },
   ['<Leader>d'] = {
@@ -307,8 +288,6 @@ require('which-key').register({
     c = { dap.continue, 'Continue' },
     r = { dap.repl.open, 'Open repl' },
     i = { dap_widgets.hover, 'Info' },
-    f = { telescope_ext.dap.frames, 'View callframe' },
-    b = { telescope_ext.dap.list_breakpoints, 'List breakpoints' },
   },
   ['<Leader>g'] = {
     name = 'vcs',
@@ -323,10 +302,10 @@ require('which-key').register({
   ['<Leader>l'] = {
     name = 'code',
     a = { '<Plug>(EasyAlign)', 'Align' },
-    r = { require('telescope.builtin').lsp_references, 'References' },
+    r = { lsp.buf.references, 'References'},
     R = { vim.lsp.buf.rename, 'Rename' },
-    d = { require('telescope.builtin').lsp_document_diagnostics, 'Diagnostics' },
-    D = { require('telescope.builtin').lsp_workspace_diagnostics, 'Workspace diagnostics' },
+    d = { function() require('lspfuzzy').diagnostics(0) end, 'Diagnostics' },
+    D = { require('lspfuzzy').diagnostics_all, 'Workspace diagnostics' },
   },
   ['<leader>w'] = {
     name = 'window',

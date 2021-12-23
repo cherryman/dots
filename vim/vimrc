@@ -24,7 +24,6 @@ Plug 'editorconfig/editorconfig-vim'
 
 " interface
 Plug 'airblade/vim-gitgutter'
-Plug 'easymotion/vim-easymotion'
 Plug 'itchyny/lightline.vim'
 Plug 'rhysd/git-messenger.vim'
 
@@ -32,7 +31,8 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'embear/vim-localvimrc'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
 
 " edit
@@ -72,19 +72,6 @@ fun! Format()
 endfun
 
 command! -nargs=0 Format call Format()
-
-command! ToggleSyntax
-\   if exists("g:syntax_on")
-\ |     syntax off
-\ | else
-\ |     syntax enable
-\ | endif
-
-command! -nargs=1 -complete=dir FilesNoVCS
-\   let s:cmd = g:ctrlp_user_command
-\ | let b:ctrlp_user_command = g:files_find_no_vcs_cmd
-\ | CtrlP <q-args>
-\ | let b:ctrlp_user_command = s:cmd
 
 "}}}
 " ---- Colours {{{
@@ -215,19 +202,16 @@ cnoremap <A-b> <S-Left>
 
 nmap <Leader>la <Plug>(EasyAlign)
 xmap <Leader>la <Plug>(EasyAlign)
-map \ <Plug>(easymotion-prefix)
 nmap <Leader>gm <Plug>(git-messenger)
 
-nmap <Leader>ff :CtrlP .<CR>
-nmap <Leader>fF :FilesNoVCS .<CR>
-nmap <Leader>fp :CtrlP<CR>
+nmap <Leader>ff :Files .<CR>
+nmap <Leader>fg :Rg<CR>
+nmap <Leader>fb :Buffers<CR>
 nmap <Leader>ft :Fern . -drawer -toggle<CR>
 
 nmap <Leader>tn :set number!<CR>
 nmap <Leader>tr :set relativenumber!<CR>
-nmap <Leader>tc :ToggleSyntax<CR>
 
-nmap <silent> <Leader>sc :nohlsearch<CR>
 nmap <silent> <Leader>gq :Format<CR>
 nmap <silent> <Leader>y :%y+<CR>
 
@@ -258,16 +242,6 @@ augroup plugins
     au!
 augroup END
 
-" ctrlp
-let g:ctrlp_map = ''
-if executable('fd')
-    let g:ctrlp_user_command = 'fd -t f -H -E ".git/" -c never "" %s'
-    let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " -I"
-elseif executable('rg')
-    let g:ctrlp_user_command = 'rg %s --files --hidden --color never -g "!.git/*"'
-    let g:files_find_no_vcs_cmd = g:ctrlp_user_command . " --no-ignore"
-endif
-
 " delimitMate
 let g:delimitMate_expand_cr = 1
 augroup plugins
@@ -277,6 +251,15 @@ augroup plugins
     au FileType lisp     let b:delimitMate_quotes = '"'
     au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
+
+" fzf
+let g:fzf_preview_window = ['right:60%', 'ctrl-/']
+let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.9 } }
+if executable('fd')
+    let $FZF_DEFAULT_COMMAND = 'fd -t f -H -E ".git/" -c never ""'
+elseif executable('rg')
+    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --color never -g "!.git/"'
+endif
 
 " git-messenger
 let g:git_messenger_no_default_mappings = v:true
