@@ -1,4 +1,4 @@
-local api, fn, lsp = vim.api, vim.fn, vim.lsp
+local api, fn, keymap, lsp = vim.api, vim.fn, vim.keymap, vim.lsp
 local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
@@ -19,19 +19,21 @@ require('packer').startup(function()
   use 'mfussenegger/nvim-dap'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'JoosepAlviste/nvim-ts-context-commentstring'
-  use 'folke/which-key.nvim'
   use 'sindrets/diffview.nvim'
   use 'TimUntersberger/neogit'
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/lightspeed.nvim'
-  use 'tjdevries/astronauta.nvim'
 end).install()
-
-require('astronauta.keymap')
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
 vim.o.packpath = vim.o.runtimepath
 vim.cmd('source ~/.vimrc')
+
+function applyall(f, as)
+  for _, a in ipairs(as) do
+    f(unpack(a))
+  end
+end
 
 function merge(x, y)
   return vim.tbl_extend("force", x, y)
@@ -150,22 +152,14 @@ require("null-ls").setup({
 
 local lspconfig = require('lspconfig')
 local lspattach = function(client, bufnr)
-  local function nmap(x)
-    vim.keymap.nnoremap(merge(x, { buffer = bufnr }))
-  end
-
-  local function iremap(x)
-    vim.keymap.imap(merge(x, { buffer = bufnr }))
-  end
-
-  nmap { 'gd', lsp.buf.definition }
-  nmap { 'K', lsp.buf.hover }
-  nmap { 'gt', lsp.buf.type_definition }
+  keymap.set('n', 'gd', lsp.buf.definition, { buffer = bufnr })
+  keymap.set('n', 'K', lsp.buf.hover, { buffer = bufnr })
+  keymap.set('n', 'gt', lsp.buf.type_definition, { buffer = bufnr })
 
   if client.resolved_capabilities.declaration then
-    nmap { 'gD', lsp.buf.declaration }
+    keymap.set('n', 'gD', lsp.buf.declaration, { buffer = bufnr })
   else
-    nmap { 'gD', lsp.buf.definition }
+    keymap.set('n', 'gD', lsp.buf.definition, { buffer = bufnr })
   end
 end
 
@@ -193,21 +187,33 @@ lspconfig.util.default_config = merge(
   }
 )
 
-local lspservers = {
-  {'elixirls', {cmd = {'elixir-ls'}}},
-  'pyright',
-  'rls',
-  'texlab',
-  'tsserver',
-  'zls',
-}
-for _, lsp in ipairs(lspservers) do
-  if type(lsp) == 'table' then
-    lspconfig[lsp[1]].setup(lsp[2])
-  else
-    lspconfig[lsp].setup({})
-  end
-end
+applyall(
+  function(lsp)
+    if type(lsp) == 'table' then
+      lspconfig[lsp[1]].setup(lsp[2])
+    else
+      lspconfig[lsp].setup({})
+    end
+  end,
+  {
+    { {'elixirls', {cmd = {'elixir-ls'}}} },
+    { 'pyright' },
+    {
+      {'rust_analyzer', {
+        settings = {
+          ['rust-analyzer'] = {
+            checkOnSave = {
+              command = 'clippy'
+            }
+          }
+        }
+      }}
+    },
+    { 'texlab' },
+    { 'tsserver' },
+    { 'zls' },
+  }
+)
 
 local dap = require('dap')
 dap.adapters.lldb = {
@@ -235,90 +241,60 @@ dap.configurations.rust = {
 local dap_widgets = require('dap.ui.widgets')
 local neogit = require('neogit')
 
-local nmap = vim.keymap.nnoremap
-local remap = vim.keymap.map
-local nremap = vim.keymap.nmap
-local xremap = vim.keymap.xmap
-
-function _G.comment_run(mapping)
-  pcall(require('ts_context_commentstring.internal')
-    .update_commentstring)
-  return termcode('<Plug>' .. mapping)
+function comment_aux(mapping)
+  return function()
+    pcall(require('ts_context_commentstring.internal')
+      .update_commentstring)
+    return termcode('<Plug>' .. mapping)
+  end
 end
 
 -- lightspeed setup
 vim.g.surround_no_mappings = 1
-nremap { 'ds', '<Plug>Dsurround' }
-nremap { 'cs', '<Plug>Csurround' }
-nremap { 'cS', '<Plug>CSurround' }
-nremap { 'ys', '<Plug>Ysurround' }
-nremap { 'yS', '<Plug>YSurround' }
-nremap { 'yss', '<Plug>Yssurround' }
-nremap { 'ySs', '<Plug>YSsurround' }
-nremap { 'ySS', '<Plug>YSsurround' }
-xremap { 'S', '<Plug>VSurround' }
-xremap { 'gS', '<Plug>VgSurround' }
 
-remap { 'gc', 'v:lua.comment_run("Commentary")', expr = true }
-remap { 'gy', 'v:lua.comment_run("(CommentaryYank)")', expr = true  }
-nremap { 'gcc', 'v:lua.comment_run("CommentaryLine")', expr = true  }
-nremap { 'gyy', 'v:lua.comment_run("(CommentaryYankLine)")', expr = true  }
-nremap { 'cgc', 'v:lua.comment_run("ChangeCommentary")', expr = true  }
-nmap { '<A-J>', dap.step_over }
-nmap { '<A-H>', dap.step_out }
-nmap { '<A-L>', dap.step_into }
+applyall(keymap.set, {
+  { 'n', 'ds', '<Plug>Dsurround' },
+  { 'n', 'cs', '<Plug>Csurround' },
+  { 'n', 'cS', '<Plug>CSurround' },
+  { 'n', 'ys', '<Plug>Ysurround' },
+  { 'n', 'yS', '<Plug>YSurround' },
+  { 'n', 'yss', '<Plug>Yssurround' },
+  { 'n', 'ySs', '<Plug>YSsurround' },
+  { 'n', 'ySS', '<Plug>YSsurround' },
+  { 'x', 'S', '<Plug>VSurround' },
+  { 'x', 'gS', '<Plug>VgSurround' },
 
-require('which-key').setup({
-    plugins = {
-        presets = false,
-    },
-})
-require('which-key').register({
-  ['<Leader>f'] = {
-    name = "find",
-    f = 'Files',
-    g = 'Grep',
-    b = 'Buffers',
-    t = 'Tree',
-  },
-  ['<Leader>d'] = {
-    name = "debug",
-    [' '] = { dap.toggle_breakpoint, 'Toggle breakpoint' },
-    s = { dap.close, 'Stop' },
-    c = { dap.continue, 'Continue' },
-    r = { dap.repl.open, 'Open repl' },
-    i = { dap_widgets.hover, 'Info' },
-  },
-  ['<Leader>g'] = {
-    name = 'vcs',
-    q = 'which_key_ignore',
-    s = { neogit.open, 'Status' },
-    l = { function() neogit.open({ 'log' }) end, 'Log' },
-    d = { ':DiffviewOpen<CR>', 'Diff' },
-    m = { '<Plug>(git-messenger)', 'Info' },
-    h = { '<Plug>(GitGutterStageHunk)', 'Stage hunk' },
-    H = { '<Plug>(GitGutterUndoHunk)', 'Undo stage hunk' },
-  },
-  ['<Leader>l'] = {
-    name = 'code',
-    a = { '<Plug>(EasyAlign)', 'Align' },
-    r = { lsp.buf.references, 'References'},
-    R = { vim.lsp.buf.rename, 'Rename' },
-    d = { function() require('lspfuzzy').diagnostics(0) end, 'Diagnostics' },
-    D = { require('lspfuzzy').diagnostics_all, 'Workspace diagnostics' },
-  },
-  ['<leader>w'] = {
-    name = 'window',
-    v = 'which_key_ignore',
-    s = 'which_key_ignore',
-  },
-  ['<leader>t'] = {
-    l = { togglelsp, 'Toggle linting' }
-  },
-  ['[t'] = { ':tabprev<CR>', 'Previous tab' },
-  [']t'] = { ':tabnext<CR>', 'Next tab' },
-  ['[c'] = { ':GitGutterPrevHunk<CR>', 'Previous hunk' },
-  [']c'] = { ':GitGutterNextHunk<CR>', 'Next hunk' },
-  ['[d'] = { vim.diagnostic.goto_prev, 'Previous error' },
-  [']d'] = { vim.diagnostic.goto_next, 'Next error' },
+  { {'n', 'v', 'o'}, 'gc', comment_aux('Commentary'), { expr = true } },
+  { {'n', 'v', 'o'}, 'gy', comment_aux('(CommentaryYank)'), { expr = true } },
+  { 'n', 'gcc', comment_aux('CommentaryLine'), { expr = true } },
+  { 'n', 'gyy', comment_aux('(CommentaryYankLine)'), { expr = true } },
+  { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true } },
+
+  { 'n', ' lr', lsp.buf.references },
+  { 'n', ' lR', lsp.buf.rename },
+  { 'n', ' ld', function() require('lspfuzzy').diagnostics(0) end },
+  { 'n', ' lD', require('lspfuzzy').diagnostics_all },
+
+  { 'n', ' d ', dap.toggle_breakpoint },
+  { 'n', ' ds', dap.close },
+  { 'n', ' dc', dap.continue },
+  { 'n', ' dr', dap.repl.open },
+  { 'n', ' di', dap_widgets.hover },
+
+  { 'n', 'gs', neogit.open },
+  { 'n', 'gl', function() neogit.open({'log'}) end },
+  { 'n', 'gd', '<cmd>DiffviewOpen<CR>' },
+  { 'n', 'gm', '<Plug>(git-messenger)' },
+
+  { 'n', 'tl', togglelsp },
+  { 'n', '[t', '<cmd>tabprev<CR>' },
+  { 'n', ']t', '<cmd>tabnext<CR>' },
+  { 'n', '[c', '<cmd>GitGutterPrevHunk<CR>' },
+  { 'n', ']c', '<cmd>GitGutterNextHunk<CR>' },
+  { 'n', '[d', vim.diagnostic.goto_prev },
+  { 'n', ']d', vim.diagnostic.goto_next },
+
+  { 'n', '<A-J>', dap.step_over },
+  { 'n', '<A-H>', dap.step_out },
+  { 'n', '<A-L>', dap.step_into },
 })

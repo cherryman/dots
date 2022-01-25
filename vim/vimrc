@@ -18,7 +18,6 @@ Plug 'tpope/vim-abolish'
 Plug 'CherryMan/vim-commentary-yank'
 Plug 'wellle/targets.vim'
 Plug 'Raimondi/delimitMate'
-Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-obsession'
 Plug 'editorconfig/editorconfig-vim'
 
@@ -200,17 +199,12 @@ cnoremap <C-b> <Left>
 cnoremap <A-f> <S-Right>
 cnoremap <A-b> <S-Left>
 
-nmap <Leader>la <Plug>(EasyAlign)
-xmap <Leader>la <Plug>(EasyAlign)
 nmap <Leader>gm <Plug>(git-messenger)
 
 nmap <Leader>ff :Files .<CR>
 nmap <Leader>fg :Rg<CR>
 nmap <Leader>fb :Buffers<CR>
 nmap <Leader>ft :Fern . -drawer -toggle<CR>
-
-nmap <Leader>tn :set number!<CR>
-nmap <Leader>tr :set relativenumber!<CR>
 
 nmap <silent> <Leader>gq :Format<CR>
 nmap <silent> <Leader>y :%y+<CR>
@@ -251,6 +245,9 @@ augroup plugins
     au FileType lisp     let b:delimitMate_quotes = '"'
     au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
+
+" fern
+let g:fern#default_hidden = 1
 
 " fzf
 let g:fzf_preview_window = ['right:60%', 'ctrl-/']
