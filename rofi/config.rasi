@@ -1,9 +1,10 @@
 configuration {
-    theme: "sidebar.rasi";
     modi: "run,drun";
     disable-history: false;
     font: "Source Sans Pro 14";
     matching: "normal";
 }
+
+@theme "sidebar.rasi"
 
 /* vim: set ft=css: */

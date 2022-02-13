@@ -9,6 +9,7 @@ zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
 zplug 'clvv/fasd', use:fasd, as:command
+zplug 'junegunn/fzf', use:'shell/*.zsh'
 
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 autoload -Uz compinit
@@ -28,12 +29,5 @@ less-widget() {
     zle accept-line
 }
 
-xclip-widget() {
-    BUFFER+=" |& xclip -i -sel c"
-    zle accept-line
-}
-
 zle -N less-widget
-zle -N xclip-widget
 bindkey '\eo' less-widget
-bindkey '\ec' xclip-widget

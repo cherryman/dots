@@ -62,6 +62,10 @@ window:
   # Allow terminal applications to change Alacritty's window title.
   dynamic_title: true
 
+  # Window opacity as a floating point number from `0.0` to `1.0`.
+  # The value `0.0` is completely transparent and `1.0` is opaque.
+  opacity: 1.0
+
 scrolling:
   # Specifying '0' will disable scrolling.
   history: 0
@@ -81,7 +85,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: Source Code Pro
+    family: monospace
 
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -221,10 +225,6 @@ colors:
 #  animation: EaseOutExpo
 #  duration: 0
 #  color: '0xffffff'
-
-# Window opacity as a floating point number from `0.0` to `1.0`.
-# The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
 
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
