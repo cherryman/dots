@@ -1,16 +1,18 @@
 set $hyp Mod3
 set $sup Mod4
 set $alt Mod1
-set $menu wofi --show drun
 
-exec redshift
-exec mako
-exec term
-bar swaybar_command waybar
+exec gammastep
+exec dunst
+exec term -e zsh -ic 'tmux attach'
 
+floating_modifier $sup normal
+font pango:sans-serif 10
 xwayland enabled
-
+bar swaybar_command waybar
 output * bg "$WALLPAPER" fill
+
+hide_edge_borders --i3 smart
 default_border pixel 2
 default_floating_border pixel 2
 client.focused #888888 #888888 #ffffff
@@ -36,14 +38,6 @@ input type:touchpad {
     natural_scroll enabled
 }
 
-floating_modifier $sup normal
-
-bindsym $sup+q kill
-bindsym $sup+grave exec term
-bindsym $alt+Shift+d exec $menu
-bindsym $alt+Shift+q exec dlaunch -s "$HOME/doc/Books" xdg-open
-bindsym $alt+Shift+w exec dlaunch -s "$HOME/media/vid" xdg-open
-
 mode "screenshot" {
     bindsym s exec sshot save; mode default
     bindsym c exec sshot copy; mode default
@@ -62,7 +56,16 @@ bindsym XF86AudioPlay exec playerctl -i firefox play-pause
 bindsym XF86MonBrightnessUp exec brightnessctl s 5%+
 bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
 
-bindsym $sup+Shift+c reload
+bindsym $sup+grave exec term
+bindsym $alt+Shift+d exec rofi -show drun
+bindsym $alt+Shift+q exec dlaunch -s "$HOME/doc/Books" xdg-open
+bindsym $alt+Shift+w exec dlaunch -s "$HOME/media/vid" xdg-open
+bindsym $sup+equal gaps inner all plus 5
+bindsym $sup+minus gaps inner all minus 5
+bindsym --whole-window $sup+button4 exec vol inc 2
+bindsym --whole-window $sup+button5 exec vol dec 2
+bindsym $sup+q kill
+bindsym $sup+$alt+c reload
 bindsym $sup+$alt+Escape exec swaynag -t warning -m 'Quit?' -b 'Yes' 'swaymsg exit'
 bindsym $hyp+h focus left
 bindsym $hyp+j focus down

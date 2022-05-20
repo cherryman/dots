@@ -1,13 +1,12 @@
+# vim:ft=sh:
+
 case "$(uname -n)" in
-    CherryPC)
+    cherrypc)
         xset m 1 0 # Disable mouse accel
+        setxkbmap -option caps:hyper -option altwin:swap_alt_win
         ;;
-    CherryLT)
+    cherrylt)
         (sleep 0.5; polybar example) &
+        setxkbmap -option caps:hyper
         ;;
 esac
-
-ibus-daemon -drx
-setxkbmap -option caps:hyper
-redshift &
-sxhkd &
