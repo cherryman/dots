@@ -29,6 +29,7 @@ XDGC_TARGETS	= alacritty    \
 		  htop         \
 		  nvim         \
 		  emacs        \
+		  doom         \
 		  darktable    \
 		  git
 
