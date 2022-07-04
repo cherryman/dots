@@ -6,9 +6,11 @@
                 "~/doc/org/roam")
 
 (setq doom-font (font-spec :family "monospace" :size 20)
-      org-roam-directory "~/doc/org")
+      org-roam-directory "~/doc/org"
+      company-idle-delay nil)
 
 (map! :map global-map
+      "C-S-v" 'clipboard-yank
       "M-h" 'evil-window-left
       "M-j" 'evil-window-down
       "M-k" 'evil-window-up

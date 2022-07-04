@@ -9,16 +9,10 @@ esac
 alias l='ls -l'
 alias la='ls -A'
 alias lla='ls -Al'
-
 alias tm=tmux
 alias tw=timew
 alias t=task
-
 alias g=git
-alias gws='git status --short'
-alias gwS='git status --long'
-alias gwd='git diff'
-alias gwD='git diff --word-diff'
 
 alias k++='c++ -std=c++17 -g'
 

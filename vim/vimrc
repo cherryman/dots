@@ -131,7 +131,7 @@ augroup formatter
     au FileType less        setl fex= fp=prettier\ --parser=less
     au FileType haskell     setl fex= fp=stylish-haskell
     au FileType elixir      setl fex= fp=mix\ format\ -
-    au FileType rust        setl fex= fp=rustfmt
+    au FileType rust        setl fex= fp=rustfmt\ +nightly
     au FileType zig         setl fex= fp=zig\ fmt\ --stdin
     au FileType python      setl fex= fp=black\ --quiet\ -
 augroup END
@@ -248,6 +248,7 @@ augroup END
 
 " fern
 let g:fern#default_hidden = 1
+let g:fern#drawer_width = 26
 
 " fzf
 let g:fzf_preview_window = ['right:60%', 'ctrl-/']

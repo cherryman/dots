@@ -5,6 +5,7 @@ set $alt Mod1
 exec --no-startup-id redshift
 exec --no-startup-id dunst
 exec --no-startup-id term -e zsh -ic 'tmux attach'
+exec --no-startup-id emacs
 exec --no-startup-id picom
 exec --no-startup-id wallp
 exec --no-startup-id xdg-autostart
@@ -12,6 +13,7 @@ exec --no-startup-id xdg-autostart
 floating_modifier $sup
 font pango:sans-serif 10
 
+workspace_layout tabbed
 hide_edge_borders smart
 default_border pixel 2
 default_floating_border pixel 2
@@ -24,6 +26,8 @@ assign [class="discord"] 3
 assign [class="Slack"] 3
 assign [class="Lutris"] 4
 assign [class="\.exe$"] 4
+assign [class="^steam_app_"] 4
+assign [title="^Steam"] 4
 
 mode "screenshot" {
     bindsym s exec sshot save; mode default

@@ -12,6 +12,7 @@ xwayland enabled
 bar swaybar_command waybar
 output * bg "$WALLPAPER" fill
 
+workspace_layout tabbed
 hide_edge_borders --i3 smart
 default_border pixel 2
 default_floating_border pixel 2

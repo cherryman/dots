@@ -13,3 +13,11 @@
 	smtpencryption = tls
 	smtpserver = smtp.mailbox.org
 	smtpserverport = 587
+
+[alias]
+    P = push
+    a = add
+    d = diff
+    l = log
+    p = pull
+    s = status --short

@@ -21,8 +21,9 @@ require('packer').startup(function()
   use 'JoosepAlviste/nvim-ts-context-commentstring'
   use 'sindrets/diffview.nvim'
   use 'TimUntersberger/neogit'
+  use 'kdheepak/lazygit.nvim'
   use 'kristijanhusak/orgmode.nvim'
-  use 'ggandor/lightspeed.nvim'
+  use 'ggandor/leap.nvim'
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -113,6 +114,7 @@ local cmp = require('cmp')
 cmp.setup({
     mapping = {
       ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
       ['<Tab>'] = function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
@@ -249,7 +251,8 @@ function comment_aux(mapping)
   end
 end
 
--- lightspeed setup
+-- leap setup
+require('leap').set_default_keymaps()
 vim.g.surround_no_mappings = 1
 
 applyall(keymap.set, {

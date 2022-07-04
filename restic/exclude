@@ -1,6 +1,7 @@
 $HOME/.cache
 $HOME/.config/**/*Cache*
 $HOME/**/__pycache__
+$HOME/**/node_modules
 $HOME/.davfs2/cache
 
 $HOME/.local/state
