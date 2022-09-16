@@ -27,12 +27,11 @@ Plug 'itchyny/lightline.vim'
 Plug 'rhysd/git-messenger.vim'
 
 " util
-Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern.vim', { 'branch': 'main' }
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'embear/vim-localvimrc'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'tpope/vim-fugitive'
 
 " edit
 Plug 'alvan/vim-closetag'
@@ -162,6 +161,7 @@ set nospell
 set hidden
 set scrolloff=3
 set autoread
+set signcolumn=number
 set completeopt=menuone,noinsert,noselect
 
 set wildignore+=*.o,*.so,*.pyc,*.class
@@ -201,9 +201,6 @@ cnoremap <A-b> <S-Left>
 
 nmap <Leader>gm <Plug>(git-messenger)
 
-nmap <Leader>ff :Files .<CR>
-nmap <Leader>fg :Rg<CR>
-nmap <Leader>fb :Buffers<CR>
 nmap <Leader>ft :Fern . -drawer -toggle<CR>
 
 nmap <silent> <Leader>gq :Format<CR>
@@ -249,15 +246,6 @@ augroup END
 " fern
 let g:fern#default_hidden = 1
 let g:fern#drawer_width = 26
-
-" fzf
-let g:fzf_preview_window = ['right:60%', 'ctrl-/']
-let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.9 } }
-if executable('fd')
-    let $FZF_DEFAULT_COMMAND = 'fd -t f -H -E ".git/" -c never ""'
-elseif executable('rg')
-    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --color never -g "!.git/"'
-endif
 
 " git-messenger
 let g:git_messenger_no_default_mappings = v:true
@@ -332,6 +320,7 @@ let g:python_highlight_space_errors = 0
 
 " vimtex
 let g:tex_flavor = 'latex'
+let g:vimtex_syntax_enabled = 0
 
 " vim-vsnip
 let g:vsnip_snippet_dir = $HOME . '/.vim/snippets'

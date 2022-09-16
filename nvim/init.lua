@@ -13,7 +13,7 @@ require('packer').startup(function()
   use 'nvim-lua/popup.nvim'
   use 'neovim/nvim-lspconfig'
   use 'jose-elias-alvarez/null-ls.nvim'
-  use 'ojroques/nvim-lspfuzzy'
+  use 'nvim-telescope/telescope.nvim'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
   use 'mfussenegger/nvim-dap'
@@ -143,7 +143,23 @@ cmp.setup({
     },
 })
 
-require('lspfuzzy').setup({})
+require('telescope').setup({
+  defaults = {
+    mappings = {
+      i = {
+        ["<Esc>"] = require("telescope.actions").close,
+        ["<C-u>"] = false,
+      },
+    },
+    layout_config = {
+      horizontal = {
+        width = 0.95,
+        height = 0.95,
+        preview_width = 0.6,
+      },
+    },
+  },
+})
 
 require("null-ls").setup({
     sources = {
@@ -157,6 +173,7 @@ local lspattach = function(client, bufnr)
   keymap.set('n', 'gd', lsp.buf.definition, { buffer = bufnr })
   keymap.set('n', 'K', lsp.buf.hover, { buffer = bufnr })
   keymap.set('n', 'gt', lsp.buf.type_definition, { buffer = bufnr })
+  keymap.set({'n', 'i'}, '<C-s>', lsp.buf.signature_help, { buffer = bufnr })
 
   if client.resolved_capabilities.declaration then
     keymap.set('n', 'gD', lsp.buf.declaration, { buffer = bufnr })
@@ -273,10 +290,14 @@ applyall(keymap.set, {
   { 'n', 'gyy', comment_aux('(CommentaryYankLine)'), { expr = true } },
   { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true } },
 
-  { 'n', ' lr', lsp.buf.references },
+  { 'n', ' ff', require('telescope.builtin').find_files },
+  { 'n', ' fb', require('telescope.builtin').buffers },
+  { 'n', ' fg', require('telescope.builtin').live_grep },
+
+  { 'n', ' lr', require('telescope.builtin').lsp_references },
   { 'n', ' lR', lsp.buf.rename },
-  { 'n', ' ld', function() require('lspfuzzy').diagnostics(0) end },
-  { 'n', ' lD', require('lspfuzzy').diagnostics_all },
+  { 'n', ' ld', function() require('telescope.builtin').diagnostics({ bufnr = 0}) end },
+  { 'n', ' lD', require('telescope.builtin').diagnostics },
 
   { 'n', ' d ', dap.toggle_breakpoint },
   { 'n', ' ds', dap.close },
@@ -289,7 +310,7 @@ applyall(keymap.set, {
   { 'n', 'gd', '<cmd>DiffviewOpen<CR>' },
   { 'n', 'gm', '<Plug>(git-messenger)' },
 
-  { 'n', 'tl', togglelsp },
+  { 'n', ' tl', togglelsp },
   { 'n', '[t', '<cmd>tabprev<CR>' },
   { 'n', ']t', '<cmd>tabnext<CR>' },
   { 'n', '[c', '<cmd>GitGutterPrevHunk<CR>' },

@@ -8,6 +8,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export ENV="$HOME/.env"
 export BASE16_SHELL="$HOME/.config/base16-shell"
 export LESS="-RSi"
+export MOSH_ESCAPE_KEY='' # <C-\>
 
 export WALLPAPER="$HOME/media/pic/wallp"
 export WALLPAPER_DIR="$HOME/media/pic/wallp.d"
@@ -28,6 +29,8 @@ export STACK_ROOT="$XDG_DATA_HOME/stack"
 export OCTAVE_HISTFILE="$XDG_STATE_HOME/octave_hist"
 export PSQL_HISTORY="$XDG_CACHE_HOME/psql_history"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export NODE_REPL_HISTORY="$XDG_STATE_HOME/node_repl_history"
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
 
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus

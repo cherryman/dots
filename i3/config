@@ -50,7 +50,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
 bindsym $sup+grave exec term
 bindsym $alt+Shift+d exec rofi -show drun
 bindsym $alt+Shift+q exec dlaunch -s "$HOME/doc/Books" xdg-open
-bindsym $alt+Shift+w exec dlaunch -s "$HOME/media/vid" xdg-open
+bindsym $alt+Shift+w exec dlaunch -s -i '\.(srt|ass|sup)$' "$HOME/media/vid" xdg-open
 bindsym $sup+equal gaps inner all plus 5
 bindsym $sup+minus gaps inner all minus 5
 bindsym --whole-window $sup+button4 exec vol inc 2

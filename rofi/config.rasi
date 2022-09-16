@@ -1,8 +1,8 @@
 configuration {
     modi: "run,drun";
     disable-history: false;
-    font: "Source Sans Pro 14";
-    matching: "normal";
+    font: "sans-serif 14";
+    matching: "fuzzy";
 }
 
 @theme "sidebar.rasi"

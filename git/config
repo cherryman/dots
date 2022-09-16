@@ -5,6 +5,9 @@
 [pull]
 	ff = only
 
+[push]
+	recurseSubmodules = check
+
 [init]
     defaultBranch = master
 
@@ -21,3 +24,5 @@
     l = log
     p = pull
     s = status --short
+    b = branch
+    r = restore

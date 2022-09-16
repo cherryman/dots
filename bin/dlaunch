@@ -7,6 +7,7 @@ Usage: $(basename "$0") [options]... <dir> <cmd>
 
 Options:
   -s    Strip file extensions.
+  -i    Ignore lines matching extended POSIX regex.
 
 Recursively list files in dir with the given
 extensions in rofi, and execute them with cmd.
@@ -18,16 +19,18 @@ EOF
 }
 
 stripext= # extension is stripped if set
-while getopts 'sh' opt; do
+ignorepat= # POSIX regex of patterns to ignore
+while getopts 'si:h' opt; do
     case "$opt" in
         s) stripext=1 ;;
+        i) ignorepat="$OPTARG" ;;
         h|*) usage; exit 0 ;;
     esac
 done
 
 shift $((OPTIND - 1))
 
-if [ $# -ne 2 ]; then
+if [ $# -lt 2 ]; then
     usage
     exit 0
 fi
@@ -43,10 +46,17 @@ cd "$dir" || {
 # Directory where the script starts.
 basedir="$PWD"
 
+filter_pat() {
+    if [ -z "$ignorepat" ]; then
+        cat
+    else
+        grep -E -v "$ignorepat"
+    fi
+}
+
 # List files in current directory, with directories
 # suffixed with '/', followed by files.
 list_files() {
-
     # If already in a subdirectory, list ..
     [ "$PWD" != "$basedir" ] && echo ..
 
@@ -60,7 +70,12 @@ list_files() {
         find . -maxdepth 1 -type f |
             sort
 
-    } | sed 's|^\./||' # strip leading ./
+    } |
+
+    # Strip leading ./
+    sed 's|^\./||' |
+
+    filter_pat
 }
 
 # Launch a rofi dialog with the content of the current dir,
