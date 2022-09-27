@@ -27,8 +27,6 @@ Plug 'itchyny/lightline.vim'
 Plug 'rhysd/git-messenger.vim'
 
 " util
-Plug 'lambdalisue/fern.vim', { 'branch': 'main' }
-Plug 'lambdalisue/fern-hijack.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
@@ -201,8 +199,6 @@ cnoremap <A-b> <S-Left>
 
 nmap <Leader>gm <Plug>(git-messenger)
 
-nmap <Leader>ft :Fern . -drawer -toggle<CR>
-
 nmap <silent> <Leader>gq :Format<CR>
 nmap <silent> <Leader>y :%y+<CR>
 
@@ -242,10 +238,6 @@ augroup plugins
     au FileType lisp     let b:delimitMate_quotes = '"'
     au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
-
-" fern
-let g:fern#default_hidden = 1
-let g:fern#drawer_width = 26
 
 " git-messenger
 let g:git_messenger_no_default_mappings = v:true

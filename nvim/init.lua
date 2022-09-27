@@ -18,17 +18,25 @@ require('packer').startup(function()
   use 'hrsh7th/nvim-cmp'
   use 'mfussenegger/nvim-dap'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use 'JoosepAlviste/nvim-ts-context-commentstring'
-  use 'sindrets/diffview.nvim'
+  use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
   use 'TimUntersberger/neogit'
   use 'kdheepak/lazygit.nvim'
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/leap.nvim'
+  use 'kyazdani42/nvim-tree.lua'
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
 vim.o.packpath = vim.o.runtimepath
 vim.cmd('source ~/.vimrc')
+
+vim.cmd [[
+  sign define DiagnosticSignInformation text=- texthl=Todo linehl= numhl=
+  sign define DiagnosticSignHint text=* texthl=Todo linehl= numhl=
+  sign define DiagnosticSignWarning text=* texthl=Todo linehl= numhl=
+  sign define DiagnosticSignError text=> texthl=WarningMsg linehl= numhl=
+]]
 
 function applyall(f, as)
   for _, a in ipairs(as) do
@@ -85,30 +93,106 @@ require('nvim-treesitter.configs').setup {
     enable = true,
     disable = {},
   },
+  textobjects = {
+    select = {
+      enable = true,
+      include_surrounding_whitespace = true,
+      lookahead = true,
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ab"] = "@block.outer",
+        ["ib"] = "@block.inner",
+      },
+      selection_modes = {
+        ['@function.inner'] = 'V',
+        ['@function.outer'] = 'V',
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true,
+      goto_next_start = {
+        ["]m"] = "@function.outer",
+      },
+      goto_next_end = {
+        ["]M"] = "@function.outer",
+      },
+      goto_previous_start = {
+        ["[m"] = "@function.outer",
+      },
+      goto_previous_end = {
+        ["[M"] = "@function.outer",
+      },
+    },
+  },
   context_commentstring = {
     enable = true,
     enable_autocmd = false,
+    commentary_integration = {
+      Commentary = false,
+      CommentaryLine = false,
+      ChangeCommentary = false,
+      CommentaryUndo = false,
+    }
   },
 }
 
-local diffview_cb = require('diffview.config').diffview_callback
-require('diffview').setup {
-  key_bindings = {
-    view = {
-      ['q'] = diffview_cb('focus_files'),
-    },
-    file_panel = {
-      ['q'] = ':DiffviewClose<CR>',
+require('nvim-tree').setup {
+  sort_by = "case_sensitive",
+  hijack_cursor = true,
+  renderer = {
+    special_files = {},
+    icons = {
+      git_placement = "after",
+      symlink_arrow = " -> ",
+      padding = "",
+      glyphs = {
+        default = "",
+        symlink = "",
+        bookmark = "",
+        folder = {
+          arrow_closed = "+",
+          arrow_open = "-",
+          default = "",
+          open = "",
+          empty = "",
+          empty_open = "",
+          symlink = "",
+          symlink_open = "",
+        },
+        git = {
+          unstaged = "M",
+          staged = "M",
+          unmerged = "U",
+          renamed = "R",
+          untracked = "?",
+          deleted = "D",
+          ignored = "-",
+        },
+      },
     },
   },
+  view = {
+    width = 28,
+    mappings = {
+      custom_only = true,
+      list = {
+        { key = { "<CR>", "o", "<2-LeftMouse>", "l" }, action = "edit" },
+        { key = "<F5>", action = "refresh" },
+        { key = "h", action = "close_node" },
+        { key = "d", action = "remove" },
+        { key = "q", action = "close" },
+        { key = "r", action = "rename" },
+        { key = "N", action = "create" },
+        { key = "K", action = "toggle_file_info" },
+      },
+    },
+  },
+  git = {
+    ignore = false,
+  },
 }
-
-vim.cmd [[
-  sign define DiagnosticSignInformation text=- texthl=Todo linehl= numhl=
-  sign define DiagnosticSignHint text=* texthl=Todo linehl= numhl=
-  sign define DiagnosticSignWarning text=* texthl=Todo linehl= numhl=
-  sign define DiagnosticSignError text=> texthl=WarningMsg linehl= numhl=
-]]
 
 local cmp = require('cmp')
 cmp.setup({
@@ -163,7 +247,6 @@ require('telescope').setup({
 
 require("null-ls").setup({
     sources = {
-        require("null-ls").builtins.diagnostics.eslint,
         require("null-ls").builtins.diagnostics.shellcheck,
     },
 })
@@ -262,9 +345,8 @@ local neogit = require('neogit')
 
 function comment_aux(mapping)
   return function()
-    pcall(require('ts_context_commentstring.internal')
-      .update_commentstring)
-    return termcode('<Plug>' .. mapping)
+    pcall(require('ts_context_commentstring.internal').update_commentstring)
+    return '<Plug>' .. mapping
   end
 end
 
@@ -284,12 +366,13 @@ applyall(keymap.set, {
   { 'x', 'S', '<Plug>VSurround' },
   { 'x', 'gS', '<Plug>VgSurround' },
 
-  { {'n', 'v', 'o'}, 'gc', comment_aux('Commentary'), { expr = true } },
-  { {'n', 'v', 'o'}, 'gy', comment_aux('(CommentaryYank)'), { expr = true } },
-  { 'n', 'gcc', comment_aux('CommentaryLine'), { expr = true } },
-  { 'n', 'gyy', comment_aux('(CommentaryYankLine)'), { expr = true } },
-  { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true } },
+  { {'n', 'v', 'o'}, 'gc', comment_aux('Commentary'), { expr = true, remap = true } },
+  { {'n', 'v', 'o'}, 'gy', comment_aux('(CommentaryYank)'), { expr = true, remap = true } },
+  { 'n', 'gcc', comment_aux('CommentaryLine'), { expr = true, remap = true } },
+  { 'n', 'gyy', comment_aux('(CommentaryYankLine)'), { expr = true, remap = true } },
+  { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true, remap = true } },
 
+  { 'n', ' ft', require('nvim-tree').focus },
   { 'n', ' ff', require('telescope.builtin').find_files },
   { 'n', ' fb', require('telescope.builtin').buffers },
   { 'n', ' fg', require('telescope.builtin').live_grep },
@@ -307,7 +390,6 @@ applyall(keymap.set, {
 
   { 'n', 'gs', neogit.open },
   { 'n', 'gl', function() neogit.open({'log'}) end },
-  { 'n', 'gd', '<cmd>DiffviewOpen<CR>' },
   { 'n', 'gm', '<Plug>(git-messenger)' },
 
   { 'n', ' tl', togglelsp },
