@@ -29,9 +29,9 @@ end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
 vim.o.packpath = vim.o.runtimepath
-vim.cmd('source ~/.vimrc')
 
 vim.cmd [[
+  source ~/.vimrc
   sign define DiagnosticSignInformation text=- texthl=Todo linehl= numhl=
   sign define DiagnosticSignHint text=* texthl=Todo linehl= numhl=
   sign define DiagnosticSignWarning text=* texthl=Todo linehl= numhl=
@@ -111,6 +111,7 @@ require('nvim-treesitter.configs').setup {
     },
     move = {
       enable = true,
+      disable = {'tex', 'latex'},
       set_jumps = true,
       goto_next_start = {
         ["]m"] = "@function.outer",
@@ -258,7 +259,7 @@ local lspattach = function(client, bufnr)
   keymap.set('n', 'gt', lsp.buf.type_definition, { buffer = bufnr })
   keymap.set({'n', 'i'}, '<C-s>', lsp.buf.signature_help, { buffer = bufnr })
 
-  if client.resolved_capabilities.declaration then
+  if client.server_capabilities.declarationProvider then
     keymap.set('n', 'gD', lsp.buf.declaration, { buffer = bufnr })
   else
     keymap.set('n', 'gD', lsp.buf.definition, { buffer = bufnr })
@@ -387,6 +388,7 @@ applyall(keymap.set, {
   { 'n', ' dc', dap.continue },
   { 'n', ' dr', dap.repl.open },
   { 'n', ' di', dap_widgets.hover },
+  { 'n', ' d?', function() dap_widgets.hover(dap_widgets.scopes) end },
 
   { 'n', 'gs', neogit.open },
   { 'n', 'gl', function() neogit.open({'log'}) end },
