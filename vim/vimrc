@@ -5,8 +5,6 @@ runtime vim-plug/plug.vim
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'antoinemadec/FixCursorHold.nvim'
-
 " themes
 Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 
@@ -31,16 +29,12 @@ Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
 
-" edit
-Plug 'alvan/vim-closetag'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/vim-vsnip-integ'
-
 " lang
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'ziglang/zig.vim'
+Plug 'rust-lang/rust.vim'
 
 call plug#end()
 
@@ -202,8 +196,6 @@ nmap <Leader>gm <Plug>(git-messenger)
 nmap <silent> <Leader>gq :Format<CR>
 nmap <silent> <Leader>y :%y+<CR>
 
-imap <expr> <C-j> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-j>'
-imap <expr> <C-k> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-k>'
 imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
 imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
@@ -312,10 +304,6 @@ let g:python_highlight_space_errors = 0
 
 " vimtex
 let g:tex_flavor = 'latex'
-let g:vimtex_syntax_enabled = 0
-
-" vim-vsnip
-let g:vsnip_snippet_dir = $HOME . '/.vim/snippets'
 
 " zig
 let g:zig_fmt_autosave = 0

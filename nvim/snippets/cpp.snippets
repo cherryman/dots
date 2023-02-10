@@ -1,0 +1,41 @@
+snippet cp competitive programming
+	#include <bits/stdc++.h>
+	using namespace std;
+	typedef long long ll;
+	typedef long double ld;
+
+	${0}
+
+	int main() {
+		ios::sync_with_stdio(0);
+		cin.tie(0); cout.precision(20);
+
+	}
+
+snippet pow binary exponentiation
+	ll bpow(ll a, ll b, ll m) {
+		a %= m;
+		ll r = 1;
+		while (b) {
+			if (b & 1) r = r * a % m;
+			a = a * a % m;
+			b >>= 1;
+		}
+		return r;
+	}
+	${0}
+
+snippet manacher manacher's
+	template <typename T>
+	void manacher(const string &s, T &d, bool even) {
+		for (int i = 0, l = 0, r = -1; i < s.size(); ++i) {
+			int k = (i > r) ? !even : min(d[l+r-i+even], r-i+1);
+			while (i-k-even >= 0 && i+k < s.size() && s[i-k-even] == s[i+k]) ++k;
+			d[i] = k--;
+			if (i+k > r) {
+				l = i - k - even;
+				r = i + k;
+			}
+		}
+	}
+	${0}

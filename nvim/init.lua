@@ -16,6 +16,7 @@ require('packer').startup(function()
   use 'nvim-telescope/telescope.nvim'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
+  use 'zbirenbaum/copilot.lua'
   use 'mfussenegger/nvim-dap'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -25,6 +26,8 @@ require('packer').startup(function()
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/leap.nvim'
   use 'kyazdani42/nvim-tree.lua'
+  use { 'L3MON4D3/LuaSnip', run = "make install_jsregexp" }
+  use 'Pocco81/true-zen.nvim'
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -91,7 +94,7 @@ require('nvim-treesitter.configs').setup {
   ignore_install = {},
   highlight = {
     enable = true,
-    disable = {},
+    disable = {"latex"},
   },
   textobjects = {
     select = {
@@ -104,10 +107,7 @@ require('nvim-treesitter.configs').setup {
         ["ab"] = "@block.outer",
         ["ib"] = "@block.inner",
       },
-      selection_modes = {
-        ['@function.inner'] = 'V',
-        ['@function.outer'] = 'V',
-      },
+      selection_modes = {},
     },
     move = {
       enable = true,
@@ -182,9 +182,9 @@ require('nvim-tree').setup {
         { key = { "<CR>", "o", "<2-LeftMouse>", "l" }, action = "edit" },
         { key = "<F5>", action = "refresh" },
         { key = "h", action = "close_node" },
-        { key = "d", action = "remove" },
+        { key = "D", action = "remove" },
         { key = "q", action = "close" },
-        { key = "r", action = "rename" },
+        { key = "R", action = "rename" },
         { key = "N", action = "create" },
         { key = "K", action = "toggle_file_info" },
       },
@@ -195,10 +195,30 @@ require('nvim-tree').setup {
   },
 }
 
+require('copilot').setup({
+  suggestion = {
+    enabled = true,
+    auto_trigger = false,
+    keymap = {
+      accept = "<M-Enter>",
+      accept_word = false,
+      accept_line = false,
+      next = "<M-]>",
+      prev = "<M-[>",
+      dismiss = "<C-]>",
+    },
+  },
+  panel = {
+    enabled = false,
+    auto_refresh = false,
+  },
+})
+
+
 local cmp = require('cmp')
 cmp.setup({
     mapping = {
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-Space>'] = cmp.mapping.complete(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
       ['<Tab>'] = function(fallback)
         if cmp.visible() then
@@ -215,11 +235,6 @@ cmp.setup({
         end
       end,
     },
-    snippet = {
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body)
-      end,
-    },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
     }),
@@ -227,6 +242,8 @@ cmp.setup({
       autocomplete = false,
     },
 })
+
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 require('telescope').setup({
   defaults = {
@@ -286,7 +303,7 @@ lspconfig.util.default_config = merge(
   lspconfig.util.default_config,
   {
     on_attach = lspattach,
-    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = require('cmp_nvim_lsp').default_capabilities(),
   }
 )
 
@@ -319,15 +336,18 @@ applyall(
 )
 
 local dap = require('dap')
-dap.adapters.lldb = {
-  type = 'executable',
-  command = 'lldb-vscode',
-  args = {},
+dap.adapters.codelldb = {
+  type = 'server',
+  port = '${port}',
+  executable = {
+    command = 'codelldb',
+    args = {'--port', '${port}'},
+  },
 }
 dap.configurations.rust = {
   {
     name = 'Launch',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'launch',
     cwd = '${workspaceFolder}',
     stopOnEntry = false,
@@ -336,7 +356,9 @@ dap.configurations.rust = {
       return fn.input('Executable: ', fn.getcwd() .. '/target/debug/', 'file')
     end,
     args = function()
-      return shellsplit(fn.input('Args: '))
+      -- return shellsplit(fn.input('Args: '))
+      -- return fn.input('Args: ')
+      return {}
     end,
   },
 }
@@ -380,7 +402,7 @@ applyall(keymap.set, {
 
   { 'n', ' lr', require('telescope.builtin').lsp_references },
   { 'n', ' lR', lsp.buf.rename },
-  { 'n', ' ld', function() require('telescope.builtin').diagnostics({ bufnr = 0}) end },
+  { 'n', ' ld', function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end },
   { 'n', ' lD', require('telescope.builtin').diagnostics },
 
   { 'n', ' d ', dap.toggle_breakpoint },
@@ -388,7 +410,7 @@ applyall(keymap.set, {
   { 'n', ' dc', dap.continue },
   { 'n', ' dr', dap.repl.open },
   { 'n', ' di', dap_widgets.hover },
-  { 'n', ' d?', function() dap_widgets.hover(dap_widgets.scopes) end },
+  { 'n', ' d?', function() dap_widgets.centered_float(dap_widgets.scopes) end },
 
   { 'n', 'gs', neogit.open },
   { 'n', 'gl', function() neogit.open({'log'}) end },
@@ -401,6 +423,8 @@ applyall(keymap.set, {
   { 'n', ']c', '<cmd>GitGutterNextHunk<CR>' },
   { 'n', '[d', vim.diagnostic.goto_prev },
   { 'n', ']d', vim.diagnostic.goto_next },
+
+  { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
 
   { 'n', '<A-J>', dap.step_over },
   { 'n', '<A-H>', dap.step_out },
