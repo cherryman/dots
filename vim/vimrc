@@ -17,7 +17,6 @@ Plug 'CherryMan/vim-commentary-yank'
 Plug 'wellle/targets.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-obsession'
-Plug 'editorconfig/editorconfig-vim'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -304,6 +303,9 @@ let g:python_highlight_space_errors = 0
 
 " vimtex
 let g:tex_flavor = 'latex'
+let g:vimtex_indent_on_ampersands = 0
+let g:vimtex_indent_enabled = 0
+let g:vimtex_view_method = 'zathura'
 
 " zig
 let g:zig_fmt_autosave = 0

@@ -7,23 +7,16 @@ case "$(uname -s)" in
 esac
 
 alias l='ls -l'
-alias la='ls -A'
-alias lla='ls -Al'
 alias tm=tmux
-alias tw=timew
-alias t=task
 alias g=git
 
 alias k++='c++ -std=c++17 -g'
 
-if have fasd; then
-    if   [ "$BASH" ];     then eval "$(fasd --init bash-hook)"
-    elif [ "$ZSH_NAME" ]; then eval "$(fasd --init zsh-hook)"
-    else eval "$(fasd --init posix-hook)"
+if have zoxide; then
+    if   [ "$BASH" ];     then eval "$(zoxide init bash)"
+    elif [ "$ZSH_NAME" ]; then eval "$(zoxide init zsh)"
+    else eval "$(zoxide init posix --hook prompt)"
     fi
-
-    z()  { cd "$(fasd -d "$@")"; }
-    zz() { cd "$(fasd -d -i "$@")"; }
 fi
 
 ### Prompt

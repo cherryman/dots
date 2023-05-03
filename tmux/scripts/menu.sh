@@ -25,7 +25,7 @@ item() {
 tmux display-menu -x R -y P \
     "Spotify" s "$(item spt)" \
     "Mail"    m "$(item aerc)" \
-    "Monitor" p "$(item htop)" \
+    "Monitor" p "$(item btop)" \
     "Files"   f "$(item ranger "$pwd")" \
     "" \
     "Close"   q ""

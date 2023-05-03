@@ -16,18 +16,17 @@ require('packer').startup(function()
   use 'nvim-telescope/telescope.nvim'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
+  use { 'L3MON4D3/LuaSnip', run = "make install_jsregexp" }
+  use 'saadparwaiz1/cmp_luasnip'
   use 'zbirenbaum/copilot.lua'
   use 'mfussenegger/nvim-dap'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
-  use 'TimUntersberger/neogit'
   use 'kdheepak/lazygit.nvim'
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/leap.nvim'
   use 'kyazdani42/nvim-tree.lua'
-  use { 'L3MON4D3/LuaSnip', run = "make install_jsregexp" }
-  use 'Pocco81/true-zen.nvim'
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -91,7 +90,10 @@ end
 
 require('nvim-treesitter.configs').setup {
   ensure_installed = "all",
-  ignore_install = {},
+  ignore_install = {"tex", "latex"},
+  indent = {
+    disable = {"tex", "latex"},
+  },
   highlight = {
     enable = true,
     disable = {"latex"},
@@ -176,23 +178,36 @@ require('nvim-tree').setup {
   },
   view = {
     width = 28,
-    mappings = {
-      custom_only = true,
-      list = {
-        { key = { "<CR>", "o", "<2-LeftMouse>", "l" }, action = "edit" },
-        { key = "<F5>", action = "refresh" },
-        { key = "h", action = "close_node" },
-        { key = "D", action = "remove" },
-        { key = "q", action = "close" },
-        { key = "R", action = "rename" },
-        { key = "N", action = "create" },
-        { key = "K", action = "toggle_file_info" },
-      },
-    },
   },
   git = {
     ignore = false,
   },
+  on_attach = function(bufnr)
+    local api = require('nvim-tree.api')
+    local function opts(desc)
+      return {
+        desc = 'nvim-tree: ' .. desc,
+        buffer = bufnr,
+        noremap = true,
+        silent = true,
+        nowait = true,
+      }
+    end
+
+    applyall(keymap.set, {
+      { 'n', '<CR>', api.node.open.edit, opts('Open') },
+      { 'n', 'o', api.node.open.edit, opts('Open') },
+      { 'n', '<2-LeftMouse>', api.node.open.edit, opts('Open') },
+      { 'n', 'l', api.node.open.edit, opts('Open') },
+      { 'n', '<F5>', api.tree.reload, opts('Refresh') },
+      { 'n', 'h', api.node.navigate.parent_close, opts('Close Directory') },
+      { 'n', 'D', api.fs.remove, opts('Delete') },
+      { 'n', 'q', api.tree.close, opts('Close') },
+      { 'n', 'R', api.fs.rename, opts('Rename') },
+      { 'n', 'N', api.fs.create, opts('Create') },
+      { 'n', 'K', api.node.show_info_popup, opts('Info') },
+    })
+  end
 }
 
 require('copilot').setup({
@@ -235,8 +250,14 @@ cmp.setup({
         end
       end,
     },
+    snippet = {
+      expand = function(args)
+        require('luasnip').lsp_expand(args.body)
+      end,
+    },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
+        { name = 'luasnip' },
     }),
     completion = {
       autocomplete = false,
@@ -283,6 +304,7 @@ local lspattach = function(client, bufnr)
   end
 end
 
+-- Used in lightline configuration.
 vim.g.linting = 0
 vim.diagnostic.disable()
 
@@ -326,7 +348,27 @@ applyall(
               command = 'clippy'
             }
           }
-        }
+        },
+        commands = {
+          -- https://github.com/neovim/nvim-lspconfig/pull/1921
+          RustOpenDocs = {
+            function()
+              vim.lsp.buf_request(
+                0,
+                'experimental/externalDocs',
+                vim.lsp.util.make_position_params(0),
+                function(err, url)
+                  if err then
+                    error(tostring(err))
+                  else
+                    vim.fn['netrw#BrowseX'](url, 0)
+                  end
+                end
+              );
+            end,
+            description = 'Open documentation for the symbol under the cursor in default browser',
+          },
+        },
       }}
     },
     { 'texlab' },
@@ -364,7 +406,6 @@ dap.configurations.rust = {
 }
 
 local dap_widgets = require('dap.ui.widgets')
-local neogit = require('neogit')
 
 function comment_aux(mapping)
   return function()
@@ -398,12 +439,13 @@ applyall(keymap.set, {
   { 'n', ' ft', require('nvim-tree').focus },
   { 'n', ' ff', require('telescope.builtin').find_files },
   { 'n', ' fb', require('telescope.builtin').buffers },
-  { 'n', ' fg', require('telescope.builtin').live_grep },
+  { 'n', ' /', require('telescope.builtin').live_grep },
 
   { 'n', ' lr', require('telescope.builtin').lsp_references },
   { 'n', ' lR', lsp.buf.rename },
   { 'n', ' ld', function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end },
   { 'n', ' lD', require('telescope.builtin').diagnostics },
+  { 'n', '<C-K>', '<cmd>RustOpenDocs<CR>' },
 
   { 'n', ' d ', dap.toggle_breakpoint },
   { 'n', ' ds', dap.close },
@@ -412,17 +454,14 @@ applyall(keymap.set, {
   { 'n', ' di', dap_widgets.hover },
   { 'n', ' d?', function() dap_widgets.centered_float(dap_widgets.scopes) end },
 
-  { 'n', 'gs', neogit.open },
-  { 'n', 'gl', function() neogit.open({'log'}) end },
-  { 'n', 'gm', '<Plug>(git-messenger)' },
+  { 'n', ' gB', '<cmd>Git blame' },
+  { 'n', ' gg', '<cmd>LazyGitCurrentFile<CR>' },
 
   { 'n', ' tl', togglelsp },
-  { 'n', '[t', '<cmd>tabprev<CR>' },
-  { 'n', ']t', '<cmd>tabnext<CR>' },
-  { 'n', '[c', '<cmd>GitGutterPrevHunk<CR>' },
-  { 'n', ']c', '<cmd>GitGutterNextHunk<CR>' },
-  { 'n', '[d', vim.diagnostic.goto_prev },
-  { 'n', ']d', vim.diagnostic.goto_next },
+  { 'n', '[g', '<cmd>GitGutterPrevHunk<CR>' },
+  { 'n', ']g', '<cmd>GitGutterNextHunk<CR>' },
+  { 'n', '[e', vim.diagnostic.goto_prev },
+  { 'n', ']e', vim.diagnostic.goto_next },
 
   { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
 

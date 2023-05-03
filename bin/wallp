@@ -29,12 +29,12 @@ fi
 
 ### Link and set wallpaper
 if [ -n "$path" ]; then
-    ln -sfn "$path" "$WALLPAPER" ||
+    ln -sfn -- "$path" "$WALLPAPER" ||
         die "Failed to symlink '$WALLPAPER' to '$path'"
 fi
 
 if [ -n "$DISPLAY" ]; then # test for X session
-    feh --bg-fill --no-fehbg "$WALLPAPER"
+    feh --bg-fill --no-fehbg -- "$WALLPAPER"
 else
     die '$DISPLAY is unset'
 fi
