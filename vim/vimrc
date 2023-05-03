@@ -16,7 +16,6 @@ Plug 'tpope/vim-abolish'
 Plug 'CherryMan/vim-commentary-yank'
 Plug 'wellle/targets.vim'
 Plug 'Raimondi/delimitMate'
-Plug 'tpope/vim-obsession'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -24,7 +23,6 @@ Plug 'itchyny/lightline.vim'
 Plug 'rhysd/git-messenger.vim'
 
 " util
-Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
 
@@ -74,8 +72,6 @@ if !has('nvim')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
-let g:onedark_terminal_italics = 1
-let g:palenight_terminal_italics = 1
 let g:material_terminal_italics = 1
 let g:material_theme_style = 'default'
 
@@ -244,24 +240,6 @@ let g:haskell_indent_after_bare_where = 4
 let g:haskell_indent_do = 4
 let g:haskell_indent_in = 1
 let g:haskell_indent_guard = 4
-
-" local-vimrc
-let g:localvimrc_name = ['.lvimrc', '_vimrc_local.vim']
-let g:localvimrc_sandbox = 0
-let g:localvimrc_whitelist = [
-\   $HOME . '/proj',
-\   $HOME . '/work',
-\   $HOME . '/hack',
-\   $HOME . '/study',
-\]
-
-" vim-closetag
-let g:closetag_filenames = '*.xml,*.html,*.jsx,*.tsx,*.js'
-let g:closetag_regions = {
-\ 'typescriptreact': 'jsxRegion,tsxRegion',
-\ 'javascriptreact': 'jsxRegion',
-\ 'javascript': 'jsxRegion',
-\ }
 
 " vim-gitgutter
 let g:gitgutter_map_keys = 0

@@ -1,6 +1,4 @@
-#!/bin/sh
-
-readonly MAX=80
+#!/bin/dash
 
 err() { echo "$@" 1>&2; }
 
@@ -10,71 +8,13 @@ usage: $(basename "$0") <command> [<args>]
 
 Commands:
   get
-  set  <vol>
-  inc  <amount>          Increase the volume
-  dec  <amount>          Decrease the volume
-  mute <on|off|toggle>   Mute, unmute or toggle
+  set    <vol>
+  inc    <amount>          Increase the volume
+  dec    <amount>          Decrease the volume
+  mute   <on|off|toggle>   Mute, unmute or toggle
+  subvol                   Listen for volume updates
+  subdev                   Listen for audio device updates ("headphone" or "speaker")
 EOF
-}
-
-vol_alsa() {
-    arg="$2"
-    case "$1" in
-        set)    a_cmd="set"; a_arg="$arg  unmute" ;;
-        inc)    a_cmd="set"; a_arg="$arg%+ unmute" ;;
-        dec)    a_cmd="set"; a_arg="$arg%- unmute" ;;
-        get)    a_cmd="get"; a_arg="" ;;
-        mute)   a_cmd="set";
-            if   [ "$arg" = "on"     ]; then a_arg="mute"
-            elif [ "$arg" = "off"    ]; then a_arg="unmute"
-            elif [ "$arg" = "toggle" ]; then a_arg="toggle"
-            fi ;;
-        *)
-            err "Invalid command $1"
-            exit 1
-            ;;
-    esac
-
-    vol="$(
-        amixer "$a_cmd" Master $a_arg              \
-        | sed -n 's/.*\[\([0-9][0-9]*\)%\].*/\1/p' \
-        | head -1
-    )"
-
-    if [ "$1" = get ]; then
-        echo "$vol"
-    fi
-}
-
-vol_pulse() {
-    case "$1" in
-        get) vol_alsa get ;;
-        set|inc|dec)
-            case "$1" in
-                set) arg="$(($2 < MAX ? $2 : MAX))%" ;;
-                inc)
-                    c=$(vol_pulse get)
-                    arg="+$((c + $2 < MAX ? $2 : MAX - c))%"
-                    ;;
-                dec) arg="-$2%" ;;
-            esac
-
-            pactl set-sink-mute @DEFAULT_SINK@ 0
-            pactl set-sink-volume @DEFAULT_SINK@ "$arg"
-            ;;
-        mute)
-            case "$2" in
-                on) arg="1" ;;
-                off) arg="2" ;;
-                toggle) arg="toggle" ;;
-            esac
-            pactl set-sink-volume @DEFAULT_SINK@ "$arg"
-            ;;
-        *)
-            err "Invalid command $1"
-            exit 1
-            ;;
-    esac
 }
 
 if [ $# -eq 0 ] || [ "$1" = help ]; then
@@ -82,11 +22,68 @@ if [ $# -eq 0 ] || [ "$1" = help ]; then
     exit 0
 fi
 
-if pactl list > /dev/null; then
-    vol_pulse "$1" "$2"
-elif aplay -l > /dev/null; then
-    vol_alsa "$1" "$2"
-else
-    err No backend found
-    exit 1
-fi
+getvol() {
+    wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{ print $2 * 100 }'
+}
+
+setvol() {
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 0;
+    wpctl set-volume -l "$MAX" @DEFAULT_AUDIO_SINK@ "$1"
+}
+
+getdev() {
+    # HACK: Naively just checking if 'bluez' is in the output to decide if using headphones.
+    if wpctl inspect @DEFAULT_AUDIO_SINK@ | grep bluez > /dev/null; then
+        echo 'headphone'
+    else
+        echo 'speaker'
+    fi
+}
+
+subscribe() {
+    pactl subscribe |
+        grep --line-buffered "Event 'change' on sink"
+}
+
+readonly MAX=0.6
+
+case "$1" in
+    get) wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{ print $2 * 100 }' ;;
+    set|inc|dec|mute)
+        if [ $# -ne 2 ]; then
+            err "Invalid number of arguments"
+            exit 1
+        fi
+
+        case "$1" in
+            set) setvol "$2%" ;;
+            inc) setvol "$2%+" ;;
+            dec) setvol "$2%-" ;;
+            mute)
+                case "$2" in
+                    on) wpctl set-mute @DEFAULT_AUDIO_SINK@ 1 ;;
+                    off) wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 ;;
+                    toggle) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+                esac
+                ;;
+        esac
+        ;;
+    subvol)
+        getvol
+        subscribe | while read -r _; do
+            getvol
+        done
+        ;;
+    subdev)
+        {
+            getdev
+            subscribe | while read -r _; do
+                getdev
+            done
+        } 2> /dev/null
+        ;;
+    *)
+        err "Invalid command $1"
+        exit 1
+        ;;
+esac

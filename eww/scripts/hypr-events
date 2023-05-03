@@ -1,0 +1,46 @@
+#! /bin/sh
+#
+# Listen for different events.
+
+# See https://wiki.hyprland.org/IPC/.
+listen() {
+    socat -U - \
+      "UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+}
+
+get_monitors() {
+    hyprctl -j monitors | paste -sd ''
+}
+
+get_activewindow() {
+    hyprctl -j activewindow | paste -sd ''
+}
+
+case "$1" in
+    monitors)
+        get_monitors
+        listen | while read -r event; do
+            case "$event" in
+                monitor*|*workspace|'activewindow>>'*)
+                    get_monitors
+                    ;;
+            esac
+        done
+        ;;
+
+    activewindow)
+        get_activewindow
+        listen | while read -r event; do
+            case "$event" in
+                'activewindow>>'*)
+                    get_activewindow
+                    ;;
+            esac
+        done
+        ;;
+
+    *)
+        echo >&2 "Invalid event type '$1'"
+        exit 1
+        ;;
+esac

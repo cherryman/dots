@@ -36,7 +36,7 @@ if [ $# -lt 2 ]; then
 fi
 
 dir="$1"
-cmd="$2"
+shift
 
 cd "$dir" || {
     echo >&2 "Failed to enter directory $dir"
@@ -104,11 +104,11 @@ sel() {
 
         case "$selection" in
             '') exit 0 ;;
-            ..) cd .. && sel ;;
-            */) cd "$selection" && sel;;
+            ..) cd .. && sel "$@" ;;
+            */) cd "$selection" && sel "$@";;
             *)
                 if [ "$stripext" != 1 ]; then
-                    "$cmd" "$PWD/$selection"
+                    "$@" "$PWD/$selection"
                 else
                     # Get name of Nth file in list.
                     fname="$(
@@ -116,11 +116,11 @@ sel() {
                         tail -n +"$index" |
                         head -n 1
                     )"
-                    "$cmd" "$PWD/$fname"
+                    "$@" "$PWD/$fname"
                 fi
                 ;;
         esac
     }
 }
 
-sel
+sel "$@"

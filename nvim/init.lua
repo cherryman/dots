@@ -20,6 +20,8 @@ require('packer').startup(function()
   use 'saadparwaiz1/cmp_luasnip'
   use 'zbirenbaum/copilot.lua'
   use 'mfussenegger/nvim-dap'
+  use 'theHamsta/nvim-dap-virtual-text'
+  use 'rcarriga/nvim-dap-ui'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
@@ -31,14 +33,9 @@ end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
 vim.o.packpath = vim.o.runtimepath
+vim.o.exrc = true
 
-vim.cmd [[
-  source ~/.vimrc
-  sign define DiagnosticSignInformation text=- texthl=Todo linehl= numhl=
-  sign define DiagnosticSignHint text=* texthl=Todo linehl= numhl=
-  sign define DiagnosticSignWarning text=* texthl=Todo linehl= numhl=
-  sign define DiagnosticSignError text=> texthl=WarningMsg linehl= numhl=
-]]
+vim.cmd [[ source ~/.vimrc ]]
 
 function applyall(f, as)
   for _, a in ipairs(as) do
@@ -88,6 +85,26 @@ function shellsplit(s)
   return t
 end
 
+applyall(vim.fn.sign_define, {
+  { 'DiagnosticSignInformation', { text = '-', texthl = 'Todo', linehl = '', numhl = '' } },
+  { 'DiagnosticSignHint', { text = '*', texthl = 'Todo', linehl = '', numhl = '' } },
+  { 'DiagnosticSignWarning', { text = '*', texthl = 'Todo', linehl = '', numhl = '' } },
+  { 'DiagnosticSignError', { text = '>', texthl = 'WarningMsg', linehl = '', numhl = '' } },
+})
+
+-- Shouldn't be hardcoded, but whatever. `bg` value from material.vim
+-- with +5% K in CMYK.
+local darkbg = '#1d272b'
+
+applyall(vim.api.nvim_set_hl, {
+  { 0, 'TelescopeNormal', { bg = darkbg } },
+  { 0, 'TelescopePromptBorder', { bg = darkbg, fg = darkbg } },
+  { 0, 'TelescopeBorder', { bg = darkbg, fg = darkbg } },
+  { 0, 'TelescopePreviewTitle', { bg = darkbg, fg = darkbg } },
+  { 0, 'TelescopePromptTitle', { bg = darkbg, fg = darkbg } },
+  { 0, 'TelescopeResultsTitle', { bg = darkbg, fg = darkbg } },
+})
+
 require('nvim-treesitter.configs').setup {
   ensure_installed = "all",
   ignore_install = {"tex", "latex"},
@@ -96,7 +113,7 @@ require('nvim-treesitter.configs').setup {
   },
   highlight = {
     enable = true,
-    disable = {"latex"},
+    disable = {"tex", "latex"},
   },
   textobjects = {
     select = {
@@ -132,12 +149,7 @@ require('nvim-treesitter.configs').setup {
   context_commentstring = {
     enable = true,
     enable_autocmd = false,
-    commentary_integration = {
-      Commentary = false,
-      CommentaryLine = false,
-      ChangeCommentary = false,
-      CommentaryUndo = false,
-    }
+    commentary_integration = false,
   },
 }
 
@@ -256,8 +268,8 @@ cmp.setup({
       end,
     },
     sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'luasnip' },
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
     }),
     completion = {
       autocomplete = false,
@@ -272,13 +284,36 @@ require('telescope').setup({
       i = {
         ["<Esc>"] = require("telescope.actions").close,
         ["<C-u>"] = false,
+        ["<C-x>"] = false,
+        ["<C-s>"] = require("telescope.actions").select_horizontal,
       },
     },
     layout_config = {
       horizontal = {
-        width = 0.95,
-        height = 0.95,
+        width = 0.98,
+        height = 0.96,
         preview_width = 0.6,
+      },
+    },
+  },
+  pickers = {
+    find_files = {
+      border = false,
+      layout_strategy = "bottom_pane",
+      sorting_strategy = "ascending",
+      layout_config = { height = 20 },
+      previewer = false,
+    },
+    buffers = {
+      border = false,
+      layout_strategy = "bottom_pane",
+      sorting_strategy = "ascending",
+      layout_config = { height = 20 },
+      previewer = false,
+      mappings = {
+        i = {
+          ["<C-x>"] = require("telescope.actions").delete_buffer,
+        },
       },
     },
   },
@@ -292,16 +327,15 @@ require("null-ls").setup({
 
 local lspconfig = require('lspconfig')
 local lspattach = function(client, bufnr)
-  keymap.set('n', 'gd', lsp.buf.definition, { buffer = bufnr })
+  local telescope = require('telescope.builtin')
+  keymap.set('n', 'gd', telescope.lsp_definitions, { buffer = bufnr })
   keymap.set('n', 'K', lsp.buf.hover, { buffer = bufnr })
-  keymap.set('n', 'gt', lsp.buf.type_definition, { buffer = bufnr })
+  keymap.set('n', 'gt', telescope.lsp_type_definitions, { buffer = bufnr })
   keymap.set({'n', 'i'}, '<C-s>', lsp.buf.signature_help, { buffer = bufnr })
+  keymap.set('n', 'gD', telescope.lsp_implementations, { buffer = bufnr })
 
-  if client.server_capabilities.declarationProvider then
-    keymap.set('n', 'gD', lsp.buf.declaration, { buffer = bufnr })
-  else
-    keymap.set('n', 'gD', lsp.buf.definition, { buffer = bufnr })
-  end
+  -- Can remove when colorscheme supports lsp syntax highlighting.
+  client.server_capabilities.semanticTokensProvider = nil
 end
 
 -- Used in lightline configuration.
@@ -317,6 +351,12 @@ local function togglelsp()
     vim.g.linting = 0
   end
 end
+
+vim.g.lazygit_floating_window_winblend = 0
+vim.g.lazygit_floating_window_scaling_factor = 1
+vim.g.lazygit_floating_window_use_plenary = 0
+vim.g.lazygit_use_neovim_remote = 1
+vim.g.lazygit_floating_window_border_chars = nil
 
 vim.diagnostic.config({
     virtual_text = false,
@@ -358,9 +398,7 @@ applyall(
                 'experimental/externalDocs',
                 vim.lsp.util.make_position_params(0),
                 function(err, url)
-                  if err then
-                    error(tostring(err))
-                  else
+                  if not err and url then
                     vim.fn['netrw#BrowseX'](url, 0)
                   end
                 end
@@ -388,7 +426,7 @@ dap.adapters.codelldb = {
 }
 dap.configurations.rust = {
   {
-    name = 'Launch',
+    name = 'Rust',
     type = 'codelldb',
     request = 'launch',
     cwd = '${workspaceFolder}',
@@ -404,6 +442,9 @@ dap.configurations.rust = {
     end,
   },
 }
+
+require("nvim-dap-virtual-text").setup {}
+require("dapui").setup {}
 
 local dap_widgets = require('dap.ui.widgets')
 
@@ -437,17 +478,24 @@ applyall(keymap.set, {
   { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true, remap = true } },
 
   { 'n', ' ft', require('nvim-tree').focus },
-  { 'n', ' ff', require('telescope.builtin').find_files },
-  { 'n', ' fb', require('telescope.builtin').buffers },
+  { 'n', '  ',
+    function()
+      local cwd = vim.lsp.buf.list_workspace_folders()[1]
+      require('telescope.builtin').find_files({ cwd = cwd })
+    end
+  },
+  { 'n', ' .', require('telescope.builtin').find_files },
+  { 'n', ' ,', require('telescope.builtin').buffers },
   { 'n', ' /', require('telescope.builtin').live_grep },
 
   { 'n', ' lr', require('telescope.builtin').lsp_references },
   { 'n', ' lR', lsp.buf.rename },
   { 'n', ' ld', function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end },
   { 'n', ' lD', require('telescope.builtin').diagnostics },
-  { 'n', '<C-K>', '<cmd>RustOpenDocs<CR>' },
+  { 'n', '<C-k>', '<cmd>RustOpenDocs<CR>' },
 
   { 'n', ' d ', dap.toggle_breakpoint },
+  { 'n', ' dd', require("dapui").toggle },
   { 'n', ' ds', dap.close },
   { 'n', ' dc', dap.continue },
   { 'n', ' dr', dap.repl.open },

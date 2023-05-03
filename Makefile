@@ -31,6 +31,9 @@ XDGC_TARGETS	= alacritty    \
 		  emacs        \
 		  doom         \
 		  darktable    \
+		  hypr         \
+		  eww          \
+		  btop         \
 		  git
 
 .PHONY: $(XDGC_TARGETS)

@@ -2,20 +2,13 @@
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
-(make-directory "~/doc/org"
-                "~/doc/org/roam")
+(make-directory "~/doc/org" 'parents)
+(make-directory "~/doc/org/roam" 'parents)
 
-(setq doom-font (font-spec :family "monospace" :size 20)
-      org-roam-directory "~/doc/org"
+(setq doom-font (font-spec :family "monospace" :size 15)
+      org-directory "~/doc/org/"
+      org-roam-directory "~/doc/org/roam"
       company-idle-delay nil)
-
-(map! :map global-map
-      "C-S-v" 'clipboard-yank
-      "M-h" 'evil-window-left
-      "M-j" 'evil-window-down
-      "M-k" 'evil-window-up
-      "M-l" 'evil-window-right
-      :n "C-l" 'evil-ex-nohighlight)
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -49,12 +42,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/doc/org/")
-
+(setq display-line-numbers-type nil)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -87,3 +75,111 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(map! :map global-map
+      "C-S-v" 'clipboard-yank
+      "M-h" 'evil-window-left
+      "M-j" 'evil-window-down
+      "M-k" 'evil-window-up
+      "M-l" 'evil-window-right
+      :n "C-l" 'evil-ex-nohighlight
+
+      (:leader :prefix-map ("n" . "notes")
+        :desc "Browse notes"       "f" #'+default/browse-notes
+        :desc "Find file in notes" "F" #'+default/find-in-notes
+      )
+)
+
+(set-irc-server! "irc.libera.chat"
+  `(:tls t
+    :port 6697
+    :nick ,(+pass-get-user "irc.libera.chat")
+    :sasl-username ,(+pass-get-user "irc.libera.chat")
+    :sasl-password (lambda (&rest _) (+pass-get-secret "irc.libera.chat"))
+    ))
+
+(keymap-global-unset "<mouse-2>")
+
+(after! org (setq
+  org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))
+  org-startup-folded 'fold
+  org-catch-invisible-edits 'error
+
+  org-capture-templates `(
+    ("t" "Todo" entry (file +org-capture-todo-file)
+      "* TODO %?\n" :prepend t)
+    ("T" "Todo with link" entry (file +org-capture-todo-file)
+      "* TODO %?\n%i\n%a" :prepend t)
+    ("n" "Notes" entry (file+headline +org-capture-notes-file "Inbox")
+      "* %u %?\n%i\n%a")
+    ("j" "Journal" entry (file+olp+datetree +org-capture-journal-file)
+      "* %U %?\n%i\n%a" :prepend t)
+    ("r" "Recipe" entry (file "recipes.org")
+      "* %^{Title: }\n  :PROPERTIES:\n  :source-url: %^{Url: }\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+    ("l" "Link" entry (file +org-capture-todo-file)
+      "* TODO [[%:link][%:description]]\n" :immediate-finish t)
+
+    ("p" "Templates for projects")
+    ("pt" "Project-local todo" entry (file+headline +org-capture-project-todo-file "Inbox")
+      "* TODO %?\n%i\n%a" :prepend t)
+    ("pn" "Project-local notes" entry (file+headline +org-capture-project-notes-file "Inbox")
+      "* %U %?\n%i\n%a" :prepend t)
+    ("pc" "Project-local changelog" entry (file+headline +org-capture-project-changelog-file "Unreleased")
+      "* %U %?\n%i\n%a" :prepend t)
+
+    ("o" "Centralized templates for projects")
+    ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+    ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :heading "Notes" :prepend t)
+    ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :heading "Changelog" :prepend t)
+  )
+
+  org-todo-keywords '(
+    (sequence
+      "STRT(s)"  ; A task that is in progress
+      "LOOP(r)"  ; A recurring task
+      "WAIT(w)"  ; Something external is holding up this task
+      "HOLD(h)"  ; This task is paused/on hold because of me
+      "TODO(t)"  ; A task that needs doing & is ready to do
+      "IDEA(i)"  ; An unconfirmed and unapproved task or notion
+      "|"
+      "KILL(k)"  ; Task was cancelled, aborted or is no longer applicable
+      "DONE(d)"  ; Task successfully completed
+    )
+
+    (sequence
+      "[ ](T)"   ; A task that needs doing
+      "[-](S)"   ; Task is in progress
+      "[?](W)"   ; Task is being held up or paused
+      "|"
+      "[X](D)"   ; Task was completed
+    )
+
+    (sequence
+      "|"
+      "OKAY(o)"
+      "YES(y)"
+      "NO(n)"
+    )
+  )
+
+  org-todo-keyword-faces '(
+    ("[-]"  . +org-todo-active)
+    ("STRT" . +org-todo-active)
+    ("[?]"  . +org-todo-onhold)
+    ("HOLD" . +org-todo-onhold)
+    ("WAIT" . +org-todo-onhold)
+    ("PROJ" . +org-todo-project)
+    ("NO"   . +org-todo-cancel)
+    ("KILL" . org-done)
+  )
+
+  org-agenda-sorting-strategy '(
+    (agenda habit-down time-up priority-down category-keep)
+    ; (todo priority-down category-keep)
+    (todo todo-state-up priority-down category-keep)
+    (tags priority-down category-keep)
+    (search category-keep)
+  )
+))
+
+(after! org-roam (org-roam-db-autosync-mode))
+(after! org-protocol (setq org-protocol-default-template-key "l"))

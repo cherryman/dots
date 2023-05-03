@@ -1,0 +1,41 @@
+#! /bin/sh
+#
+# Depends on: iwctl, jq
+
+if [ $# -ne 1 ]; then
+    echo >&2 "usage: $(basename "$0") <device>"
+    exit 0
+fi
+
+readonly DEVICE="$1"
+
+getfield() {
+    grep "$1" |
+
+        # Extract the value of the field.
+        sed "s/^[[:space:]]*$1[[:space:]]*//" |
+
+        # Remove trailing whitespace.
+        sed 's/[[:space:]]*$//' |
+
+        # Remove trailing newline inserted by `sed` required by POSIX.
+        # There should only be one line, so this is fine.
+        tr -d '\n' |
+
+        # Escape the string for use in JSON. Output is quoted.
+        jq --raw-input --raw-output --slurp --ascii-output .
+}
+
+getinfo() {
+    v=$(iwctl station "$DEVICE" show)
+    ssid=$(echo -n "$v" | getfield "Connected network")
+    status=$(echo -n "$v" | getfield "State")
+    echo "{\"status\": $status, \"ssid\": $ssid}"
+}
+
+getinfo
+
+ip monitor |
+    while read -r _; do
+        getinfo
+    done

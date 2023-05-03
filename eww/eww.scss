@@ -1,0 +1,80 @@
+$black: #263238;
+$white: #eeffff;
+$red: #f76d47;
+$blue: #82aaff;
+$purple: #c792ea;
+$green: #c3e88d;
+
+* {
+  all: unset;
+  font-family: Symbols Nerd Font, sans-serif;
+  font-size: 15.5px;
+  transition: 120ms;
+}
+
+.bar {
+  color: white;
+
+  > * {
+    padding: 0 8px;
+  }
+}
+
+@mixin card {
+  padding: 2px 8px;
+  border-radius: 16px;
+  background-color: $black;
+  color: $white;
+}
+
+.icon {
+  font-size: 14px;
+}
+
+.system {
+  @include card;
+
+  padding: 2px 1em;
+}
+
+.ws {
+  @include card;
+
+  padding: 2px 0.75em;
+
+  &.ws-active {
+    padding: 2px 1.25em;
+
+    &.ws-1 {
+      background-color: $purple;
+    }
+
+    &.ws-2 {
+      background-color: $red;
+    }
+
+    &.ws-3 {
+      background-color: $blue;
+    }
+
+    &.ws-4 {
+      background-color: $green;
+    }
+  }
+
+  label {
+    font-size: 14px;
+  }
+}
+
+.volume {
+  color: $green;
+}
+
+.battery {
+  color: $purple;
+}
+
+.network {
+  color: $blue;
+}

@@ -26,3 +26,4 @@
     s = status --short
     b = branch
     r = restore
+    sw = switch

@@ -1,0 +1,108 @@
+; vim:set ts=2:
+;
+; Icons use 'MaterialSymbolsOutlined' from
+; https://github.com/google/material-design-icons/tree/master/variablefont
+
+(defwindow bar
+  :monitor 0
+  :geometry
+    (geometry
+        :x "0" :y "0" :width "100%" :height "32px"
+        :anchor "top center")
+  :exclusive true
+  :stacking "fg"
+
+  (centerbox
+    :orientation "h"
+    :valign "center"
+
+    (box
+      :halign "start"
+      (workspaces))
+
+    ; Notch. Size is 184x32.
+    (box :halign "center" :width 196)
+
+    (box
+      :halign "end"
+      (box
+        :class "system"
+        :hexpand false
+        :space-evenly false
+        :spacing 8
+        (volume)
+        (battery :id "macsmc-battery")
+        (network)
+        (datetime))
+    )
+  )
+)
+
+; HACK: Hardcode the workspace names to simulate static workspaces.
+(defvar hypr-workspaces
+  '[{"id": 1, "name": "󰞷"}, {"id": 2, "name": ""}, {"id": 3, "name": "󰠮"}, {"id": 4, "name": "󰭹"}]')
+
+(defpoll datetime
+  :interval "10s"
+  `date +'{"time": "%H:%M", "date": "%a, %b %d", "weekday": "%u"}'`)
+(deflisten audio-volume `vol subvol`)
+(deflisten audio-device `vol subdev`)
+(deflisten music `playerctl --follow metadata --format '{{title}} - {{artist}}'`)
+(deflisten hypr-activewindow `./scripts/hypr-events activewindow`)
+(deflisten hypr_monitors `./scripts/hypr-events monitors`)
+(deflisten network `./scripts/iwctl-monitor wlan0`)
+
+(defwidget workspaces []
+  (box
+    :space-evenly false
+    :spacing 4
+    (for ws in hypr-workspaces
+      (box
+        :class "ws ws-${ws.id} ${ws.id == hypr_monitors[0].activeWorkspace.name ? "ws-active" : ""}"
+        (label
+          :text {ws.name})))))
+
+(defwidget datetime []
+  (box
+    :class "datetime"
+    :space-evenly false
+    :spacing 6
+    (label :text {datetime.date})
+    (label :text "|")
+    (label :text {datetime.time})))
+
+(defwidget network []
+  (label :class "network" :text {network.status == 'connected' ? "󰤨" : "󰤮"}))
+
+(defwidget volume []
+  (box
+    :class "volume"
+    :space-evenly false
+    :spacing 4
+    :valign "center"
+    (label :class "icon" :yalign 0.5 :text {audio-device == 'headphone' ? "󰋋" : "󰓃"})
+    (label :text {audio-volume})))
+
+(defwidget battery [id]
+  (battery_
+    :status {EWW_BATTERY[id].status}
+    :capacity {EWW_BATTERY[id].capacity}))
+
+(defwidget battery_ [status capacity]
+  (box
+    :class "battery"
+    :space-evenly false
+    :spacing 4
+    (label :yalign 0.5 :class "icon" :text {
+        status == 'Charging' || status == 'Full' ? ""
+        : capacity <= 5 ? ""
+        : capacity <= 10 ? ""
+        : capacity <= 25 ? ""
+        : capacity <= 35 ? ""
+        : capacity <= 50 ? ""
+        : capacity <= 60 ? ""
+        : capacity <= 75 ? ""
+        : capacity <= 90 ? ""
+        : ""
+      })
+    (label :text "${capacity}")))

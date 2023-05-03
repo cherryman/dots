@@ -3,7 +3,10 @@ $HOME/.config/**/*Cache*
 $HOME/**/__pycache__
 $HOME/**/node_modules
 $HOME/.davfs2/cache
-
+$HOME/dots/emacs/.local
+$HOME/dots/emacs/eln-cache
+$HOME/.config/chromium
+$HOME/.config/discord
 $HOME/.local/state
 $HOME/.local/share
 $HOME/.local/opt
@@ -13,5 +16,6 @@ $HOME/.local/man
 $HOME/.local/include
 $HOME/.mozilla/firefox/*/storage
 $HOME/.mozilla/firefox/*/minidumps
+$HOME/.mozilla/firefox/*/datareporting
 $HOME/.mozilla/firefox/Crash Reports
 $HOME/.wine
