@@ -103,6 +103,7 @@
   org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))
   org-startup-folded 'fold
   org-catch-invisible-edits 'error
+  org-log-done 'note
 
   org-capture-templates `(
     ("t" "Todo" entry (file +org-capture-todo-file)
@@ -135,11 +136,10 @@
   org-todo-keywords '(
     (sequence
       "STRT(s)"  ; A task that is in progress
-      "LOOP(r)"  ; A recurring task
       "WAIT(w)"  ; Something external is holding up this task
       "HOLD(h)"  ; This task is paused/on hold because of me
+      "NEXT(n)"  ; An unconfirmed and unapproved task or notion
       "TODO(t)"  ; A task that needs doing & is ready to do
-      "IDEA(i)"  ; An unconfirmed and unapproved task or notion
       "|"
       "KILL(k)"  ; Task was cancelled, aborted or is no longer applicable
       "DONE(d)"  ; Task successfully completed
@@ -163,18 +163,17 @@
 
   org-todo-keyword-faces '(
     ("[-]"  . +org-todo-active)
-    ("STRT" . +org-todo-active)
     ("[?]"  . +org-todo-onhold)
+    ("STRT" . +org-todo-active)
     ("HOLD" . +org-todo-onhold)
     ("WAIT" . +org-todo-onhold)
-    ("PROJ" . +org-todo-project)
+    ("NEXT" . "#9099ff")
     ("NO"   . +org-todo-cancel)
     ("KILL" . org-done)
   )
 
   org-agenda-sorting-strategy '(
     (agenda habit-down time-up priority-down category-keep)
-    ; (todo priority-down category-keep)
     (todo todo-state-up priority-down category-keep)
     (tags priority-down category-keep)
     (search category-keep)

@@ -1,4 +1,4 @@
-local api, fn, keymap, lsp = vim.api, vim.fn, vim.keymap, vim.lsp
+local api, fn, keymap = vim.api, vim.fn, vim.keymap
 local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
@@ -12,7 +12,7 @@ require('packer').startup(function()
   use 'nvim-lua/plenary.nvim' -- common dependency
   use 'nvim-lua/popup.nvim'
   use 'neovim/nvim-lspconfig'
-  use 'jose-elias-alvarez/null-ls.nvim'
+  use 'mfussenegger/nvim-lint'
   use 'nvim-telescope/telescope.nvim'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
@@ -29,6 +29,7 @@ require('packer').startup(function()
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/leap.nvim'
   use 'kyazdani42/nvim-tree.lua'
+  use 'simrat39/rust-tools.nvim'
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -206,7 +207,7 @@ require('nvim-tree').setup {
       }
     end
 
-    applyall(keymap.set, {
+    applyall(vim.keymap.set, {
       { 'n', '<CR>', api.node.open.edit, opts('Open') },
       { 'n', 'o', api.node.open.edit, opts('Open') },
       { 'n', '<2-LeftMouse>', api.node.open.edit, opts('Open') },
@@ -244,36 +245,36 @@ require('copilot').setup({
 
 local cmp = require('cmp')
 cmp.setup({
-    mapping = {
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
-      ['<Tab>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_next_item()
-        else
-          fallback()
-        end
-      end,
-      ['<S-Tab>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item()
-        else
-          fallback()
-        end
-      end,
-    },
-    snippet = {
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body)
-      end,
-    },
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'luasnip' },
-    }),
-    completion = {
-      autocomplete = false,
-    },
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end,
+    ['<S-Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end,
+  },
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+  }),
+  completion = {
+    autocomplete = false,
+  },
 })
 
 require("luasnip.loaders.from_snipmate").lazy_load()
@@ -319,38 +320,18 @@ require('telescope').setup({
   },
 })
 
-require("null-ls").setup({
-    sources = {
-        require("null-ls").builtins.diagnostics.shellcheck,
-    },
+require('lint').linters_by_ft = {
+  sh = { 'shellcheck' },
+  nix = { 'nix' },
+}
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  callback = function()
+    require("lint").try_lint()
+  end,
 })
 
-local lspconfig = require('lspconfig')
-local lspattach = function(client, bufnr)
-  local telescope = require('telescope.builtin')
-  keymap.set('n', 'gd', telescope.lsp_definitions, { buffer = bufnr })
-  keymap.set('n', 'K', lsp.buf.hover, { buffer = bufnr })
-  keymap.set('n', 'gt', telescope.lsp_type_definitions, { buffer = bufnr })
-  keymap.set({'n', 'i'}, '<C-s>', lsp.buf.signature_help, { buffer = bufnr })
-  keymap.set('n', 'gD', telescope.lsp_implementations, { buffer = bufnr })
-
-  -- Can remove when colorscheme supports lsp syntax highlighting.
-  client.server_capabilities.semanticTokensProvider = nil
-end
-
--- Used in lightline configuration.
-vim.g.linting = 0
 vim.diagnostic.disable()
-
-local function togglelsp()
-  if vim.g.linting == 0 then
-    vim.diagnostic.enable()
-    vim.g.linting = 1
-  else
-    vim.diagnostic.disable()
-    vim.g.linting = 0
-  end
-end
 
 vim.g.lazygit_floating_window_winblend = 0
 vim.g.lazygit_floating_window_scaling_factor = 1
@@ -358,13 +339,17 @@ vim.g.lazygit_floating_window_use_plenary = 0
 vim.g.lazygit_use_neovim_remote = 1
 vim.g.lazygit_floating_window_border_chars = nil
 
+local lspconfig = require('lspconfig')
 vim.diagnostic.config({
     virtual_text = false,
 })
 lspconfig.util.default_config = merge(
   lspconfig.util.default_config,
   {
-    on_attach = lspattach,
+    on_attach = function(client, bufnr)
+      -- Can remove when colorscheme supports lsp syntax highlighting.
+      client.server_capabilities.semanticTokensProvider = nil
+    end,
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
   }
 )
@@ -378,37 +363,8 @@ applyall(
     end
   end,
   {
-    { {'elixirls', {cmd = {'elixir-ls'}}} },
+    { { 'elixirls', { cmd = { 'elixir-ls' } } } },
     { 'pyright' },
-    {
-      {'rust_analyzer', {
-        settings = {
-          ['rust-analyzer'] = {
-            checkOnSave = {
-              command = 'clippy'
-            }
-          }
-        },
-        commands = {
-          -- https://github.com/neovim/nvim-lspconfig/pull/1921
-          RustOpenDocs = {
-            function()
-              vim.lsp.buf_request(
-                0,
-                'experimental/externalDocs',
-                vim.lsp.util.make_position_params(0),
-                function(err, url)
-                  if not err and url then
-                    vim.fn['netrw#BrowseX'](url, 0)
-                  end
-                end
-              );
-            end,
-            description = 'Open documentation for the symbol under the cursor in default browser',
-          },
-        },
-      }}
-    },
     { 'texlab' },
     { 'tsserver' },
     { 'zls' },
@@ -424,29 +380,33 @@ dap.adapters.codelldb = {
     args = {'--port', '${port}'},
   },
 }
-dap.configurations.rust = {
-  {
-    name = 'Rust',
-    type = 'codelldb',
-    request = 'launch',
-    cwd = '${workspaceFolder}',
-    stopOnEntry = false,
-    runInTerminal = false,
-    program = function()
-      return fn.input('Executable: ', fn.getcwd() .. '/target/debug/', 'file')
-    end,
-    args = function()
-      -- return shellsplit(fn.input('Args: '))
-      -- return fn.input('Args: ')
-      return {}
-    end,
+
+require("rust-tools").setup {
+  tools = {
+    inlay_hints = {
+      auto = false,
+    },
+    hover_actions = false,
+    crate_graph = false,
+  },
+  dap = {
+    adapter = dap.adapters.codelldb,
   },
 }
 
 require("nvim-dap-virtual-text").setup {}
 require("dapui").setup {}
 
+-- leap setup
+require('leap').set_default_keymaps()
+vim.g.surround_no_mappings = 1
+
 local dap_widgets = require('dap.ui.widgets')
+
+function find_files_project()
+  local cwd = vim.lsp.buf.list_workspace_folders()[1]
+  require('telescope.builtin').find_files({ cwd = cwd })
+end
 
 function comment_aux(mapping)
   return function()
@@ -455,11 +415,7 @@ function comment_aux(mapping)
   end
 end
 
--- leap setup
-require('leap').set_default_keymaps()
-vim.g.surround_no_mappings = 1
-
-applyall(keymap.set, {
+applyall(vim.keymap.set, {
   { 'n', 'ds', '<Plug>Dsurround' },
   { 'n', 'cs', '<Plug>Csurround' },
   { 'n', 'cS', '<Plug>CSurround' },
@@ -478,21 +434,32 @@ applyall(keymap.set, {
   { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true, remap = true } },
 
   { 'n', ' ft', require('nvim-tree').focus },
-  { 'n', '  ',
-    function()
-      local cwd = vim.lsp.buf.list_workspace_folders()[1]
-      require('telescope.builtin').find_files({ cwd = cwd })
-    end
-  },
+  { 'n', '  ', find_files_project },
   { 'n', ' .', require('telescope.builtin').find_files },
   { 'n', ' ,', require('telescope.builtin').buffers },
   { 'n', ' /', require('telescope.builtin').live_grep },
 
   { 'n', ' lr', require('telescope.builtin').lsp_references },
-  { 'n', ' lR', lsp.buf.rename },
+  { 'n', ' lR', vim.lsp.buf.rename },
+  { 'n', 'K', vim.lsp.buf.hover },
+  { {'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help },
   { 'n', ' ld', function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end },
   { 'n', ' lD', require('telescope.builtin').diagnostics },
-  { 'n', '<C-k>', '<cmd>RustOpenDocs<CR>' },
+  { 'n', 'gd', require('telescope.builtin').lsp_definitions },
+  { 'n', 'gt', require('telescope.builtin').lsp_type_definitions },
+  { 'n', 'gD', require('telescope.builtin').lsp_implementations },
+  { 'n', '<C-k>', '<cmd>RustOpenExternalDocs<CR>' },
+  { 'n', 'go', '<cmd>RustParentModule<CR>' },
+
+  { 'n', ' gB', '<cmd>Git blame<CR>' },
+  { 'n', ' gg', '<cmd>LazyGitCurrentFile<CR>' },
+
+  { 'n', '[g', '<cmd>GitGutterPrevHunk<CR>' },
+  { 'n', ']g', '<cmd>GitGutterNextHunk<CR>' },
+  { 'n', '[e', vim.diagnostic.goto_prev },
+  { 'n', ']e', vim.diagnostic.goto_next },
+
+  { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
 
   { 'n', ' d ', dap.toggle_breakpoint },
   { 'n', ' dd', require("dapui").toggle },
@@ -501,18 +468,6 @@ applyall(keymap.set, {
   { 'n', ' dr', dap.repl.open },
   { 'n', ' di', dap_widgets.hover },
   { 'n', ' d?', function() dap_widgets.centered_float(dap_widgets.scopes) end },
-
-  { 'n', ' gB', '<cmd>Git blame' },
-  { 'n', ' gg', '<cmd>LazyGitCurrentFile<CR>' },
-
-  { 'n', ' tl', togglelsp },
-  { 'n', '[g', '<cmd>GitGutterPrevHunk<CR>' },
-  { 'n', ']g', '<cmd>GitGutterNextHunk<CR>' },
-  { 'n', '[e', vim.diagnostic.goto_prev },
-  { 'n', ']e', vim.diagnostic.goto_next },
-
-  { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
-
   { 'n', '<A-J>', dap.step_over },
   { 'n', '<A-H>', dap.step_out },
   { 'n', '<A-L>', dap.step_into },

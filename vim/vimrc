@@ -43,8 +43,6 @@ autocmd VimEnter *
 
 "}}}
 " ---- Functions {{{
-let g:linting = 0
-
 fun! Format()
     if &formatprg ==# "" | return | endif
     mkview!
@@ -245,18 +243,12 @@ let g:haskell_indent_guard = 4
 let g:gitgutter_map_keys = 0
 let g:gitgutter_override_sign_column_highlight = 0
 
-" vim-lightline
-fun! LightlineLinting()
-    return g:linting ? 'lint' : ''
-endfun
-
 let g:lightline = {
 \   'colorscheme': g:lightline_colorscheme,
 \   'active': {
 \       'left': [
 \           ['paste'],
 \           ['readonly', 'filename', 'modified'],
-\           ['linting'],
 \       ],
 \       'right': [
 \           ['lineinfo'],
@@ -264,9 +256,6 @@ let g:lightline = {
 \           ['fileformat', 'fileencoding', 'filetype'],
 \       ],
 \   },
-\   'component_function': {
-\       'linting': 'LightlineLinting',
-\   }
 \ }
 
 " vim-pandoc

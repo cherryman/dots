@@ -10,6 +10,14 @@ zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
 zplug 'junegunn/fzf', use:'shell/*.zsh'
 
+if command -v > /dev/null zoxide; then
+    eval "$(zoxide init zsh)"
+fi
+
+if command -v > /dev/null direnv; then
+    eval "$(direnv hook zsh)"
+fi
+
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 export HISTSIZE=2000
 autoload -Uz compinit
@@ -20,14 +28,14 @@ setopt inc_append_history_time hist_find_no_dups
 setopt promptsubst # interpolate PS1
 unsetopt beep
 
-bindkey -e # emacs keybindings
-
-zplug load
-
 less-widget() {
     BUFFER+=" |& $PAGER"
     zle accept-line
 }
 
 zle -N less-widget
+
+bindkey -e # emacs keybindings
 bindkey '\eo' less-widget
+
+zplug load

@@ -9,15 +9,7 @@ esac
 alias l='ls -l'
 alias tm=tmux
 alias g=git
-
 alias k++='c++ -std=c++17 -g'
-
-if have zoxide; then
-    if   [ "$BASH" ];     then eval "$(zoxide init bash)"
-    elif [ "$ZSH_NAME" ]; then eval "$(zoxide init zsh)"
-    else eval "$(zoxide init posix --hook prompt)"
-    fi
-fi
 
 ### Prompt
 prompt_pwd() {
