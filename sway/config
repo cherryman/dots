@@ -2,15 +2,17 @@ set $hyp Mod3
 set $sup Mod4
 set $alt Mod1
 
-exec gammastep
+exec swww init
+exec wlsunset -s 19:00 -S 06:00 -d 3600
 exec dunst
-exec term -e zsh -ic 'tmux attach'
+exec fcitx5
+exec alacritty -e zsh -ic 'tmux new-session -A -s 0'
+exec firefox
+exec emacs
 
 floating_modifier $sup normal
 font pango:sans-serif 10
 xwayland enabled
-bar swaybar_command waybar
-output * bg "$WALLPAPER" fill
 
 workspace_layout tabbed
 hide_edge_borders --i3 smart
@@ -21,10 +23,12 @@ client.focused_inactive #222222 #222222 #eeeeee
 client.unfocused #222222 #222222 #eeeeee
 
 assign [app_id="firefox"] 2
+assign [app_id="emacs"] 3
+assign [app_id="[sS]lack"] 4
 
 input type:keyboard {
     xkb_layout us,ca
-    xkb_options caps:hyper,grp:win_space_toggle
+    xkb_options caps:hyper,altwin:swap_alt_win
     xkb_numlock enable
 }
 input type:pointer {
@@ -45,29 +49,20 @@ mode "screenshot" {
     bindsym Escape mode default
     bindsym Return mode default
 }
-bindsym $sup+Shift+s mode "screenshot"
+bindsym $sup+s mode "screenshot"
 
-bindsym XF86HomePage exec firefox
-bindsym XF86AudioRaiseVolume exec vol inc 2
-bindsym XF86AudioLowerVolume exec vol dec 2
-bindsym XF86AudioMute exec vol mute on
-bindsym XF86AudioPrev exec playerctl -i firefox previous
-bindsym XF86AudioNext exec playerctl -i firefox next
-bindsym XF86AudioPlay exec playerctl -i firefox play-pause
-bindsym XF86MonBrightnessUp exec brightnessctl s 5%+
-bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
-
-bindsym $sup+grave exec term
-bindsym $alt+Shift+d exec rofi -show drun
-bindsym $alt+Shift+q exec dlaunch -s "$HOME/doc/Books" xdg-open
-bindsym $alt+Shift+w exec dlaunch -s "$HOME/media/vid" xdg-open
+bindsym $sup+p exec dlaunch -s "$HOME/media/pic/wallp.d" swww img
+bindsym $sup+w exec dlaunch -i '^\..*|.*\.srt|.*\.sup$' -s ~/media/vid xdg-open
+bindsym $sup+e exec dlaunch -i '^\..*' -s "$HOME/doc/books" xdg-open
+bindsym $sup+grave exec alacritty
+bindsym $sup+d exec rofi -show drun
+bindsym $sup+q kill
 bindsym $sup+equal gaps inner all plus 5
 bindsym $sup+minus gaps inner all minus 5
 bindsym --whole-window $sup+button4 exec vol inc 2
 bindsym --whole-window $sup+button5 exec vol dec 2
-bindsym $sup+q kill
 bindsym $sup+$alt+c reload
-bindsym $sup+$alt+Escape exec swaynag -t warning -m 'Quit?' -b 'Yes' 'swaymsg exit'
+bindsym $sup+$alt+Escape exec swaymsg exit
 bindsym $hyp+h focus left
 bindsym $hyp+j focus down
 bindsym $hyp+k focus up
@@ -94,15 +89,22 @@ bindsym $hyp+$alt+3 move container to workspace 3
 bindsym $hyp+$alt+4 move container to workspace 4
 bindsym $hyp+backslash splith
 bindsym $hyp+minus splitv
-bindsym $hyp+$alt+s fullscreen
-bindsym $hyp+$alt+f floating toggle
-bindsym $hyp+$alt+t floating disable
-bindsym $hyp+q layout stacking
-bindsym $hyp+w layout tabbed
-bindsym $hyp+e layout toggle split
-bindsym $hyp+f focus mode_toggle
+bindsym $hyp+f floating toggle
+bindsym $hyp+d fullscreen
+bindsym $hyp+w layout toggle splith tabbed
+bindsym $hyp+q focus left
+bindsym $hyp+e focus right
 bindsym $hyp+a focus parent
-bindsym $hyp+r scratchpad show
-bindsym $hyp+$alt+r move scratchpad
+bindsym $hyp+s scratchpad show
+bindsym $hyp+$alt+s move scratchpad
+bindsym XF86HomePage exec firefox
+bindsym XF86AudioRaiseVolume exec vol inc 2
+bindsym XF86AudioLowerVolume exec vol dec 2
+bindsym XF86AudioMute exec vol mute on
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86MonBrightnessUp exec brightnessctl s 5%+
+bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
 
 include /etc/sway/config.d/*

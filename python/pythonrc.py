@@ -7,6 +7,7 @@ import pdb
 import atexit
 import readline
 import numpy as np
+import matplotlib.pyplot as plt
 
 python_history = os.path.join(
     os.environ.get("XDG_STATE_HOME") or os.path.expanduser("~/.local/state"),
@@ -36,4 +37,4 @@ atexit.register(_write_python_history, python_history)
 
 del (python_history, _write_python_history, atexit, readline)
 
-print("imported: os, pdb, np")
+print("imported: os, pdb, np, plt")

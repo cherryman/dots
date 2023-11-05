@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 err() { echo "$@" 1>&2; }
 
@@ -45,7 +45,7 @@ subscribe() {
         grep --line-buffered "Event 'change' on sink"
 }
 
-readonly MAX=0.6
+readonly MAX=0.7
 
 case "$1" in
     get) wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{ print $2 * 100 }' ;;

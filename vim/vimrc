@@ -117,7 +117,7 @@ augroup formatter
     au FileType elixir      setl fex= fp=mix\ format\ -
     au FileType rust        setl fex= fp=rustfmt\ +nightly
     au FileType zig         setl fex= fp=zig\ fmt\ --stdin
-    au FileType python      setl fex= fp=black\ --quiet\ -
+    au FileType python      setl fex= fp=ruff\ format\ -
 augroup END
 
 "}}}

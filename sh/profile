@@ -10,8 +10,6 @@ export BASE16_SHELL="$HOME/.config/base16-shell"
 export LESS="-RSi"
 export MOSH_ESCAPE_KEY='' # <C-\>
 
-export WALLPAPER="$HOME/media/pic/wallp"
-export WALLPAPER_DIR="$HOME/media/pic/wallp.d"
 export SCREENSHOT_DIR="$HOME/media/pic/sshot"
 
 export LESSHISTFILE="$XDG_STATE_HOME/lesshst"

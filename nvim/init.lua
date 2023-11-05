@@ -24,12 +24,18 @@ require('packer').startup(function()
   use 'rcarriga/nvim-dap-ui'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
-  use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
-  use 'kdheepak/lazygit.nvim'
+  -- use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
+  use 'NeogitOrg/neogit'
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/leap.nvim'
   use 'kyazdani42/nvim-tree.lua'
   use 'simrat39/rust-tools.nvim'
+  use { 'jpalardy/vim-slime', setup = function()
+    -- https://github.com/jpalardy/vim-slime/blob/main/assets/doc/targets/tmux.md
+    vim.g.slime_target = 'tmux'
+    vim.g.slime_paste_file = vim.fn.stdpath('cache') .. '/_slime_paste'
+    vim.g.slime_default_config = { socket_name = 'default', target_pane = '{last}' }
+  end}
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -104,11 +110,15 @@ applyall(vim.api.nvim_set_hl, {
   { 0, 'TelescopePreviewTitle', { bg = darkbg, fg = darkbg } },
   { 0, 'TelescopePromptTitle', { bg = darkbg, fg = darkbg } },
   { 0, 'TelescopeResultsTitle', { bg = darkbg, fg = darkbg } },
+  { 0, 'NeogitDiffAdd', { link = 'DiffAdd' } },
+  { 0, 'NeogitDiffAddHighlight', { link = 'DiffAdd' } },
+  { 0, 'NeogitDiffDelete', { link = 'DiffDelete' } },
+  { 0, 'NeogitDiffDeleteHighlight', { link = 'DiffDelete' } },
 })
 
 require('nvim-treesitter.configs').setup {
   ensure_installed = "all",
-  ignore_install = {"tex", "latex"},
+  ignore_install = {"tex", "latex", "markdown"},
   indent = {
     disable = {"tex", "latex"},
   },
@@ -147,12 +157,12 @@ require('nvim-treesitter.configs').setup {
       },
     },
   },
-  context_commentstring = {
-    enable = true,
-    enable_autocmd = false,
-    commentary_integration = false,
-  },
 }
+
+-- require('ts_context_commentstring').setup {
+--   enable_autocmd = false,
+--   commentary_integration = false,
+-- }
 
 require('nvim-tree').setup {
   sort_by = "case_sensitive",
@@ -333,11 +343,7 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 
 vim.diagnostic.disable()
 
-vim.g.lazygit_floating_window_winblend = 0
-vim.g.lazygit_floating_window_scaling_factor = 1
-vim.g.lazygit_floating_window_use_plenary = 0
-vim.g.lazygit_use_neovim_remote = 1
-vim.g.lazygit_floating_window_border_chars = nil
+require('neogit').setup {}
 
 local lspconfig = require('lspconfig')
 vim.diagnostic.config({
@@ -383,6 +389,7 @@ dap.adapters.codelldb = {
 
 require("rust-tools").setup {
   tools = {
+    reload_workspace_from_cargo_toml = false,
     inlay_hints = {
       auto = false,
     },
@@ -410,7 +417,7 @@ end
 
 function comment_aux(mapping)
   return function()
-    pcall(require('ts_context_commentstring.internal').update_commentstring)
+    -- pcall(require('ts_context_commentstring.internal').update_commentstring)
     return '<Plug>' .. mapping
   end
 end
@@ -452,7 +459,7 @@ applyall(vim.keymap.set, {
   { 'n', 'go', '<cmd>RustParentModule<CR>' },
 
   { 'n', ' gB', '<cmd>Git blame<CR>' },
-  { 'n', ' gg', '<cmd>LazyGitCurrentFile<CR>' },
+  { 'n', ' gg', require('neogit').open },
 
   { 'n', '[g', '<cmd>GitGutterPrevHunk<CR>' },
   { 'n', ']g', '<cmd>GitGutterNextHunk<CR>' },
