@@ -34,6 +34,9 @@ XDGC_TARGETS	= alacritty    \
 		  hypr         \
 		  eww          \
 		  btop         \
+		  qmk          \
+		  direnv       \
+		  nix          \
 		  git
 
 .PHONY: $(XDGC_TARGETS)

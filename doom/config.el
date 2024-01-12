@@ -135,6 +135,7 @@
 
   org-todo-keywords '(
     (sequence
+      "VIEW(r)"  ; Book or series that is in progress
       "STRT(s)"  ; A task that is in progress
       "WAIT(w)"  ; Something external is holding up this task
       "HOLD(h)"  ; This task is paused/on hold because of me
@@ -168,6 +169,7 @@
     ("HOLD" . +org-todo-onhold)
     ("WAIT" . +org-todo-onhold)
     ("NEXT" . "#9099ff")
+    ("VIEW" . "#c68eff")
     ("NO"   . +org-todo-cancel)
     ("KILL" . org-done)
   )

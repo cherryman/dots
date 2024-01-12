@@ -25,15 +25,24 @@ require('packer').startup(function()
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   -- use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
+  use 'sindrets/diffview.nvim' -- neogit integration
   use 'NeogitOrg/neogit'
   use 'kristijanhusak/orgmode.nvim'
   use 'ggandor/leap.nvim'
   use 'kyazdani42/nvim-tree.lua'
-  use 'simrat39/rust-tools.nvim'
+  use { 'mrcjkb/rustaceanvim', config = function()
+    vim.g.rustaceanvim = {
+      tools = {
+        reload_workspace_from_cargo_toml = false,
+        hover_actions = { replace_builtin_hover = false },
+      },
+    }
+  end}
   use { 'jpalardy/vim-slime', setup = function()
     -- https://github.com/jpalardy/vim-slime/blob/main/assets/doc/targets/tmux.md
     vim.g.slime_target = 'tmux'
     vim.g.slime_paste_file = vim.fn.stdpath('cache') .. '/_slime_paste'
+    vim.g.slime_bracketed_paste = 1
     vim.g.slime_default_config = { socket_name = 'default', target_pane = '{last}' }
   end}
 end).install()
@@ -115,6 +124,11 @@ applyall(vim.api.nvim_set_hl, {
   { 0, 'NeogitDiffDelete', { link = 'DiffDelete' } },
   { 0, 'NeogitDiffDeleteHighlight', { link = 'DiffDelete' } },
 })
+
+-- Disable semantic highlighting.
+for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+  vim.api.nvim_set_hl(0, group, {})
+end
 
 require('nvim-treesitter.configs').setup {
   ensure_installed = "all",
@@ -352,10 +366,6 @@ vim.diagnostic.config({
 lspconfig.util.default_config = merge(
   lspconfig.util.default_config,
   {
-    on_attach = function(client, bufnr)
-      -- Can remove when colorscheme supports lsp syntax highlighting.
-      client.server_capabilities.semanticTokensProvider = nil
-    end,
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
   }
 )
@@ -373,33 +383,10 @@ applyall(
     { 'pyright' },
     { 'texlab' },
     { 'tsserver' },
+    { 'typst_lsp' },
     { 'zls' },
   }
 )
-
-local dap = require('dap')
-dap.adapters.codelldb = {
-  type = 'server',
-  port = '${port}',
-  executable = {
-    command = 'codelldb',
-    args = {'--port', '${port}'},
-  },
-}
-
-require("rust-tools").setup {
-  tools = {
-    reload_workspace_from_cargo_toml = false,
-    inlay_hints = {
-      auto = false,
-    },
-    hover_actions = false,
-    crate_graph = false,
-  },
-  dap = {
-    adapter = dap.adapters.codelldb,
-  },
-}
 
 require("nvim-dap-virtual-text").setup {}
 require("dapui").setup {}
@@ -409,6 +396,7 @@ require('leap').set_default_keymaps()
 vim.g.surround_no_mappings = 1
 
 local dap_widgets = require('dap.ui.widgets')
+local dap = require('dap')
 
 function find_files_project()
   local cwd = vim.lsp.buf.list_workspace_folders()[1]
@@ -440,7 +428,7 @@ applyall(vim.keymap.set, {
   { 'n', 'gyy', comment_aux('(CommentaryYankLine)'), { expr = true, remap = true } },
   { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true, remap = true } },
 
-  { 'n', ' ft', require('nvim-tree').focus },
+  { 'n', ' ft', require('nvim-tree.api').tree.open },
   { 'n', '  ', find_files_project },
   { 'n', ' .', require('telescope.builtin').find_files },
   { 'n', ' ,', require('telescope.builtin').buffers },
@@ -455,8 +443,8 @@ applyall(vim.keymap.set, {
   { 'n', 'gd', require('telescope.builtin').lsp_definitions },
   { 'n', 'gt', require('telescope.builtin').lsp_type_definitions },
   { 'n', 'gD', require('telescope.builtin').lsp_implementations },
-  { 'n', '<C-k>', '<cmd>RustOpenExternalDocs<CR>' },
-  { 'n', 'go', '<cmd>RustParentModule<CR>' },
+  { 'n', '<C-k>', '<cmd>RustLsp externalDocs<CR>' },
+  { 'n', 'go', '<cmd>RustLsp parentModule<CR>' },
 
   { 'n', ' gB', '<cmd>Git blame<CR>' },
   { 'n', ' gg', require('neogit').open },

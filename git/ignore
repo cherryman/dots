@@ -16,3 +16,4 @@ Session.vim
 
 .elixir_ls/
 .idea/
+.envrc
