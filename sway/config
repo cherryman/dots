@@ -9,6 +9,7 @@ exec fcitx5
 exec alacritty -e zsh -ic 'tmux new-session -A -s 0'
 exec firefox
 exec emacs
+exec eww open bar
 
 floating_modifier $sup normal
 font pango:sans-serif 10
@@ -28,7 +29,7 @@ assign [app_id="[sS]lack"] 4
 
 input type:keyboard {
     xkb_layout us
-    xkb_options caps:hyper
+    xkb_options caps:hyper,altwin:swap_alt_win
     xkb_numlock enable
 }
 input type:pointer {

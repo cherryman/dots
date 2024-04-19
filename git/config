@@ -12,6 +12,24 @@
 [init]
     defaultBranch = master
 
+[rerere]
+	enabled = true
+
+[diff]
+    external = difft
+
+[submodule]
+	recurse = true
+
+[branch]
+	sort = -committerdate
+
+[column]
+	ui = auto
+
+[pager]
+    branch = false
+
 [sendemail]
 	smtpuser = me@cherryman.org
 	smtpencryption = tls

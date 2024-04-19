@@ -1,7 +1,9 @@
+bear
 bind
 brightnessctl
 btop
 cargo-expand
+cargo-llvm-cov
 cargo-show-asm
 cargo-udeps
 cargo-watch
@@ -24,6 +26,7 @@ nix
 nix
 nmap
 p7zip
+parallel
 pipewire-pulse
 playerctl
 prettier
@@ -32,7 +35,6 @@ python
 python-black
 python-poetry
 qmk
-ranger
 restic
 ripgrep
 rsync
@@ -53,6 +55,7 @@ wlsunset
 xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 xh
+yazi
 zathura
 zig
 zls

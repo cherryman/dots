@@ -103,6 +103,7 @@ augroup indent
     au FileType dart        setl ts=2 sts=2 sw=2 cino=m1
     au FileType lua         setl ts=2 sts=2 sw=2
     au FileType ocaml       setl ts=2 sts=2 sw=2
+    au FileType terraform   setl ts=2 sts=2 sw=2
 augroup END
 
 augroup formatter
@@ -118,6 +119,8 @@ augroup formatter
     au FileType rust        setl fex= fp=rustfmt\ +nightly
     au FileType zig         setl fex= fp=zig\ fmt\ --stdin
     au FileType python      setl fex= fp=ruff\ format\ -
+    au FileType lua         setl fex= fp=stylua\ -
+    au FileType terraform   setl fex= fp=terraform\ fmt\ -
 augroup END
 
 "}}}

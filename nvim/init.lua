@@ -11,6 +11,7 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
   use 'nvim-lua/plenary.nvim' -- common dependency
   use 'nvim-lua/popup.nvim'
+  use 'nvim-neotest/nvim-nio' -- nvim-dap-ui
   use 'neovim/nvim-lspconfig'
   use 'mfussenegger/nvim-lint'
   use 'nvim-telescope/telescope.nvim'
@@ -18,11 +19,46 @@ require('packer').startup(function()
   use 'hrsh7th/nvim-cmp'
   use { 'L3MON4D3/LuaSnip', run = "make install_jsregexp" }
   use 'saadparwaiz1/cmp_luasnip'
-  use 'zbirenbaum/copilot.lua'
+  use {
+    "zbirenbaum/copilot.lua",
+    config = function()
+      require("copilot").setup {
+        suggestion = {
+          enabled = true,
+          auto_trigger = false,
+          keymap = {
+            accept = "<M-Enter>",
+            accept_word = false,
+            accept_line = false,
+            next = "<M-]>",
+            prev = "<M-[>",
+            dismiss = "<C-]>",
+          },
+        },
+        panel = {
+          enabled = false,
+          auto_refresh = false,
+        },
+      }
+    end,
+  }
+  use {
+    -- "jackMort/ChatGPT.nvim",
+    "~/contrib/chatgpt.nvim",
+    config = function()
+    end,
+    requires = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "folke/trouble.nvim",
+      "nvim-telescope/telescope.nvim"
+    },
+  }
   use 'mfussenegger/nvim-dap'
   use 'theHamsta/nvim-dap-virtual-text'
   use 'rcarriga/nvim-dap-ui'
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  -- 1ae9b0e4558fe7868f8cda2db65239cfb14836d0 breaks 'material.vim', need to fix
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', commit = '1ae9b0e4558fe7868f8cda2db65239cfb14836d0~' }
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   -- use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
   use 'sindrets/diffview.nvim' -- neogit integration
@@ -36,15 +72,27 @@ require('packer').startup(function()
         reload_workspace_from_cargo_toml = false,
         hover_actions = { replace_builtin_hover = false },
       },
+      dap = {
+        executable = {
+          args = { "--liblldb", "/usr/lib/liblldb.so", "--port", "${port}" },
+          command = "codelldb"
+        },
+        host = "127.0.0.1",
+        port = "${port}",
+        type = "server"
+      },
     }
   end}
   use { 'jpalardy/vim-slime', setup = function()
     -- https://github.com/jpalardy/vim-slime/blob/main/assets/doc/targets/tmux.md
+    vim.g.slime_no_mappings = 1
     vim.g.slime_target = 'tmux'
     vim.g.slime_paste_file = vim.fn.stdpath('cache') .. '/_slime_paste'
     vim.g.slime_bracketed_paste = 1
     vim.g.slime_default_config = { socket_name = 'default', target_pane = '{last}' }
   end}
+  use 'kaarmu/typst-palettes'
+  use { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -52,6 +100,10 @@ vim.o.packpath = vim.o.runtimepath
 vim.o.exrc = true
 
 vim.cmd [[ source ~/.vimrc ]]
+
+if vim.g.neovide then
+  vim.o.guifont = "Source Code Pro:h12"
+end
 
 function applyall(f, as)
   for _, a in ipairs(as) do
@@ -247,25 +299,7 @@ require('nvim-tree').setup {
   end
 }
 
-require('copilot').setup({
-  suggestion = {
-    enabled = true,
-    auto_trigger = false,
-    keymap = {
-      accept = "<M-Enter>",
-      accept_word = false,
-      accept_line = false,
-      next = "<M-]>",
-      prev = "<M-[>",
-      dismiss = "<C-]>",
-    },
-  },
-  panel = {
-    enabled = false,
-    auto_refresh = false,
-  },
-})
-
+require("chatgpt").setup {}
 
 local cmp = require('cmp')
 cmp.setup({
@@ -299,9 +333,20 @@ cmp.setup({
   completion = {
     autocomplete = false,
   },
+  experimental = { 
+    ghost_text = { hlgroup = "Comment" },
+  },
 })
 
 require("luasnip.loaders.from_snipmate").lazy_load()
+
+local telescope_bottom = {
+  border = false,
+  layout_strategy = "bottom_pane",
+  sorting_strategy = "ascending",
+  layout_config = { height = 20 },
+  previewer = false,
+}
 
 require('telescope').setup({
   defaults = {
@@ -322,27 +367,19 @@ require('telescope').setup({
     },
   },
   pickers = {
-    find_files = {
-      border = false,
-      layout_strategy = "bottom_pane",
-      sorting_strategy = "ascending",
-      layout_config = { height = 20 },
-      previewer = false,
-    },
-    buffers = {
-      border = false,
-      layout_strategy = "bottom_pane",
-      sorting_strategy = "ascending",
-      layout_config = { height = 20 },
-      previewer = false,
+    find_files = telescope_bottom,
+    diagnostics = telescope_bottom,
+    buffers = merge(telescope_bottom, {
       mappings = {
         i = {
           ["<C-x>"] = require("telescope.actions").delete_buffer,
         },
       },
-    },
+    }),
   },
 })
+
+require('harpoon').setup {}
 
 require('lint').linters_by_ft = {
   sh = { 'shellcheck' },
@@ -371,16 +408,16 @@ lspconfig.util.default_config = merge(
 )
 
 applyall(
-  function(lsp)
-    if type(lsp) == 'table' then
-      lspconfig[lsp[1]].setup(lsp[2])
-    else
-      lspconfig[lsp].setup({})
-    end
+  function(lsp, opts)
+    lspconfig[lsp].setup(opts or {})
   end,
   {
-    { { 'elixirls', { cmd = { 'elixir-ls' } } } },
+    -- Only `clangd` is sane, so we have to make it insane.
+    -- https://github.com/neovim/nvim-lspconfig/issues/2184#issuecomment-1273705335
+    { 'clangd', { capabilities = { offsetEncoding = "utf-16" } } },
+    { 'elixirls', { cmd = { 'elixir-ls' } } },
     { 'pyright' },
+    { 'solidity_ls_nomicfoundation' },
     { 'texlab' },
     { 'tsserver' },
     { 'typst_lsp' },
@@ -433,6 +470,7 @@ applyall(vim.keymap.set, {
   { 'n', ' .', require('telescope.builtin').find_files },
   { 'n', ' ,', require('telescope.builtin').buffers },
   { 'n', ' /', require('telescope.builtin').live_grep },
+  { 'n', ' r', require('telescope.builtin').registers },
 
   { 'n', ' lr', require('telescope.builtin').lsp_references },
   { 'n', ' lR', vim.lsp.buf.rename },
@@ -453,6 +491,8 @@ applyall(vim.keymap.set, {
   { 'n', ']g', '<cmd>GitGutterNextHunk<CR>' },
   { 'n', '[e', vim.diagnostic.goto_prev },
   { 'n', ']e', vim.diagnostic.goto_next },
+  { 'n', '[t', '<cmd>tabprev<CR>' },
+  { 'n', ']t', '<cmd>tabnext<CR>' },
 
   { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
 
@@ -466,4 +506,10 @@ applyall(vim.keymap.set, {
   { 'n', '<A-J>', dap.step_over },
   { 'n', '<A-H>', dap.step_out },
   { 'n', '<A-L>', dap.step_into },
+
+  { 'n', ' cc', '<cmd>ChatGPT<CR>' },
+
+  { 'x', '<C-c><C-c>', '<Plug>SlimeRegionSend' },
+  { 'n', '<C-c><C-c>', '<Plug>SlimeParagraphSend' },
+  { 'n', '<C-c>v', '<Plug>SlimeConfig' },
 })

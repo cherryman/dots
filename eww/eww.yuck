@@ -48,8 +48,9 @@
 (deflisten audio-volume `vol subvol`)
 (deflisten audio-device `vol subdev`)
 (deflisten music `playerctl --follow metadata --format '{{title}} - {{artist}}'`)
-(deflisten hypr-activewindow `./scripts/hypr-events activewindow`)
-(deflisten hypr_monitors `./scripts/hypr-events monitors`)
+; (deflisten hypr-activewindow `./scripts/hypr-events activewindow`)
+; (deflisten hypr_monitors `./scripts/hypr-events monitors`)
+(deflisten hypr_monitors `swaymsg --monitor -t subscribe '["workspace"]'`)
 (deflisten network `./scripts/iwctl-monitor wlan0`)
 
 (defwidget workspaces []
@@ -58,7 +59,8 @@
     :spacing 4
     (for ws in hypr-workspaces
       (box
-        :class "ws ws-${ws.id} ${ws.id == hypr_monitors[0].activeWorkspace.name ? "ws-active" : ""}"
+        ;:class "ws ws-${ws.id} ${ws.id == hypr_monitors[0].activeWorkspace.name ? "ws-active" : ""}"
+        :class "ws ws-${ws.id} ${ws.id == hypr_monitors.current.name ? "ws-active" : ""}"
         (label
           :text {ws.name})))))
 

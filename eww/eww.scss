@@ -4,6 +4,7 @@ $red: #f76d47;
 $blue: #82aaff;
 $purple: #c792ea;
 $green: #c3e88d;
+$bg: #1d272b;
 
 * {
   all: unset;
@@ -14,6 +15,7 @@ $green: #c3e88d;
 
 .bar {
   color: white;
+  background-color: $bg;
 
   > * {
     padding: 0 8px;

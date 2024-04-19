@@ -1,8 +1,8 @@
 $HOME/.cache
 $HOME/.config/**/*Cache*
+$HOME/.*/**/*cache*
 $HOME/**/__pycache__
 $HOME/**/node_modules
-$HOME/.davfs2/cache
 $HOME/dots/emacs/.local
 $HOME/dots/emacs/eln-cache
 $HOME/.config/chromium
@@ -20,3 +20,4 @@ $HOME/.mozilla/firefox/*/minidumps
 $HOME/.mozilla/firefox/*/datareporting
 $HOME/.mozilla/firefox/Crash Reports
 $HOME/.wine
+$HOME/media/vid

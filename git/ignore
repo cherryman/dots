@@ -9,6 +9,7 @@ Session.vim
 .lvimrc
 .undodir/
 .DS_Store
+.direnv/
 
 ### Emacs
 *~
@@ -17,3 +18,4 @@ Session.vim
 .elixir_ls/
 .idea/
 .envrc
+.ruff_cache/

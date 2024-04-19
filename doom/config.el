@@ -4,11 +4,13 @@
 ;; sync' after modifying this file!
 (make-directory "~/doc/org" 'parents)
 (make-directory "~/doc/org/roam" 'parents)
+(make-directory "~/doc/org/refs" 'parents)
 
 (setq doom-font (font-spec :family "monospace" :size 15)
       org-directory "~/doc/org/"
       org-roam-directory "~/doc/org/roam"
-      company-idle-delay nil)
+      company-idle-delay nil
+)
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -102,8 +104,9 @@
 (after! org (setq
   org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))
   org-startup-folded 'fold
-  org-catch-invisible-edits 'error
+  org-fold-catch-invisible-edits 'error
   org-log-done 'note
+  org-cite-global-bibliography "~/doc/org/refs.bib"
 
   org-capture-templates `(
     ("t" "Todo" entry (file +org-capture-todo-file)
@@ -184,3 +187,29 @@
 
 (after! org-roam (org-roam-db-autosync-mode))
 (after! org-protocol (setq org-protocol-default-template-key "l"))
+
+(after! citar (setq
+  citar-bibliography '("~/doc/org/refs.bib")
+  citar-library-paths '("~/doc/org/refs")
+  ; citar-notes-paths '("~/doc/org/ref/docs")
+))
+
+(defun zotra-download-attachment-for-current-entry ()
+  (interactive)
+  (save-excursion
+    (bibtex-beginning-of-entry)
+    (let* ((entry (bibtex-parse-entry t))
+           (key (cdr (assoc "=key=" entry)))
+           (url (cdr (assoc "url" entry)))
+           (filename (concat key ".pdf")))
+      (when (and entry filename)
+            (zotra-download-attachment url nil filename)))))
+
+(after! zotra
+  (setq zotra-default-bibliography "~/doc/org/refs.bib"
+        zotra-download-attachment-default-directory "~/doc/org/refs")
+  (add-hook 'zotra-after-get-bibtex-entry-hook
+            #'zotra-download-attachment-for-current-entry))
+
+; For some reason, won't load otherwise.
+(require 'zotra)

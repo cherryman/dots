@@ -9,6 +9,7 @@ esac
 alias l='ls -l'
 alias tm=tmux
 alias g=git
+alias tf=terraform
 alias k++='c++ -std=c++17 -g'
 
 ### Prompt
