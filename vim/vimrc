@@ -28,8 +28,6 @@ Plug 'tpope/vim-fugitive'
 
 " lang
 Plug 'lervag/vimtex'
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'ziglang/zig.vim'
 Plug 'rust-lang/rust.vim'
 
@@ -121,6 +119,7 @@ augroup formatter
     au FileType python      setl fex= fp=ruff\ format\ -
     au FileType lua         setl fex= fp=stylua\ -
     au FileType terraform   setl fex= fp=terraform\ fmt\ -
+    au FileType nix         setl fex= fp=nixfmt
 augroup END
 
 "}}}

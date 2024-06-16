@@ -20,4 +20,4 @@ $HOME/.mozilla/firefox/*/minidumps
 $HOME/.mozilla/firefox/*/datareporting
 $HOME/.mozilla/firefox/Crash Reports
 $HOME/.wine
-$HOME/media/vid
+$HOME/.foundry

@@ -2,7 +2,7 @@ set $hyp Mod3
 set $sup Mod4
 set $alt Mod1
 
-exec swww init
+exec swww-daemon
 exec wlsunset -s 19:00 -S 06:00 -d 3600
 exec dunst
 exec fcitx5
@@ -13,7 +13,7 @@ exec eww open bar
 
 floating_modifier $sup normal
 font pango:sans-serif 10
-xwayland enabled
+xwayland disable
 
 workspace_layout tabbed
 hide_edge_borders --i3 smart
@@ -53,7 +53,7 @@ mode "screenshot" {
 bindsym $sup+s mode "screenshot"
 
 bindsym $sup+p exec dlaunch -s "$HOME/media/pic/wallp.d" swww img
-bindsym $sup+w exec dlaunch -i '^\..*|.*\.srt|.*\.sup$' -s ~/media/vid xdg-open
+bindsym $sup+w exec dlaunch -i '^\..*|.*\.srt|.*\.sup|.*\.ass$' -s ~/media/vid xdg-open
 bindsym $sup+e exec dlaunch -i '^\..*' -s "$HOME/doc/books" xdg-open
 bindsym $sup+grave exec alacritty
 bindsym $sup+d exec rofi -show drun

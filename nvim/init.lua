@@ -91,7 +91,7 @@ require('packer').startup(function()
     vim.g.slime_bracketed_paste = 1
     vim.g.slime_default_config = { socket_name = 'default', target_pane = '{last}' }
   end}
-  use 'kaarmu/typst-palettes'
+  use 'kaarmu/typst.vim'
   use { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
 end).install()
 
@@ -184,7 +184,7 @@ end
 
 require('nvim-treesitter.configs').setup {
   ensure_installed = "all",
-  ignore_install = {"tex", "latex", "markdown"},
+  ignore_install = {"tex", "latex", "markdown", "wing"},
   indent = {
     disable = {"tex", "latex"},
   },

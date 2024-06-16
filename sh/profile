@@ -35,6 +35,9 @@ export GTK_IM_MODULE=wayland
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 
+# For use with `ssh-agent` systemd user service.
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 PATH="$PATH:$XDG_CONFIG_HOME/emacs/bin"
 PATH="$PATH:$CARGO_HOME/bin"
