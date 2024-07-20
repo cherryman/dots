@@ -2,6 +2,7 @@ bear
 bind
 brightnessctl
 btop
+bun
 cargo-expand
 cargo-llvm-cov
 cargo-show-asm
@@ -21,6 +22,7 @@ hyperfine
 ipython
 jq
 just
+less
 mold
 moreutils
 mpv

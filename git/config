@@ -43,3 +43,4 @@
     b = branch
     r = restore
     sw = switch
+    cl = clone

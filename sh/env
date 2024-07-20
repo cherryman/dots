@@ -8,9 +8,10 @@ esac
 
 alias l='ls -l'
 alias tm=tmux
-alias g=git
 alias tf=terraform
-alias k++='c++ -std=c++17 -g'
+alias g=git
+alias c=cargo
+alias n=nix
 
 ### Prompt
 prompt_pwd() {
@@ -40,9 +41,11 @@ prompt_loc() {
     prompt_user="$(id -u -n)"
     prompt_host="$(uname -n)"
     [ "$prompt_user" = sheheryar ] && prompt_user=
-    case "$prompt_host" in
-        [Cc]herry*) prompt_host= ;;
-    esac
+    if [ -z "$SSH_TTY" ]; then
+        case "$prompt_host" in
+            [Cc]herry*) prompt_host= ;;
+        esac
+    fi
     prompt_loc="$prompt_user${prompt_host:+@${prompt_host}}"
     echo "${prompt_loc:+[${prompt_loc}]}"
     unset prompt_user prompt_host prompt_loc

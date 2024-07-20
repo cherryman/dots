@@ -13,19 +13,70 @@ require('packer').startup(function()
   use 'nvim-lua/popup.nvim'
   use 'nvim-neotest/nvim-nio' -- nvim-dap-ui
   use 'neovim/nvim-lspconfig'
-  use 'mfussenegger/nvim-lint'
   use 'nvim-telescope/telescope.nvim'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
   use { 'L3MON4D3/LuaSnip', run = "make install_jsregexp" }
   use 'saadparwaiz1/cmp_luasnip'
+  use 'kaarmu/typst.vim'
+
+  use 'mfussenegger/nvim-dap'
+  use 'theHamsta/nvim-dap-virtual-text'
+  use 'rcarriga/nvim-dap-ui'
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use 'sindrets/diffview.nvim' -- neogit integration
+  use 'NeogitOrg/neogit'
+  use 'kristijanhusak/orgmode.nvim'
+  use 'ggandor/leap.nvim'
+  use 'kyazdani42/nvim-tree.lua'
+
+  use {
+    'mfussenegger/nvim-lint',
+    config = function()
+      require('lint').linters_by_ft = {
+        sh = { 'shellcheck' },
+        nix = { 'nix' },
+      }
+      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+        callback = function()
+          require("lint").try_lint()
+        end,
+      })
+    end,
+  }
+
+  use {
+    'echasnovski/mini.nvim',
+    config = function()
+      require("mini.misc").setup_restore_cursor()
+      require("mini.ai").setup()
+      require("mini.bracketed").setup({
+        buffer     = { suffix = 'b', options = {} },
+        comment    = { suffix = 'c', options = {} },
+        conflict   = { suffix = 'x', options = {} },
+        diagnostic = { suffix = 'e', options = {} },
+        file       = { suffix = 'f', options = {} },
+        indent     = { suffix = 'i', options = {} },
+        jump       = { suffix = 'j', options = {} },
+        location   = { suffix = 'l', options = {} },
+        oldfile    = { suffix = 'o', options = {} },
+        quickfix   = { suffix = 'q', options = {} },
+        treesitter = { suffix = 't', options = {} },
+        undo       = { suffix = 'u', options = {} },
+        window     = { suffix = 'w', options = {} },
+        yank       = { suffix = 'y', options = {} },
+      })
+    end,
+  }
+
   use {
     "zbirenbaum/copilot.lua",
     config = function()
       require("copilot").setup {
         suggestion = {
           enabled = true,
-          auto_trigger = false,
+          auto_trigger = true,
           keymap = {
             accept = "<M-Enter>",
             accept_word = false,
@@ -42,9 +93,9 @@ require('packer').startup(function()
       }
     end,
   }
+
   use {
-    -- "jackMort/ChatGPT.nvim",
-    "~/contrib/chatgpt.nvim",
+    "jackMort/ChatGPT.nvim",
     config = function()
     end,
     requires = {
@@ -54,45 +105,90 @@ require('packer').startup(function()
       "nvim-telescope/telescope.nvim"
     },
   }
-  use 'mfussenegger/nvim-dap'
-  use 'theHamsta/nvim-dap-virtual-text'
-  use 'rcarriga/nvim-dap-ui'
-  -- 1ae9b0e4558fe7868f8cda2db65239cfb14836d0 breaks 'material.vim', need to fix
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', commit = '1ae9b0e4558fe7868f8cda2db65239cfb14836d0~' }
-  use 'nvim-treesitter/nvim-treesitter-textobjects'
-  -- use { 'JoosepAlviste/nvim-ts-context-commentstring', branch = 'main' }
-  use 'sindrets/diffview.nvim' -- neogit integration
-  use 'NeogitOrg/neogit'
-  use 'kristijanhusak/orgmode.nvim'
-  use 'ggandor/leap.nvim'
-  use 'kyazdani42/nvim-tree.lua'
-  use { 'mrcjkb/rustaceanvim', config = function()
-    vim.g.rustaceanvim = {
-      tools = {
-        reload_workspace_from_cargo_toml = false,
-        hover_actions = { replace_builtin_hover = false },
-      },
-      dap = {
-        executable = {
-          args = { "--liblldb", "/usr/lib/liblldb.so", "--port", "${port}" },
-          command = "codelldb"
+
+  use {
+    "dense-analysis/neural",
+    config = function()
+      require('neural').setup({
+        source = {
+          openai = {
+            api_key = vim.env.OPENAI_API_KEY,
+          },
         },
-        host = "127.0.0.1",
-        port = "${port}",
-        type = "server"
-      },
-    }
-  end}
-  use { 'jpalardy/vim-slime', setup = function()
-    -- https://github.com/jpalardy/vim-slime/blob/main/assets/doc/targets/tmux.md
-    vim.g.slime_no_mappings = 1
-    vim.g.slime_target = 'tmux'
-    vim.g.slime_paste_file = vim.fn.stdpath('cache') .. '/_slime_paste'
-    vim.g.slime_bracketed_paste = 1
-    vim.g.slime_default_config = { socket_name = 'default', target_pane = '{last}' }
-  end}
-  use 'kaarmu/typst.vim'
-  use { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
+      })
+    end,
+    requires = {
+      "MunifTanjim/nui.nvim",
+    },
+  }
+
+  use {
+    'mrcjkb/rustaceanvim',
+    config = function()
+      vim.g.rustaceanvim = {
+        tools = {
+          reload_workspace_from_cargo_toml = false,
+          hover_actions = { replace_builtin_hover = false },
+        },
+        dap = {
+          executable = {
+            args = { "--liblldb", "/usr/lib/liblldb.so", "--port", "${port}" },
+            command = "codelldb"
+          },
+          host = "127.0.0.1",
+          port = "${port}",
+          type = "server"
+        },
+      }
+    end,
+    requires = {
+      -- > This plugin will automatically register the necessary client
+      -- > capabilities if you have cmp-nvim-lsp installed.
+      -- https://github.com/mrcjkb/rustaceanvim#how-to-enable-auto-completion
+      'hrsh7th/cmp-nvim-lsp',
+    },
+  }
+
+  use {
+    'jpalardy/vim-slime',
+    setup = function()
+      -- https://github.com/jpalardy/vim-slime/blob/main/assets/doc/targets/tmux.md
+      vim.g.slime_no_mappings = 1
+      vim.g.slime_target = 'tmux'
+      vim.g.slime_paste_file = vim.fn.stdpath('cache') .. '/_slime_paste'
+      vim.g.slime_bracketed_paste = 1
+      vim.g.slime_default_config = { socket_name = 'default', target_pane = '{last}' }
+    end,
+  }
+
+  use {
+    'stevearc/conform.nvim',
+    config = function()
+      require("conform").setup({
+        -- Formats asynchronously, as opposed to `format_on_save`.
+        format_after_save = {
+          lsp_format = "fallback",
+        },
+        formatters_by_ft = {
+          javascript = { { "prettierd", "prettier" } },
+          typescript = { { "prettierd", "prettier" } },
+          typescriptreact = { { "prettierd", "prettier" } },
+          rust = { { "rustfmt" } },
+        },
+      })
+    end,
+  }
+
+  use {
+    'Julian/lean.nvim',
+    config = function()
+      -- See mappings at
+      -- https://github.com/Julian/lean.nvim?tab=readme-ov-file#mappings
+      require('lean').setup({
+        mappings = true,
+      })
+    end,
+  }
 end).install()
 
 vim.o.runtimepath = '~/.vim,' .. vim.o.runtimepath .. ',~/.vim/after'
@@ -102,7 +198,7 @@ vim.o.exrc = true
 vim.cmd [[ source ~/.vimrc ]]
 
 if vim.g.neovide then
-  vim.o.guifont = "Source Code Pro:h12"
+  vim.o.guifont = "Source Code Pro:h15"
 end
 
 function applyall(f, as)
@@ -224,11 +320,6 @@ require('nvim-treesitter.configs').setup {
     },
   },
 }
-
--- require('ts_context_commentstring').setup {
---   enable_autocmd = false,
---   commentary_integration = false,
--- }
 
 require('nvim-tree').setup {
   sort_by = "case_sensitive",
@@ -379,37 +470,20 @@ require('telescope').setup({
   },
 })
 
-require('harpoon').setup {}
-
-require('lint').linters_by_ft = {
-  sh = { 'shellcheck' },
-  nix = { 'nix' },
-}
-
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-  callback = function()
-    require("lint").try_lint()
-  end,
-})
+require('neogit').setup {}
 
 vim.diagnostic.disable()
 
-require('neogit').setup {}
-
-local lspconfig = require('lspconfig')
 vim.diagnostic.config({
     virtual_text = false,
 })
-lspconfig.util.default_config = merge(
-  lspconfig.util.default_config,
-  {
-    capabilities = require('cmp_nvim_lsp').default_capabilities(),
-  }
-)
+
+lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 applyall(
   function(lsp, opts)
-    lspconfig[lsp].setup(opts or {})
+    opts = merge(opts or {}, { capabilities = lsp_capabilities })
+    require('lspconfig')[lsp].setup(opts)
   end,
   {
     -- Only `clangd` is sane, so we have to make it insane.
@@ -440,11 +514,27 @@ function find_files_project()
   require('telescope.builtin').find_files({ cwd = cwd })
 end
 
-function comment_aux(mapping)
-  return function()
-    -- pcall(require('ts_context_commentstring.internal').update_commentstring)
-    return '<Plug>' .. mapping
+_G.__commentyank = function(mode)
+  if mode == nil then
+    vim.o.operatorfunc = 'v:lua.__commentyank'
+    return 'g@'
   end
+
+  local mark_from, mark_to = "'[", "']"
+  local lnum_from, col_from = vim.fn.line(mark_from), vim.fn.col(mark_from)
+  local lnum_to, col_to = vim.fn.line(mark_to), vim.fn.col(mark_to)
+
+  if (lnum_from > lnum_to) or (lnum_from == lnum_to and col_from > col_to) then
+    return
+  end
+
+  local l = vim.api.nvim_buf_get_lines(0, lnum_from - 1, lnum_to, false)
+  vim.fn.setreg(vim.v.register, l)
+
+  -- WARN: Relying on implementation details of `gc`.
+  require('vim._comment').toggle_lines(lnum_from, lnum_to, vim.api.nvim_win_get_cursor(0))
+
+  return ''
 end
 
 applyall(vim.keymap.set, {
@@ -459,11 +549,8 @@ applyall(vim.keymap.set, {
   { 'x', 'S', '<Plug>VSurround' },
   { 'x', 'gS', '<Plug>VgSurround' },
 
-  { {'n', 'v', 'o'}, 'gc', comment_aux('Commentary'), { expr = true, remap = true } },
-  { {'n', 'v', 'o'}, 'gy', comment_aux('(CommentaryYank)'), { expr = true, remap = true } },
-  { 'n', 'gcc', comment_aux('CommentaryLine'), { expr = true, remap = true } },
-  { 'n', 'gyy', comment_aux('(CommentaryYankLine)'), { expr = true, remap = true } },
-  { 'n', 'cgc', comment_aux('ChangeCommentary'), { expr = true, remap = true } },
+  { {'n', 'x', 'o'}, 'gy', _G.__commentyank, { expr = true } },
+  { 'n', 'gyy', 'yygcc', { remap = true } },
 
   { 'n', ' ft', require('nvim-tree.api').tree.open },
   { 'n', '  ', find_files_project },
@@ -487,12 +574,8 @@ applyall(vim.keymap.set, {
   { 'n', ' gB', '<cmd>Git blame<CR>' },
   { 'n', ' gg', require('neogit').open },
 
-  { 'n', '[g', '<cmd>GitGutterPrevHunk<CR>' },
-  { 'n', ']g', '<cmd>GitGutterNextHunk<CR>' },
-  { 'n', '[e', vim.diagnostic.goto_prev },
-  { 'n', ']e', vim.diagnostic.goto_next },
-  { 'n', '[t', '<cmd>tabprev<CR>' },
-  { 'n', ']t', '<cmd>tabnext<CR>' },
+  { 'n', '[h', '<cmd>GitGutterPrevHunk<CR>' },
+  { 'n', ']h', '<cmd>GitGutterNextHunk<CR>' },
 
   { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
 

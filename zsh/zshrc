@@ -5,6 +5,10 @@ source "$ZPLUG_HOME/init.zsh"
     [ -s $BASE16_SHELL/profile_helper.sh ] &&
     eval "$($BASE16_SHELL/profile_helper.sh)"
 
+# For use with `ssh-agent` systemd user service.
+[[ -S "$XDG_RUNTIME_DIR/ssh-agent.socket" ]] &&
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'

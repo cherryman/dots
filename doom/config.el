@@ -2,6 +2,7 @@
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
+
 (make-directory "~/doc/org" 'parents)
 (make-directory "~/doc/org/roam" 'parents)
 (make-directory "~/doc/org/refs" 'parents)
@@ -10,6 +11,15 @@
       org-directory "~/doc/org/"
       org-roam-directory "~/doc/org/roam"
       company-idle-delay nil
+
+      ; Make evil more vim-like.
+      evil-want-fine-undo "yes"
+      evil-respect-visual-line-mode nil
+      evil-want-Y-yank-to-eol t
+      evil-want-C-u-scroll t
+      evil-want-C-d-scroll t
+      evil-want-C-i-jump t
+      evil-want-C-w-delete t
 )
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -191,25 +201,68 @@
 (after! citar (setq
   citar-bibliography '("~/doc/org/refs.bib")
   citar-library-paths '("~/doc/org/refs")
-  ; citar-notes-paths '("~/doc/org/ref/docs")
+  citar-file-open-functions '(("html" . citar-file-open-external)
+                              ("pdf" . citar-file-open-external)
+                              (t . find-file))
 ))
 
-(defun zotra-download-attachment-for-current-entry ()
+; Based off https://koustuvsinha.com/post/emacs_org_protocol_arxiv/.
+(defun my/add-paper-to-reading-list (key title)
+  (save-window-excursion
+    (find-file (concat org-directory "read.org"))
+    (goto-char (point-min))
+    (unless (search-forward (format "[%s]" key) nil t)
+      (goto-char (point-max))
+      (insert (format "** [%s] %s\n" key title))
+      (save-buffer))))
+
+(defun my/normalize-bibfile (bib-file)
+  (let* ((tempfile (make-temp-file "bib-normalize." nil ".part"))
+         (new-bib-file (concat bib-file ".new"))
+         (rebiber (format "rebiber > /dev/null 2> /dev/null -i %s -o %s" bib-file tempfile))
+         (biber (format "biber --tool --output_fieldcase=lower -q %s -O %s" tempfile new-bib-file))
+         (mv (format "mv -- %s %s" new-bib-file bib-file))
+         (cmd (mapconcat #'identity (list rebiber biber mv) " && ")))
+    (unwind-protect
+        (shell-command cmd nil nil)
+        (ignore-errors
+          (delete-file tempfile)
+          (delete-file new-bib-file)))))
+
+(defun my/zotra-download-attachment-for-current-entry ()
   (interactive)
   (save-excursion
     (bibtex-beginning-of-entry)
     (let* ((entry (bibtex-parse-entry t))
            (key (cdr (assoc "=key=" entry)))
+           (title (cdr (assoc "title" entry)))
            (url (cdr (assoc "url" entry)))
            (filename (concat key ".pdf")))
       (when (and entry filename)
-            (zotra-download-attachment url nil filename)))))
+            (zotra-download-attachment url nil filename))
+      (when (and key title)
+            (my/add-paper-to-reading-list key title)
+            (my/normalize-bibfile "~/doc/org/refs.bib")))))
 
 (after! zotra
   (setq zotra-default-bibliography "~/doc/org/refs.bib"
-        zotra-download-attachment-default-directory "~/doc/org/refs")
+        zotra-download-attachment-default-directory "~/doc/org/refs"
+        zotra-backend 'zotra-server)
   (add-hook 'zotra-after-get-bibtex-entry-hook
-            #'zotra-download-attachment-for-current-entry))
+            #'my/zotra-download-attachment-for-current-entry))
 
 ; For some reason, won't load otherwise.
 (require 'zotra)
+
+; Typical emacs moment.
+; https://evil.readthedocs.io/en/latest/faq.html#underscore-is-not-a-word-character
+(modify-syntax-entry ?_ "w")
+
+; Another emacs moment. For reference, here's the default `paragraph-start`
+; in org mode, for your enjoyment:
+;
+; "\\(?:\\*+ \\|\\[fn:[-_[:word:]]+\\]\\|%%(\\|[ 	]*\\(?:$\\||\\|\\+\\(?:-+\\+\\)+[ 	]*$\\|#\\(?: \\|$\\|\\+\\(?:BEGIN_\\S-+\\|\\S-+\\(?:\\[.*\\]\\)?:[ 	]*\\)\\)\\|:\\(?: \\|$\\|[-_[:word:]]+:[ 	]*$\\)\\|-\\{5,\\}[ 	]*$\\|\\\\begin{\\([A-Za-z0-9*]+\\)}\\|\\(?:^[	 ]*CLOCK: \\(?:\\[\\([[:digit:]]\\{4\\}-[[:digit:]]\\{2\\}-[[:digit:]]\\{2\\}\\(?: .*?\\)?\\)\\]\\)\\(?:--\\(?:\\[\\([[:digit:]]\\{4\\}-[[:digit:]]\\{2\\}-[[:digit:]]\\{2\\}\\(?: .*?\\)?\\)\\]\\)[	 ]+=>[	 ]+[[:digit:]]+:[[:digit:]][[:digit:]]\\)?[	 ]*$\\)\\|\\(?:[-+*]\\|\\(?:[0-9]+\\|[A-Za-z]\\)[.)]\\)\\(?:[ 	]\\|$\\)\\)\\)"
+;
+; Useful, isn't it?
+(setq-default paragraph-start "\f\\|[ \t]*$"
+              paragraph-separate "[ \t\f]*$")

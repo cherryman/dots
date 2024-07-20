@@ -6,14 +6,12 @@ runtime vim-plug/plug.vim
 call plug#begin('~/.vim/plugged')
 
 " themes
-Plug 'kaicataldo/material.vim', { 'branch': 'main' }
+Plug 'cherryman/material.vim', { 'branch': 'main' }
 
 " defaults
 Plug 'tpope/vim-repeat'
-Plug 'farmergreg/vim-lastplace'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
-Plug 'CherryMan/vim-commentary-yank'
 Plug 'wellle/targets.vim'
 Plug 'Raimondi/delimitMate'
 
@@ -174,8 +172,6 @@ let mapleader = "\<Space>"
 let maplocalleader = "\\"
 
 imap jk <esc>
-nnoremap <C-w>- <C-w>s
-nnoremap <C-w>\ <C-w>v
 nmap <Leader>w <C-w>
 nnoremap <BS> <C-^>
 
