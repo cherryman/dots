@@ -34,7 +34,6 @@
 	smtpserverport = 587
 
 [alias]
-    P = push
     a = add
     d = diff
     l = log

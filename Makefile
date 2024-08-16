@@ -37,6 +37,7 @@ XDGC_TARGETS	= alacritty    \
 		  qmk          \
 		  direnv       \
 		  nix          \
+		  home-manager \
 		  git
 
 .PHONY: $(XDGC_TARGETS)

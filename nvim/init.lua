@@ -7,6 +7,20 @@ if fn.empty(fn.glob(install_path)) > 0 then
   vim.cmd('packadd packer.nvim')
 end
 
+function applyall(f, as)
+  for _, a in ipairs(as) do
+    f(unpack(a))
+  end
+end
+
+function merge(x, y)
+  return vim.tbl_extend("force", x, y)
+end
+
+function termcode(x)
+  return api.nvim_replace_termcodes(x, true, true, true)
+end
+
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'
   use 'nvim-lua/plenary.nvim' -- common dependency
@@ -62,41 +76,48 @@ require('packer').startup(function()
         location   = { suffix = 'l', options = {} },
         oldfile    = { suffix = 'o', options = {} },
         quickfix   = { suffix = 'q', options = {} },
-        treesitter = { suffix = 't', options = {} },
+        -- treesitter = { suffix = 't', options = {} },
         undo       = { suffix = 'u', options = {} },
         window     = { suffix = 'w', options = {} },
         yank       = { suffix = 'y', options = {} },
+      })
+      applyall(vim.keymap.set, {
+        { 'n', ']t', '<cmd>tabnext<CR>' },
+        { 'n', '[t', '<cmd>tabprevious<CR>' },
       })
     end,
   }
 
   use {
-    "zbirenbaum/copilot.lua",
+    'supermaven-inc/supermaven-nvim',
     config = function()
-      require("copilot").setup {
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          keymap = {
-            accept = "<M-Enter>",
-            accept_word = false,
-            accept_line = false,
-            next = "<M-]>",
-            prev = "<M-[>",
-            dismiss = "<C-]>",
-          },
+      require("supermaven-nvim").setup({
+        keymaps = {
+          accept_suggestion = "<M-Enter>",
         },
-        panel = {
-          enabled = false,
-          auto_refresh = false,
+        ignore_filetypes = {
+          typst = false,
         },
-      }
+        disable_inline_completion = false,
+      })
     end,
   }
 
   use {
-    "jackMort/ChatGPT.nvim",
+    "Robitx/gp.nvim",
     config = function()
+      require("gp").setup({
+        openai_api_key = vim.env.OPENAI_API_KEY,
+        chat_user_prefix = "> ",
+        chat_assistant_prefix = { ">> ", "[{{agent}}]" },
+      })
+      applyall(vim.keymap.set, {
+        { { 'n', 'x' }, ' it', '<cmd>GpChatToggle popup<CR>' },
+        { { 'n', 'x' }, ' in', '<cmd>GpChatNew popup<CR>' },
+        { { 'n', 'x' }, ' ip', '<cmd>GpChatPaste<CR>' },
+        { { 'n', 'x' }, ' ir', '<cmd>GpChatRewrite<CR>' },
+        -- TODO: https://github.com/Robitx/gp.nvim
+      })
     end,
     requires = {
       "MunifTanjim/nui.nvim",
@@ -170,10 +191,17 @@ require('packer').startup(function()
           lsp_format = "fallback",
         },
         formatters_by_ft = {
-          javascript = { { "prettierd", "prettier" } },
-          typescript = { { "prettierd", "prettier" } },
-          typescriptreact = { { "prettierd", "prettier" } },
-          rust = { { "rustfmt" } },
+          javascript = { "prettier" },
+          typescript = { "prettier" },
+          typescriptreact = { "prettier" },
+          rust = { "rustfmt" },
+          kotlin = { "ktfmt" },
+          nix = { "nixfmt" },
+        },
+        formatters = {
+          nixfmt = {
+            command = "nixfmt",
+          },
         },
       })
     end,
@@ -183,7 +211,7 @@ require('packer').startup(function()
     'Julian/lean.nvim',
     config = function()
       -- See mappings at
-      -- https://github.com/Julian/lean.nvim?tab=readme-ov-file#mappings
+      -- https://github.com/Julian/lean.nvim#mappings
       require('lean').setup({
         mappings = true,
       })
@@ -199,20 +227,6 @@ vim.cmd [[ source ~/.vimrc ]]
 
 if vim.g.neovide then
   vim.o.guifont = "Source Code Pro:h15"
-end
-
-function applyall(f, as)
-  for _, a in ipairs(as) do
-    f(unpack(a))
-  end
-end
-
-function merge(x, y)
-  return vim.tbl_extend("force", x, y)
-end
-
-function termcode(x)
-  return api.nvim_replace_termcodes(x, true, true, true)
 end
 
 -- Using several tricks from https://www.lua.org/pil/20.html.
@@ -390,8 +404,6 @@ require('nvim-tree').setup {
   end
 }
 
-require("chatgpt").setup {}
-
 local cmp = require('cmp')
 cmp.setup({
   mapping = {
@@ -490,6 +502,8 @@ applyall(
     -- https://github.com/neovim/nvim-lspconfig/issues/2184#issuecomment-1273705335
     { 'clangd', { capabilities = { offsetEncoding = "utf-16" } } },
     { 'elixirls', { cmd = { 'elixir-ls' } } },
+    { 'kotlin_language_server' },
+    { 'gopls' },
     { 'pyright' },
     { 'solidity_ls_nomicfoundation' },
     { 'texlab' },

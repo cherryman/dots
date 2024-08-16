@@ -3,9 +3,8 @@ set $sup Mod4
 set $alt Mod1
 
 exec swww-daemon
-exec wlsunset -s 19:00 -S 06:00 -d 3600
+exec wlsunset -s 19:00 -S 06:00 -d 3400
 exec dunst
-exec fcitx5
 exec alacritty -e zsh -ic 'tmux new-session -A -s 0'
 exec firefox
 exec emacs
@@ -109,7 +108,7 @@ bindsym XF86AudioMute exec vol mute on
 bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPlay exec playerctl play-pause
-bindsym XF86MonBrightnessUp exec brightnessctl s 5%+
-bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl s 2%+
+bindsym XF86MonBrightnessDown exec brightnessctl s 2%-
 
 include /etc/sway/config.d/*

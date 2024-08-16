@@ -5,6 +5,7 @@ $HOME/**/__pycache__
 $HOME/**/node_modules
 $HOME/dots/emacs/.local
 $HOME/dots/emacs/eln-cache
+$HOME/media/vid
 $HOME/.config/chromium
 $HOME/.config/discord
 $HOME/.config/Slack
