@@ -1,28 +1,26 @@
 { config, pkgs, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
-  home.username = "sheheryar";
-  home.homeDirectory = "/home/sheheryar";
+  nixpkgs.config.allowUnfree = true;
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
+  home.username = "sheheryar";
+  home.homeDirectory =
+    if pkgs.stdenv.isLinux then
+      "/home/sheheryar"
+    else if pkgs.stdenv.isDarwin then
+      "/Users/sheheryar"
+    else
+      throw "unsupported platform";
+
+  # read release notes before updating.
+  # https://nix-community.github.io/home-manager/release-notes.xhtml
   home.stateVersion = "24.05";
 
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
   home.packages = with pkgs; [
     # unfortunately difficult to run anything with hardware accel.
     # https://github.com/nix-community/nixGL/issues/114
 
-    black
-    brightnessctl
+    biber
     btop
     bun
     cachix
@@ -34,14 +32,19 @@
     cargo-udeps
     cargo-vet
     cargo-watch
+    cargo-zigbuild
     curl
     dig
     direnv
     elan
+    emacs
+    entr
     eww
+    eza
     fd
     fzf
     gh
+    git-absorb
     git-subrepo
     grpcurl
     hexyl
@@ -50,25 +53,28 @@
     jupyter
     just
     kotlin-language-server
-    ktfmt
+    lsof
     ncdu
-    ngrok
+    neovim
+    nix-direnv
     nixfmt-rfc-style
-    nmap
+    nixos-generators
     nodePackages.prettier
+    numbat
     p7zip
     pandoc
+    playerctl
     poetry
     pyright
     qmk
     restic
     ripgrep
+    ripgrep-all
     rsync
     ruff
     rustup
     shellcheck
     socat
-    swww
     syncthing
     terraform
     texlab
@@ -85,30 +91,37 @@
     zls
     zoxide
 
+    # analysis
+    frida-tools
+    ghidra
+    mitmproxy
+    nmap
+
+    # custom
+    (pkgs.callPackage ../pkgs/rebiber.nix { })
+    (pkgs.callPackage ../pkgs/cfddns.nix { })
+
     # not installing `parallel` in favor of `moreutils`, see:
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=597050#75
     moreutils
 
+    # install `codelldb` for use with debug adapter protocol
+    # https://github.com/vadimcn/codelldb/issues/310#issuecomment-786082362
+    (writeShellScriptBin "codelldb" ''
+      exec ${vscode-extensions.vadimcn.vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb "$@"
+    '')
+
     # fonts
+    source-sans
+    source-serif
     source-code-pro
-    source-sans-pro
-    source-serif-pro
     source-han-sans
     source-han-serif
+    source-han-mono
     noto-fonts-color-emoji
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
+    # doom emacs needs this for performance
+    python312Packages.editorconfig
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -146,8 +159,9 @@
     # EDITOR = "emacs";
   };
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  # `home-manager switch` failing breaks `home-manager`, so
+  # not managing it through home-manager.
+  programs.home-manager.enable = false;
 
   nix.gc = {
     automatic = true;
@@ -158,13 +172,5 @@
   services = {
     ssh-agent.enable = true;
     syncthing.enable = true;
-  };
-
-  i18n.inputMethod = {
-    enabled = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-mozc
-      fcitx5-gtk
-    ];
   };
 }

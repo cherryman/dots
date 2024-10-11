@@ -116,7 +116,7 @@
   org-startup-folded 'fold
   org-fold-catch-invisible-edits 'error
   org-log-done 'note
-  org-cite-global-bibliography "~/doc/org/refs.bib"
+  org-cite-global-bibliography '("~/doc/org/refs.bib")
 
   org-capture-templates `(
     ("t" "Todo" entry (file +org-capture-todo-file)
@@ -148,14 +148,15 @@
 
   org-todo-keywords '(
     (sequence
-      "VIEW(r)"  ; Book or series that is in progress
+      "PROJ(p)"  ; Side project in progress
+      "VIEW(v)"  ; Book or series that is in progress
       "STRT(s)"  ; A task that is in progress
       "WAIT(w)"  ; Something external is holding up this task
       "HOLD(h)"  ; This task is paused/on hold because of me
-      "NEXT(n)"  ; An unconfirmed and unapproved task or notion
-      "TODO(t)"  ; A task that needs doing & is ready to do
+      "NEXT(n)"  ; A task that is queued up to be done next
+      "TODO(t)"  ; A task that is likely to be done
       "|"
-      "KILL(k)"  ; Task was cancelled, aborted or is no longer applicable
+      "KILL(k)"  ; Task was cancelled, aborted, or is no longer applicable
       "DONE(d)"  ; Task successfully completed
     )
 
@@ -183,6 +184,7 @@
     ("WAIT" . +org-todo-onhold)
     ("NEXT" . "#9099ff")
     ("VIEW" . "#c68eff")
+    ("PROJ" . "#56597b")
     ("NO"   . +org-todo-cancel)
     ("KILL" . org-done)
   )
@@ -229,6 +231,9 @@
           (delete-file tempfile)
           (delete-file new-bib-file)))))
 
+(defun my/normalize-refs-bib ()
+  (my/normalize-bibfile "~/doc/org/refs.bib"))
+
 (defun my/zotra-download-attachment-for-current-entry ()
   (interactive)
   (save-excursion
@@ -238,16 +243,16 @@
            (title (cdr (assoc "title" entry)))
            (url (cdr (assoc "url" entry)))
            (filename (concat key ".pdf")))
-      (when (and entry filename)
-            (zotra-download-attachment url nil filename))
       (when (and key title)
             (my/add-paper-to-reading-list key title)
-            (my/normalize-bibfile "~/doc/org/refs.bib")))))
+            (my/normalize-refs-bib))
+      (when (and entry filename)
+            (zotra-download-attachment url nil filename)))))
 
 (after! zotra
   (setq zotra-default-bibliography "~/doc/org/refs.bib"
         zotra-download-attachment-default-directory "~/doc/org/refs"
-        zotra-backend 'zotra-server)
+        zotra-backend 'citoid)
   (add-hook 'zotra-after-get-bibtex-entry-hook
             #'my/zotra-download-attachment-for-current-entry))
 

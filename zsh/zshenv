@@ -1,2 +1,2 @@
-[[ -o login ]] && source "$HOME/.profile"
+[[ -o login || ! -o interactive ]] && source "$HOME/.profile"
 source "$ENV"

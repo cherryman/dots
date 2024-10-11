@@ -65,6 +65,7 @@ require('packer').startup(function()
     config = function()
       require("mini.misc").setup_restore_cursor()
       require("mini.ai").setup()
+
       require("mini.bracketed").setup({
         buffer     = { suffix = 'b', options = {} },
         comment    = { suffix = 'c', options = {} },
@@ -81,9 +82,60 @@ require('packer').startup(function()
         window     = { suffix = 'w', options = {} },
         yank       = { suffix = 'y', options = {} },
       })
+
       applyall(vim.keymap.set, {
         { 'n', ']t', '<cmd>tabnext<CR>' },
         { 'n', '[t', '<cmd>tabprevious<CR>' },
+      })
+
+      require("mini.pairs").setup({
+        modes = { insert = true, command = false, terminal = false },
+
+        -- Global mappings. Each right hand side should be a pair information, a
+        -- table with at least these fields (see more in |MiniPairs.map|):
+        -- - <action> - one of 'open', 'close', 'closeopen'.
+        -- - <pair> - two character string for pair to be used.
+        -- By default pair is not inserted after `\`, quotes are not recognized by
+        -- `<CR>`, `'` does not insert pair after a letter.
+        -- Only parts of tables can be tweaked (others will use these defaults).
+        mappings = {
+          ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].' },
+          ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].' },
+          ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].' },
+
+          [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
+          [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
+          ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
+
+          ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
+          ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
+          ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].', register = { cr = false } },
+
+          -- TODO add html comment tags too
+          -- nvm can't it's just single characters
+        },
+      })
+    end,
+  }
+
+  use {
+    'windwp/nvim-ts-autotag',
+    config = function()
+      require('nvim-ts-autotag').setup({
+        opts = {
+          -- Defaults
+          enable_close = true, -- Auto close tags
+          enable_rename = true, -- Auto rename pairs of tags
+          enable_close_on_slash = false -- Auto close on trailing </
+        },
+        -- Also override individual filetype configs, these take priority.
+        -- Empty by default, useful if one of the "opts" global settings
+        -- doesn't work well in a specific filetype
+        per_filetype = {
+          -- ["html"] = {
+          --   enable_close = false
+          -- }
+        },
       })
     end,
   }
@@ -160,6 +212,15 @@ require('packer').startup(function()
           port = "${port}",
           type = "server"
         },
+        server = {
+          default_settings = {
+            ["rust-analyzer"] = {
+              cargo = {
+                targetDir = true,
+              },
+            },
+          },
+        },
       }
     end,
     requires = {
@@ -197,6 +258,7 @@ require('packer').startup(function()
           rust = { "rustfmt" },
           kotlin = { "ktfmt" },
           nix = { "nixfmt" },
+          zig = { "zigfmt" },
         },
         formatters = {
           nixfmt = {
@@ -507,7 +569,7 @@ applyall(
     { 'pyright' },
     { 'solidity_ls_nomicfoundation' },
     { 'texlab' },
-    { 'tsserver' },
+    { 'ts_ls' },
     { 'typst_lsp' },
     { 'zls' },
   }

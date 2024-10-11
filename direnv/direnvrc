@@ -12,3 +12,6 @@ layout_poetry() {
   export POETRY_ACTIVE=1
   PATH_add "$VENV"
 }
+
+# https://github.com/nix-community/nix-direnv
+source $HOME/.nix-profile/share/nix-direnv/direnvrc

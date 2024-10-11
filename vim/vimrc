@@ -13,7 +13,6 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
 Plug 'wellle/targets.vim'
-Plug 'Raimondi/delimitMate'
 
 " interface
 Plug 'airblade/vim-gitgutter'
@@ -101,6 +100,7 @@ augroup indent
     au FileType ocaml       setl ts=2 sts=2 sw=2
     au FileType terraform   setl ts=2 sts=2 sw=2
     au FileType kotlin      setl ts=2 sts=2 sw=2
+    au FileType nix         setl ts=2 sts=2 sw=2
 augroup END
 
 augroup formatter
@@ -212,16 +212,6 @@ augroup END
 " ---- Plugin Configuration {{{
 augroup plugins
     au!
-augroup END
-
-" delimitMate
-let g:delimitMate_expand_cr = 1
-augroup plugins
-    au FileType scheme   let b:delimitMate_quotes = '"'
-    au FileType *verilog let b:delimitMate_quotes = '"'
-    au FileType matlab   let b:delimitMate_quotes = '"'
-    au FileType lisp     let b:delimitMate_quotes = '"'
-    au FileType xml,html let b:delimitMate_matchpairs = '(:),[:],{:}'
 augroup END
 
 " git-messenger

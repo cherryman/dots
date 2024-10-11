@@ -1,10 +1,8 @@
 alias have='command -v > /dev/null'
 
-case "$(uname -s)" in
-    Linux) alias ls='ls --color';;
-    FreeBSD) alias ls='ls --color';;
-    Darwin) alias ls='ls -G';;
-esac
+if have eza; then
+    alias ls='eza'
+fi
 
 alias l='ls -l'
 alias tm=tmux

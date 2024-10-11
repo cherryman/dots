@@ -2,6 +2,9 @@
     name = Sheheryar Parvaz
     email = me@cherryman.org
 
+[fetch]
+    parallel = 0
+
 [pull]
 	ff = only
 
@@ -35,6 +38,7 @@
 
 [alias]
     a = add
+    c = commit
     d = diff
     l = log
     p = pull

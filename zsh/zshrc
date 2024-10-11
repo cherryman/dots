@@ -5,10 +5,6 @@ source "$ZPLUG_HOME/init.zsh"
     [ -s $BASE16_SHELL/profile_helper.sh ] &&
     eval "$($BASE16_SHELL/profile_helper.sh)"
 
-# For use with `ssh-agent` systemd user service.
-[[ -S "$XDG_RUNTIME_DIR/ssh-agent.socket" ]] &&
-    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
@@ -23,13 +19,15 @@ if command -v > /dev/null direnv; then
 fi
 
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
-export HISTSIZE=2000
+export HISTSIZE=10000
+export SAVEHIST=10000
 autoload -Uz compinit
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
 setopt hist_ignore_space hist_reduce_blanks extended_history
 setopt inc_append_history_time hist_find_no_dups
 setopt promptsubst # interpolate PS1
+setopt share_history
 unsetopt beep
 
 less-widget() {
@@ -43,3 +41,7 @@ bindkey -e # emacs keybindings
 bindkey '\eo' less-widget
 
 zplug load
+
+hmvars="${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/profile/etc/profile.d/hm-session-vars.sh"
+[[ -f "$hmvars" ]] && source "$hmvars"
+unset hmvars
