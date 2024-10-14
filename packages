@@ -1,8 +1,8 @@
 alacritty
-clang
+deluge
 dunst
+emacs
 git
-less
 make
 mold
 mpv
@@ -14,8 +14,8 @@ python
 sway
 tailscale
 wireplumber
-wireshark-cli
 xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 zathura
+zen-browser
 zsh

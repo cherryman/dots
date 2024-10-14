@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
-
 {
   nixpkgs.config.allowUnfree = true;
 
   home.username = "sheheryar";
+
   home.homeDirectory =
     if pkgs.stdenv.isLinux then
       "/home/sheheryar"
@@ -37,9 +37,7 @@
     dig
     direnv
     elan
-    emacs
     entr
-    eww
     eza
     fd
     fzf
@@ -63,7 +61,6 @@
     numbat
     p7zip
     pandoc
-    playerctl
     poetry
     pyright
     qmk
@@ -96,6 +93,8 @@
     ghidra
     mitmproxy
     nmap
+    radare2
+    wireshark
 
     # custom
     (pkgs.callPackage ../pkgs/rebiber.nix { })
@@ -123,6 +122,16 @@
     # doom emacs needs this for performance
     python312Packages.editorconfig
   ];
+
+  nix.gc = {
+    automatic = true;
+    frequency = "weekly";
+    persistent = true;
+  };
+
+  services = {
+    syncthing.enable = true;
+  };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -159,18 +168,6 @@
     # EDITOR = "emacs";
   };
 
-  # `home-manager switch` failing breaks `home-manager`, so
-  # not managing it through home-manager.
+  # `home-manager switch` failing breaks `home-manager`, so not enabling.
   programs.home-manager.enable = false;
-
-  nix.gc = {
-    automatic = true;
-    frequency = "weekly";
-    persistent = true;
-  };
-
-  services = {
-    ssh-agent.enable = true;
-    syncthing.enable = true;
-  };
 }

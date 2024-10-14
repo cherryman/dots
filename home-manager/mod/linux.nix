@@ -2,8 +2,10 @@
 {
   home.packages = with pkgs; [
     brightnessctl
+    eww
     grim
     ktfmt
+    playerctl
     slurp
     swww
     wl-clipboard
@@ -22,5 +24,9 @@
       fcitx5-mozc
       fcitx5-gtk
     ];
+  };
+
+  services = {
+    ssh-agent.enable = true;
   };
 }
