@@ -99,6 +99,7 @@
     # custom
     (pkgs.callPackage ../pkgs/rebiber.nix { })
     (pkgs.callPackage ../pkgs/cfddns.nix { })
+    (pkgs.callPackage ../pkgs/sif.nix { })
 
     # not installing `parallel` in favor of `moreutils`, see:
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=597050#75
@@ -132,6 +133,20 @@
   services = {
     syncthing.enable = true;
   };
+
+  # should port this to darwin with launchd. see examples:
+  # https://github.com/nix-community/home-manager/tree/master/modules/launchd
+  # https://github.com/nix-community/home-manager/blob/e1aec543f5caf643ca0d94b6a633101942fd065f/modules/services/syncthing.nix#L100
+  systemd.user.services.zotra =
+    let
+      zotra = pkgs.callPackage ../pkgs/zotra.nix { };
+    in
+    {
+      Unit.Description = "zotra server";
+      Unit.After = [ "network.target" ];
+      Install.WantedBy = [ "default.target" ];
+      Service.ExecStart = "${zotra}/bin/zotra server";
+    };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.

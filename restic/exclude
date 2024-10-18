@@ -2,6 +2,7 @@ $HOME/.cache
 $HOME/.config/**/*Cache*
 $HOME/.*/**/*cache*
 $HOME/**/__pycache__
+$HOME/**/.terraform
 $HOME/**/.zig-cache
 $HOME/**/zig-out
 $HOME/**/node_modules
@@ -26,6 +27,8 @@ $HOME/.zen/*/storage
 $HOME/.zen/*/minidumps
 $HOME/.zen/*/datareporting
 $HOME/.zen/Crash Reports
+$HOME/.thunderbird
 $HOME/.wine
 $HOME/.foundry
 $HOME/.sp1
+$HOME/.config/.sp1

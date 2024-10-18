@@ -15,6 +15,11 @@
       url = "github:hraban/mac-app-util/9c6bbe2a6a7ec647d03f64f0fadb874284f59eac";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sif = {
+      url = "github:lunchcat/sif";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -23,7 +28,6 @@
       nixpkgs,
       flake-parts,
       home-manager,
-      mac-app-util,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -44,32 +48,32 @@
         {
         };
       flake = {
-        homeConfigurations = {
-          "sheheryar@cherrylt" = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.aarch64-linux;
-            modules = [
+        homeConfigurations =
+          let
+            linux-modules = [
               ./mod/base.nix
               ./mod/linux.nix
-              ./mod/zotra.nix
             ];
-          };
-          "sheheryar@cherrypc" = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.x86_64-linux;
-            modules = [
-              ./mod/base.nix
-              ./mod/linux.nix
-              ./mod/zotra.nix
-            ];
-          };
-          "sheheryar@macbook" = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-            modules = [
-              mac-app-util.homeManagerModules.default
+            darwin-modules = [
+              inputs.mac-app-util.homeManagerModules.default
               ./mod/base.nix
               ./mod/darwin.nix
             ];
+          in
+          {
+            "sheheryar@cherrylt" = home-manager.lib.homeManagerConfiguration {
+              pkgs = nixpkgs.legacyPackages.aarch64-linux;
+              modules = linux-modules;
+            };
+            "sheheryar@cherrypc" = home-manager.lib.homeManagerConfiguration {
+              pkgs = nixpkgs.legacyPackages.x86_64-linux;
+              modules = linux-modules;
+            };
+            "sheheryar@macbook" = home-manager.lib.homeManagerConfiguration {
+              pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+              modules = darwin-modules;
+            };
           };
-        };
       };
     };
 }

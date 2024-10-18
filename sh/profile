@@ -40,6 +40,12 @@ export BUN_INSTALL_CACHE_DIR="$XDG_CACHE_HOME/bun"
 export BUN_INSTALL_GLOBAL_DIR="$XDG_DATA_HOME/bun"
 
 export GTK_IM_MODULE=wayland
+# nix being weird as usual.
+# https://nixos.wiki/wiki/Locales
+if [ -z "$LOCALE_ARCHIVE" ] && [ -f "/usr/lib/locale/locale-archive" ]; then
+    export LOCALE_ARCHIVE="/usr/lib/locale/locale-archive"
+fi
+
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 

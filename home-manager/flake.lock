@@ -67,6 +67,31 @@
         "type": "indirect"
       }
     },
+    "gomod2nix": {
+      "inputs": {
+        "nixpkgs": [
+          "sif",
+          "nixpkgs"
+        ],
+        "utils": [
+          "sif",
+          "utils"
+        ]
+      },
+      "locked": {
+        "lastModified": 1677459247,
+        "narHash": "sha256-JbakfAiPYmCCV224yAMq/XO0udN5coWv/oazblMKdoY=",
+        "owner": "tweag",
+        "repo": "gomod2nix",
+        "rev": "3cbf3a51fe32e2f57af4c52744e7228bab22983d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tweag",
+        "repo": "gomod2nix",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -144,7 +169,30 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "mac-app-util": "mac-app-util",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "sif": "sif"
+      }
+    },
+    "sif": {
+      "inputs": {
+        "gomod2nix": "gomod2nix",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": "utils"
+      },
+      "locked": {
+        "lastModified": 1728773783,
+        "narHash": "sha256-pYyD5HuO3nIVNToJiQMgRBxbSE6tbhxiDrsce2Rshn4=",
+        "owner": "lunchcat",
+        "repo": "sif",
+        "rev": "5add3a7502b040e1d7309bba8626bb58a5eb0b70",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lunchcat",
+        "repo": "sif",
+        "type": "github"
       }
     },
     "systems": {
@@ -159,6 +207,39 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "utils": {
+      "inputs": {
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1692799911,
+        "narHash": "sha256-3eihraek4qL744EvQXsK1Ha6C3CR7nnT8X2qWap4RNk=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "f9e7cf818399d17d347f847525c5a5a8032e4e44",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
         "type": "github"
       }
     }

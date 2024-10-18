@@ -12,7 +12,7 @@ exec eww open bar
 
 floating_modifier $sup normal
 font pango:sans-serif 10
-xwayland disable
+xwayland enable
 
 workspace_layout tabbed
 hide_edge_borders --i3 smart
@@ -23,8 +23,11 @@ client.focused_inactive #222222 #222222 #eeeeee
 client.unfocused #222222 #222222 #eeeeee
 
 assign [app_id="firefox"] 2
+assign [app_id="^zen"] 2
 assign [app_id="emacs"] 3
+assign [app_id="discord"] 4
 assign [app_id="[sS]lack"] 4
+assign [app_id="thunderbird"] 4
 
 input type:keyboard {
     xkb_layout us

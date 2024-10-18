@@ -156,30 +156,6 @@ require('packer').startup(function()
   }
 
   use {
-    "Robitx/gp.nvim",
-    config = function()
-      require("gp").setup({
-        openai_api_key = vim.env.OPENAI_API_KEY,
-        chat_user_prefix = "> ",
-        chat_assistant_prefix = { ">> ", "[{{agent}}]" },
-      })
-      applyall(vim.keymap.set, {
-        { { 'n', 'x' }, ' it', '<cmd>GpChatToggle popup<CR>' },
-        { { 'n', 'x' }, ' in', '<cmd>GpChatNew popup<CR>' },
-        { { 'n', 'x' }, ' ip', '<cmd>GpChatPaste<CR>' },
-        { { 'n', 'x' }, ' ir', '<cmd>GpChatRewrite<CR>' },
-        -- TODO: https://github.com/Robitx/gp.nvim
-      })
-    end,
-    requires = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "folke/trouble.nvim",
-      "nvim-telescope/telescope.nvim"
-    },
-  }
-
-  use {
     'mrcjkb/rustaceanvim',
     config = function()
       vim.g.rustaceanvim = {
@@ -262,6 +238,18 @@ require('packer').startup(function()
         mappings = true,
       })
     end,
+  }
+
+  use {
+    'stevearc/aerial.nvim',
+    config = function()
+      require('aerial').setup({
+        backends = { "treesitter", "lsp" },
+      })
+    end,
+    requires = {
+      'nvim-telescope/telescope.nvim',
+    },
   }
 end).install()
 
@@ -650,9 +638,9 @@ applyall(vim.keymap.set, {
   { 'n', '<A-H>', dap.step_out },
   { 'n', '<A-L>', dap.step_into },
 
-  { 'n', ' cc', '<cmd>ChatGPT<CR>' },
-
   { 'x', '<C-c><C-c>', '<Plug>SlimeRegionSend' },
   { 'n', '<C-c><C-c>', '<Plug>SlimeParagraphSend' },
   { 'n', '<C-c>v', '<Plug>SlimeConfig' },
+
+  { 'n', 'gO', require("telescope").extensions.aerial.aerial },
 })
