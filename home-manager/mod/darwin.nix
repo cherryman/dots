@@ -6,13 +6,23 @@
 }:
 {
   # nixGL not needed and no wayland/x11 issues, so including gui apps.
-  #
-  # spotlight ignores symlinked .app files, to fix:
-  # https://github.com/hraban/mac-app-util
+  # omitting discord due to the stupid update check.
   home.packages = with pkgs; [
     alacritty
-    deluge
     emacs
+    imhex
     mpv
+    raycast
+    slack
+    spotify
   ];
+
+  # https://github.com/nix-community/home-manager/blob/master/modules/targets/darwin/keybindings.nix
+  targets.darwin.keybindings = {
+    "^u" = "deleteToBeginningOfLine:";
+    "^w" = "deleteWordBackward:";
+    "~f" = "moveWordForward:";
+    "~b" = "moveWordBackward:";
+    "~d" = "deleteWordForward:";
+  };
 }

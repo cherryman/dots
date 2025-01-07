@@ -1,6 +1,6 @@
 {
   lib,
-  python3,
+  python3Packages,
   fetchFromGitHub,
 }:
 let
@@ -14,19 +14,10 @@ let
   };
   reqsTxt = lib.readFile "${src}/requirements.txt";
   reqs = lib.splitString "\n" (builtins.replaceStrings [ "==" ] [ "" ] reqsTxt);
-  pythonEnv = python3.withPackages (
-    pypkgs: map (req: builtins.getAttr (lib.toLower req) pypkgs) reqs
-  );
 in
-python3.pkgs.buildPythonPackage {
+python3Packages.buildPythonApplication {
   inherit src version;
-
   pname = "rebiber";
-  format = "setuptools";
-  doCheck = false;
-  propagatedBuildInputs = [ pythonEnv ];
-
-  installCheckPhase = ''
-    rebiber --version > /dev/null
-  '';
+  build-system = [ python3Packages.setuptools ];
+  dependencies = map (req: builtins.getAttr (lib.toLower req) python3Packages) reqs;
 }

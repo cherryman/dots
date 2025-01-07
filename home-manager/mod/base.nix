@@ -14,12 +14,13 @@
 
   # read release notes before updating.
   # https://nix-community.github.io/home-manager/release-notes.xhtml
-  home.stateVersion = "24.05";
+  home.stateVersion = "24.11";
 
   home.packages = with pkgs; [
     # unfortunately difficult to run anything with hardware accel.
     # https://github.com/nix-community/nixGL/issues/114
 
+    basedpyright
     biber
     btop
     bun
@@ -27,7 +28,6 @@
     cargo-bloat
     cargo-deny
     cargo-expand
-    cargo-llvm-cov
     cargo-show-asm
     cargo-udeps
     cargo-vet
@@ -42,13 +42,18 @@
     fd
     fzf
     gh
+    git
     git-absorb
+    git-lfs
     git-subrepo
+    gradle
     grpcurl
     hexyl
     hyperfine
+    imagemagick
+    img2pdf
+    irssi
     jq
-    jupyter
     just
     kotlin-language-server
     lsof
@@ -58,12 +63,14 @@
     nixfmt-rfc-style
     nixos-generators
     nodePackages.prettier
+    nodePackages.typescript-language-server
+    nodejs
     numbat
     p7zip
     pandoc
     poetry
-    pyright
     qmk
+    qrencode
     restic
     ripgrep
     ripgrep-all
@@ -78,17 +85,25 @@
     tmux
     tokei
     tokio-console
-    typescript-language-server
     typst
     typst-lsp
+    util-linux
+    uv
     wabt
+    wget
     xh
+    yarn
     yazi
+    zbar
     zig
     zls
     zoxide
 
-    # analysis
+    # pentest
+    aircrack-ng
+    apktool
+    binwalk
+    dex2jar
     frida-tools
     ghidra
     mitmproxy
@@ -100,6 +115,20 @@
     (pkgs.callPackage ../pkgs/rebiber.nix { })
     (pkgs.callPackage ../pkgs/cfddns.nix { })
     (pkgs.callPackage ../pkgs/sif.nix { })
+    (pkgs.callPackage ../pkgs/zotra.nix { })
+
+    (python312.withPackages (p: [
+      p.cryptography
+      p.editorconfig # doom emacs optimization
+      p.frida-python
+      p.ipython
+      p.jupyter-core
+      p.numpy
+    ]))
+
+    (pass.withExtensions (ext: [
+      ext.pass-otp
+    ]))
 
     # not installing `parallel` in favor of `moreutils`, see:
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=597050#75
@@ -119,9 +148,6 @@
     source-han-serif
     source-han-mono
     noto-fonts-color-emoji
-
-    # doom emacs needs this for performance
-    python312Packages.editorconfig
   ];
 
   nix.gc = {

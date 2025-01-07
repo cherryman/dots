@@ -2,14 +2,18 @@ alias have='command -v > /dev/null'
 
 if have eza; then
     alias ls='eza'
+    alias tree='eza -T'
 fi
 
+alias e=nvim
 alias l='ls -l'
 alias tm=tmux
 alias tf=terraform
 alias g=git
 alias c=cargo
 alias n=nix
+alias nb=numbat
+alias py=python
 
 ### Prompt
 prompt_pwd() {
@@ -42,6 +46,7 @@ prompt_loc() {
     if [ -z "$SSH_TTY" ]; then
         case "$prompt_host" in
             [Cc]herry*) prompt_host= ;;
+            macbook*) prompt_host= ;;
         esac
     fi
     prompt_loc="$prompt_user${prompt_host:+@${prompt_host}}"

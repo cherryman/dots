@@ -2,7 +2,7 @@
   description = "Home Manager configuration of sheheryar";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
@@ -55,7 +55,8 @@
               ./mod/linux.nix
             ];
             darwin-modules = [
-              inputs.mac-app-util.homeManagerModules.default
+              # disabled since using raycast now.
+              # inputs.mac-app-util.homeManagerModules.default
               ./mod/base.nix
               ./mod/darwin.nix
             ];

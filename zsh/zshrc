@@ -40,6 +40,11 @@ zle -N less-widget
 bindkey -e # emacs keybindings
 bindkey '\eo' less-widget
 
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^xe' edit-command-line
+bindkey '^x^e' edit-command-line
+
 zplug load
 
 hmvars="${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/profile/etc/profile.d/hm-session-vars.sh"

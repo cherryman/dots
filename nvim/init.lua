@@ -209,7 +209,8 @@ require('packer').startup(function()
       require("conform").setup({
         -- Formats asynchronously, as opposed to `format_on_save`.
         format_after_save = {
-          lsp_format = "fallback",
+          -- don't enable this, lsp formatters should never have existed.
+          -- lsp_format = "fallback",
         },
         formatters_by_ft = {
           javascript = { "prettier" },
@@ -538,7 +539,7 @@ applyall(
     { 'elixirls', { cmd = { 'elixir-ls' } } },
     { 'kotlin_language_server' },
     { 'gopls' },
-    { 'pyright' },
+    { 'basedpyright' },
     { 'solidity_ls_nomicfoundation' },
     { 'texlab' },
     { 'ts_ls' },
