@@ -9,17 +9,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # pinned to audited commit.
-    mac-app-util = {
-      url = "github:hraban/mac-app-util/9c6bbe2a6a7ec647d03f64f0fadb874284f59eac";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    sif = {
-      url = "github:lunchcat/sif";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -51,14 +40,12 @@
         homeConfigurations =
           let
             linux-modules = [
-              ./mod/base.nix
-              ./mod/linux.nix
+              ./home.nix
+              ./home.linux.nix
             ];
             darwin-modules = [
-              # disabled since using raycast now.
-              # inputs.mac-app-util.homeManagerModules.default
-              ./mod/base.nix
-              ./mod/darwin.nix
+              ./home.nix
+              ./home.darwin.nix
             ];
           in
           {

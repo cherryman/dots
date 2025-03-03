@@ -13,7 +13,7 @@ alias g=git
 alias c=cargo
 alias n=nix
 alias nb=numbat
-alias py=python
+alias py=ipython
 
 ### Prompt
 prompt_pwd() {
@@ -47,6 +47,7 @@ prompt_loc() {
         case "$prompt_host" in
             [Cc]herry*) prompt_host= ;;
             macbook*) prompt_host= ;;
+            MacBook*) prompt_host= ;;
         esac
     fi
     prompt_loc="$prompt_user${prompt_host:+@${prompt_host}}"

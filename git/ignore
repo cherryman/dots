@@ -8,14 +8,21 @@ Session.vim
 *~
 .lvimrc
 .undodir/
-.DS_Store
-.direnv/
 
 ### Emacs
 *~
 \#*\#
 
-.elixir_ls/
+.cursor/
+.vscode/
 .idea/
+.elixir_ls/
 .envrc
 .ruff_cache/
+.DS_Store
+.direnv/
+.aider.*
+CLAUDE.md
+
+# in-progress notes
+notes_.md

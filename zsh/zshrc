@@ -8,7 +8,6 @@ source "$ZPLUG_HOME/init.zsh"
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-completions'
 zplug 'zsh-users/zsh-syntax-highlighting'
-zplug 'junegunn/fzf', use:'shell/*.zsh'
 
 if command -v > /dev/null zoxide; then
     eval "$(zoxide init zsh)"

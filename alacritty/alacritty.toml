@@ -124,7 +124,7 @@ history = 0
 
 [window]
 option_as_alt = "OnlyLeft"
-decorations = "Full"
+decorations = "None"
 dynamic_padding = false
 dynamic_title = true
 opacity = 1.0

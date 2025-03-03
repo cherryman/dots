@@ -62,10 +62,12 @@
     nix-direnv
     nixfmt-rfc-style
     nixos-generators
+    nixpkgs-review
     nodePackages.prettier
     nodePackages.typescript-language-server
     nodejs
     numbat
+    openfortivpn
     p7zip
     pandoc
     poetry
@@ -82,11 +84,12 @@
     syncthing
     terraform
     texlab
+    tinymist
     tmux
     tokei
     tokio-console
     typst
-    typst-lsp
+    typstyle
     util-linux
     uv
     wabt
@@ -94,28 +97,46 @@
     xh
     yarn
     yazi
+    yt-dlp
     zbar
     zig
     zls
     zoxide
 
-    # pentest
+    # ctf / pentest
     aircrack-ng
     apktool
     binwalk
+    boundary
+    cyberchef
     dex2jar
+    exiftool
+    foremost
     frida-tools
     ghidra
+    john
     mitmproxy
+    netcat-gnu
     nmap
     radare2
+    volatility3
     wireshark
 
+    (pkgs.wordlists.override {
+      lists = with pkgs; [
+        nmap
+        rockyou
+        seclists
+        wfuzz
+      ];
+    })
+
     # custom
-    (pkgs.callPackage ../pkgs/rebiber.nix { })
-    (pkgs.callPackage ../pkgs/cfddns.nix { })
-    (pkgs.callPackage ../pkgs/sif.nix { })
-    (pkgs.callPackage ../pkgs/zotra.nix { })
+    (pkgs.callPackage ./pkgs/rebiber.nix { })
+    (pkgs.callPackage ./pkgs/cfddns.nix { })
+    (pkgs.callPackage ./pkgs/sif.nix { })
+    (pkgs.callPackage ./pkgs/zotra.nix { })
+    (pkgs.callPackage ./pkgs/aider-chat.nix { })
 
     (python312.withPackages (p: [
       p.cryptography
@@ -124,6 +145,11 @@
       p.ipython
       p.jupyter-core
       p.numpy
+      p.pandas
+      p.pillow
+      p.pwntools
+      p.sympy
+      p.torch
     ]))
 
     (pass.withExtensions (ext: [
@@ -132,7 +158,9 @@
 
     # not installing `parallel` in favor of `moreutils`, see:
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=597050#75
-    moreutils
+    #
+    # `hiPrio` to avoid conflict with `pwntools`'s `errno`.
+    (pkgs.hiPrio moreutils)
 
     # install `codelldb` for use with debug adapter protocol
     # https://github.com/vadimcn/codelldb/issues/310#issuecomment-786082362
@@ -165,7 +193,7 @@
   # https://github.com/nix-community/home-manager/blob/e1aec543f5caf643ca0d94b6a633101942fd065f/modules/services/syncthing.nix#L100
   systemd.user.services.zotra =
     let
-      zotra = pkgs.callPackage ../pkgs/zotra.nix { };
+      zotra = pkgs.callPackage ./pkgs/zotra.nix { };
     in
     {
       Unit.Description = "zotra server";
@@ -173,21 +201,6 @@
       Install.WantedBy = [ "default.target" ];
       Service.ExecStart = "${zotra}/bin/zotra server";
     };
-
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
-  };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a

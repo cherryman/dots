@@ -105,8 +105,8 @@ bindsym $hyp+a focus parent
 bindsym $hyp+s scratchpad show
 bindsym $hyp+$alt+s move scratchpad
 bindsym XF86HomePage exec firefox
-bindsym XF86AudioRaiseVolume exec vol inc 2
-bindsym XF86AudioLowerVolume exec vol dec 2
+bindsym XF86AudioRaiseVolume exec volume inc 2
+bindsym XF86AudioLowerVolume exec volume dec 2
 bindsym XF86AudioMute exec vol mute on
 bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86AudioNext exec playerctl next

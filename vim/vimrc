@@ -120,6 +120,7 @@ augroup formatter
     au FileType terraform   setl fex= fp=terraform\ fmt\ -
     au FileType nix         setl fex= fp=nixfmt
     au FileType kotlin      setl fex= fp=ktfmt\ -
+    au FileType kotlin      setl fex= fp=typstyle
 augroup END
 
 "}}}

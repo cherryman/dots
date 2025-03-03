@@ -6,7 +6,11 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 5
 defaults write com.apple.dock no-bouncing -bool TRUE
 
-# needed for frida and yabai
+# https://nikitabobko.github.io/AeroSpace/guide#a-note-on-mission-control
+# https://nikitabobko.github.io/AeroSpace/guide#a-note-on-displays-have-separate-spaces
+defaults write com.apple.dock expose-group-apps -bool true
+defaults write com.apple.spaces spans-displays -bool true
+
 # https://frida.re/news/2020/07/24/frida-12-11-released/
 sudo nvram boot-args="-arm64e_preview_abi"
 
