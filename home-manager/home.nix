@@ -20,6 +20,7 @@
     # unfortunately difficult to run anything with hardware accel.
     # https://github.com/nix-community/nixGL/issues/114
 
+    babelfish
     basedpyright
     biber
     btop
