@@ -13,10 +13,10 @@
     alt-tab-macos
     anki-bin
     audacity
-    emacs30
+    emacs
     imhex
     maccy
-    mpv
+    mpv-unwrapped
     raycast
     slack
     spotify

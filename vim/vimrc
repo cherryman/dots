@@ -192,7 +192,6 @@ nmap <silent> <Leader>y :%y+<CR>
 
 imap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
 imap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
-imap <expr> <CR>  pumvisible() ? '<C-y>' : '<Plug>delimitMateCR'
 
 noremap <silent> <A-h> :TmuxNavigateLeft<CR>
 noremap <silent> <A-j> :TmuxNavigateDown<CR>

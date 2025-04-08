@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 {
   nixpkgs.config.allowUnfree = true;
+  home.enableNixpkgsReleaseCheck = false;
 
   home.username = "sheheryar";
 
@@ -31,7 +32,6 @@
     cargo-expand
     cargo-show-asm
     cargo-udeps
-    cargo-vet
     cargo-watch
     cargo-zigbuild
     curl
@@ -57,6 +57,7 @@
     jq
     just
     kotlin-language-server
+    lldb
     lsof
     ncdu
     neovim
@@ -69,6 +70,7 @@
     nodejs
     numbat
     openfortivpn
+    openvpn
     p7zip
     pandoc
     poetry
@@ -94,6 +96,7 @@
     util-linux
     uv
     wabt
+    websocat
     wget
     xh
     yarn
@@ -107,6 +110,7 @@
     # ctf / pentest
     aircrack-ng
     apktool
+    binutils
     binwalk
     boundary
     cyberchef
@@ -114,7 +118,7 @@
     exiftool
     foremost
     frida-tools
-    ghidra
+    ghidra-bin # ghidra currently broken on darwin
     john
     mitmproxy
     netcat-gnu
@@ -137,9 +141,10 @@
     (pkgs.callPackage ./pkgs/cfddns.nix { })
     (pkgs.callPackage ./pkgs/sif.nix { })
     (pkgs.callPackage ./pkgs/zotra.nix { })
-    (pkgs.callPackage ./pkgs/aider-chat.nix { })
+    (pkgs.callPackage ./pkgs/ipsw.nix { })
 
     (python312.withPackages (p: [
+      p.base58
       p.cryptography
       p.editorconfig # doom emacs optimization
       p.frida-python
@@ -151,6 +156,7 @@
       p.pwntools
       p.sympy
       p.torch
+      p.xonsh
     ]))
 
     (pass.withExtensions (ext: [
@@ -202,6 +208,19 @@
       Install.WantedBy = [ "default.target" ];
       Service.ExecStart = "${zotra}/bin/zotra server";
     };
+
+  home.file.".config/mpv/scripts".source =
+    let
+      drv = pkgs.symlinkJoin {
+        name = "mpv-scripts";
+        paths = with pkgs.mpvScripts; [
+          autoload
+          autosubsync-mpv
+          webtorrent-mpv-hook
+        ];
+      };
+    in
+    "${drv}/share/mpv/scripts";
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a

@@ -3,6 +3,7 @@
   home.packages = with pkgs; [
     brightnessctl
     cargo-llvm-cov # broken on darwin
+    cargo-vet # broken on darwin
     checksec
     eww
     grim

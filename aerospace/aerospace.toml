@@ -3,7 +3,7 @@ key-mapping.preset = 'qwerty'
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 automatically-unhide-macos-hidden-apps = true
-accordion-padding = 30
+accordion-padding = 25
 
 # "tiles" | "accordion"
 default-root-container-layout = 'tiles'
@@ -26,6 +26,10 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     4 = 'main'
 
 [[on-window-detected]]
+    if.app-id = 'io.mpv'
+    run = ['layout floating']
+
+[[on-window-detected]]
     if.app-id = 'app.zen-browser.zen'
     run = ['move-node-to-workspace 2']
 
@@ -34,7 +38,15 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
+    if.app-id = 'com.apple.reminders'
+    run = ['move-node-to-workspace 3']
+
+[[on-window-detected]]
     if.app-id = 'com.apple.mail'
+    run = ['move-node-to-workspace 4']
+
+[[on-window-detected]]
+    if.app-id = 'com.spotify.client'
     run = ['move-node-to-workspace 4']
 
 [[on-window-detected]]
@@ -115,6 +127,7 @@ alt-3 = 'workspace 3'
 alt-4 = 'workspace 4'
 alt-5 = 'workspace 5'
 alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 1'
@@ -123,6 +136,7 @@ alt-shift-3 = 'move-node-to-workspace 3'
 alt-shift-4 = 'move-node-to-workspace 4'
 alt-shift-5 = 'move-node-to-workspace 5'
 alt-shift-6 = 'move-node-to-workspace 6'
+alt-shift-7 = 'move-node-to-workspace 7'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 alt-shift-semicolon = 'mode service'

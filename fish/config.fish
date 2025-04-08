@@ -6,6 +6,7 @@ set -gx XDG_CACHE_HOME "$HOME/.cache"
 set -gx BASE16_SHELL "$HOME/.config/base16-shell"
 set -gx LESS "-RSi"
 set -gx MOSH_ESCAPE_KEY '' # <C-\>
+set -gx export GOPROXY "direct"
 set -gx NIXPKGS_ALLOW_UNFREE 1
 
 set -gx SCREENSHOT_DIR "$HOME/media/pic/sshot"
@@ -34,12 +35,6 @@ set -gx GTK_IM_MODULE wayland
 set -gx QT_IM_MODULE fcitx
 set -gx XMODIFIERS @im fcitx
 
-fish_add_path "$HOME/bin"
-fish_add_path "$HOME/.local/bin"
-fish_add_path "$XDG_CONFIG_HOME/emacs/bin"
-fish_add_path "$CARGO_HOME/bin"
-fish_add_path "$GOPATH/bin"
-
 if type -q eza
     alias ls 'eza'
     alias tree 'eza -T'
@@ -53,7 +48,9 @@ alias g git
 alias c cargo
 alias n nix
 alias nb numbat
-alias py ipython
+alias py python
+alias ipy ipython
+alias x xonsh
 
 if type -q nvim
     set -gx EDITOR nvim
@@ -64,11 +61,31 @@ if type -q less
     set -gx PAGER less
 end
 
+fish_add_path "$XDG_CONFIG_HOME/emacs/bin"
+fish_add_path "$GOPATH/bin"
+fish_add_path "$CARGO_HOME/bin"
+fish_add_path "$HOME/.local/bin"
+fish_add_path "$HOME/bin"
+
+if type -q /opt/homebrew/bin/brew
+    /opt/homebrew/bin/brew shellenv | source
+end
+
 begin
-    set -l f $XDG_STATE_HOME/nix/profiles/profile/etc/profile.d/hm-session-vars.s
-    if type -q babelfish && test -f $f
-        babelfish < $f
+    set -l nix_profile "$XDG_STATE_HOME/nix/profiles/profile"
+    set -l hmvars "$nix_profile/etc/profile.d/hm-session-vars.sh"
+
+    if test -f "$nix_profile/etc/profile.d/nix.fish"
+        source "$nix_profile/etc/profile.d/nix.fish"
+    else if test -f /usr/etc/profile.d/nix.fish
+        source /usr/etc/profile.d/nix.fish
+    else if test -f /etc/profile.d/nix.fish
+        source /etc/profile.d/nix.fish
     end
+
+    if type -q babelfish && test -f $hmvars
+        babelfish < $hmvars > /dev/null
+     end
 
     # nix being weird as usual.
     # https://nixos.wiki/wiki/Locales
@@ -123,16 +140,12 @@ function prompt_login --description 'display user name for the prompt'
         set color_host $fish_color_host_remote
     end
 
-    if test "$USER" != "sheheryar"
-        set -f user "$(set_color $fish_color_user)$USER$(set_color normal)"
+    if set -q SSH_TTY; or not string match -qr 'cherry*|macbook*|MacBook*' (hostname)
+            set -f host "@$(set_color $color_host)$(prompt_hostname)$(set_color normal)"
     end
 
-    switch (hostname)
-        case 'cherry*'
-        case 'macbook*'
-        case 'MacBook*'
-        case '*'
-            set -f host "@$(set_color $color_host)$(prompt_hostname)$(set_color normal)"
+    if test "$USER" != "sheheryar"
+        set -f user "$(set_color $fish_color_user)$USER$(set_color normal)"
     end
 
     echo -n -s $user $host

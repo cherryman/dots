@@ -40,6 +40,8 @@ XDGC_TARGETS	= alacritty    \
 		  home-manager \
 		  aerospace    \
 		  fish         \
+		  ghostty      \
+		  xonsh        \
 		  git
 
 .PHONY: $(XDGC_TARGETS)
