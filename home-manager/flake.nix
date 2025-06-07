@@ -2,7 +2,7 @@
   description = "Home Manager configuration of sheheryar";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/74a40410369a1c35ee09b8a1abee6f4acbedc059";
+    nixpkgs.url = "github:nixos/nixpkgs/adaa24fbf46737f3f1b5497bf64bae750f82942e";
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {

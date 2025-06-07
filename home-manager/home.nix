@@ -1,4 +1,8 @@
 { config, pkgs, ... }:
+let
+  py-solders = (pkgs.callPackage ./pkgs/py-solders.nix { });
+  py-solana = (pkgs.callPackage ./pkgs/py-solana.nix { solders = py-solders; });
+in
 {
   nixpkgs.config.allowUnfree = true;
   home.enableNixpkgsReleaseCheck = false;
@@ -24,6 +28,7 @@
     babelfish
     basedpyright
     biber
+    biff
     btop
     bun
     cachix
@@ -118,7 +123,7 @@
     exiftool
     foremost
     frida-tools
-    ghidra-bin # ghidra currently broken on darwin
+    ghidra
     john
     mitmproxy
     netcat-gnu
@@ -157,17 +162,16 @@
       p.sympy
       p.torch
       p.xonsh
+      py-solders
+      py-solana
     ]))
 
     (pass.withExtensions (ext: [
       ext.pass-otp
     ]))
 
-    # not installing `parallel` in favor of `moreutils`, see:
-    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=597050#75
-    #
-    # `hiPrio` to avoid conflict with `pwntools`'s `errno`.
-    (pkgs.hiPrio moreutils)
+    (pkgs.lib.setPrio (-1) moreutils) # override `errno` from `pwntools`
+    (pkgs.lib.setPrio (-2) parallel) # override `parallel` from `moreutils`
 
     # install `codelldb` for use with debug adapter protocol
     # https://github.com/vadimcn/codelldb/issues/310#issuecomment-786082362

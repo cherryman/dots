@@ -51,6 +51,7 @@ alias nb numbat
 alias py python
 alias ipy ipython
 alias x xonsh
+alias j just
 
 if type -q nvim
     set -gx EDITOR nvim

@@ -175,8 +175,8 @@ now(function()
     },
   })
 
-  vim.diagnostic.disable()
-  vim.diagnostic.config({ virtual_text = false })
+  vim.diagnostic.enable(true, nil)
+  vim.diagnostic.config({ virtual_text = true })
 
   require('blink.cmp').setup({
     sources = {
@@ -214,9 +214,12 @@ now(function()
     },
   })
 
-  -- TODO: remove in neovim 0.11; bunch of other changes needed too.
-  capabilities = require('blink.cmp').get_lsp_capabilities()
-  capabilities.semanticTokensProvider = false
+  vim.lsp.config('*', {
+    capabilities = merge(
+      require('blink.cmp').get_lsp_capabilities(),
+      { semanticTokensProvider = false }
+    )
+  })
 
   -- disable semantic highlighting.
   --
@@ -231,7 +234,8 @@ now(function()
 
   applyall(
     function(lsp, opts)
-      require('lspconfig')[lsp].setup(opts or {})
+      vim.lsp.config(lsp, opts or {})
+      vim.lsp.enable(lsp)
     end,
     {
       -- Only `clangd` is sane, so we have to make it insane.
@@ -241,11 +245,11 @@ now(function()
       { 'kotlin_language_server' },
       { 'gopls' },
       { 'basedpyright' },
-      { 'solidity_ls_nomicfoundation' },
       { 'texlab' },
       { 'ts_ls' },
       { 'tinymist', { settings = { exportPdf = 'onSave' } } },
       { 'zls' },
+      { 'rust_analyzer', { settings = { ['rust-analyzer'] = { cargo = { targetDir = true } } } } },
     }
   )
 
@@ -521,47 +525,46 @@ later(function()
   })
 end)
 
-later(function()
-  add({
-    source = 'mrcjkb/rustaceanvim',
-    depends = {
-      -- > This plugin will automatically register the necessary client
-      -- > capabilities if you have cmp-nvim-lsp installed.
-      -- https://github.com/mrcjkb/rustaceanvim#how-to-enable-auto-completion
-      'hrsh7th/cmp-nvim-lsp',
-      -- adding this to make sure dap is read.
-      'mfussenegger/nvim-dap',
-    },
-  })
-  vim.g.rustaceanvim = {
-    tools = {
-      reload_workspace_from_cargo_toml = false,
-      hover_actions = { replace_builtin_hover = false },
-    },
-    dap = {
-      executable = {
-        args = { "--liblldb", "/usr/lib/liblldb.so", "--port", "${port}" },
-        command = "codelldb"
-      },
-      host = "127.0.0.1",
-      port = "${port}",
-      type = "server"
-    },
-    server = {
-      default_settings = {
-        ["rust-analyzer"] = {
-          cargo = {
-            targetDir = true,
-          },
-        },
-      },
-    },
-  }
-  applyall(vim.keymap.set, {
-    { 'n', '<C-k>', '<cmd>RustLsp externalDocs<CR>' },
-    { 'n', 'go', '<cmd>RustLsp parentModule<CR>' },
-  })
-end)
+-- later(function()
+--   add({
+--     source = 'mrcjkb/rustaceanvim',
+--     depends = {
+--       -- > This plugin will automatically register the necessary client
+--       -- > capabilities if you have cmp-nvim-lsp installed.
+--       -- https://github.com/mrcjkb/rustaceanvim#how-to-enable-auto-completion
+--       'hrsh7th/cmp-nvim-lsp',
+--       -- adding this to make sure dap is read.
+--       'mfussenegger/nvim-dap',
+--     },
+--   })
+--   vim.g.rustaceanvim = {
+--     tools = {
+--       reload_workspace_from_cargo_toml = false,
+--     },
+--     dap = {
+--       executable = {
+--         args = { "--liblldb", "/usr/lib/liblldb.so", "--port", "${port}" },
+--         command = "codelldb"
+--       },
+--       host = "127.0.0.1",
+--       port = "${port}",
+--       type = "server"
+--     },
+--     server = {
+--       default_settings = {
+--         ["rust-analyzer"] = {
+--           cargo = {
+--             targetDir = true,
+--           },
+--         },
+--       },
+--     },
+--   }
+--   applyall(vim.keymap.set, {
+--     { 'n', '<C-k>', '<cmd>RustLsp externalDocs<CR>' },
+--     { 'n', 'go', '<cmd>RustLsp parentModule<CR>' },
+--   })
+-- end)
 
 later(function()
   add({ source = 'jpalardy/vim-slime' })
@@ -673,7 +676,7 @@ applyall(vim.keymap.set, {
   { {'n', 'x', 'o'}, 'gy', _G.__commentyank, { expr = true } },
   { 'n', 'gyy', 'yygcc', { remap = true } },
 
-  { 'n', '  ', find_files_project },
+  { 'n', '  ', require('telescope.builtin').find_files },
   { 'n', ' .', require('telescope.builtin').find_files },
   { 'n', ' ,', require('telescope.builtin').buffers },
   { 'n', ' /', require('telescope.builtin').live_grep },

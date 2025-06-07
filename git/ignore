@@ -23,6 +23,7 @@ Session.vim
 .direnv/
 .aider.*
 CLAUDE.md
+.claude/
 
 # in-progress notes
 notes_.md
