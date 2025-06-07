@@ -4,7 +4,6 @@ let
   py-solana = (pkgs.callPackage ./pkgs/py-solana.nix { solders = py-solders; });
 in
 {
-  nixpkgs.config.allowUnfree = true;
   home.enableNixpkgsReleaseCheck = false;
 
   home.username = "sheheryar";
@@ -19,7 +18,7 @@ in
 
   # read release notes before updating.
   # https://nix-community.github.io/home-manager/release-notes.xhtml
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
     # unfortunately difficult to run anything with hardware accel.
@@ -225,6 +224,9 @@ in
       };
     in
     "${drv}/share/mpv/scripts";
+
+  home.file.".config/direnv/lib/nix-direnv.sh".source =
+    "${pkgs.nix-direnv}/share/nix-direnv/direnvrc";
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a

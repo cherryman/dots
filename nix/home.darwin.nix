@@ -9,7 +9,6 @@
   # omitting discord due to the stupid update check.
   home.packages = with pkgs; [
     aerospace
-    alacritty
     alt-tab-macos
     anki-bin
     audacity
