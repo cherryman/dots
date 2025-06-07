@@ -36,8 +36,6 @@ XDGC_TARGETS	= alacritty    \
 		  btop         \
 		  qmk          \
 		  direnv       \
-		  nix          \
-		  home-manager \
 		  aerospace    \
 		  fish         \
 		  ghostty      \
@@ -113,3 +111,7 @@ xorg: xkb
 .PHONY: xkb
 xkb:
 	(cd / && sudo patch -u -p0 < "$(PWD)/$@/patch")
+
+.PHONY: claude
+claude:
+	$(LINK) $(DOTDIR)/$@ ../.claude
