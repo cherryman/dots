@@ -2,7 +2,7 @@
   description = "Home Manager configuration of sheheryar";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/adaa24fbf46737f3f1b5497bf64bae750f82942e";
+    nixpkgs.url = "github:nixos/nixpkgs/25.05";
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin/nix-darwin-25.05";
@@ -10,7 +10,7 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/7c455533409411b4053bb6d7db71eb35e0544254";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -27,23 +27,34 @@
       darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
         modules = [
           home-manager.darwinModules.home-manager
-          ./nix/nix-darwin.nix
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            system.primaryUser = "sheheryar";
+            users.users.sheheryar.name = "sheheryar";
+            users.users.sheheryar.home = "/Users/sheheryar";
             home-manager.users."sheheryar" = {
               imports = [
+                (_: {
+                  home.username = "sheheryar";
+                  home.homeDirectory = "/Users/sheheryar";
+                })
                 ./nix/home.nix
                 ./nix/home.darwin.nix
               ];
             };
           }
+          ./nix/darwin.nix
         ];
       };
       homeConfigurations =
         let
           linux-modules = [
-            (_: { nixpkgs.config.allowUnfree = true; })
+            (_: {
+              nixpkgs.config.allowUnfree = true;
+              home.username = "sheheryar";
+              home.homeDirectory = "/home/sheheryar";
+            })
             ./nix/home.nix
             ./nix/home.linux.nix
           ];

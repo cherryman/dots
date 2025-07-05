@@ -6,16 +6,6 @@ in
 {
   home.enableNixpkgsReleaseCheck = false;
 
-  home.username = "sheheryar";
-
-  home.homeDirectory =
-    if pkgs.stdenv.isLinux then
-      "/home/sheheryar"
-    else if pkgs.stdenv.isDarwin then
-      "/Users/sheheryar"
-    else
-      throw "unsupported platform";
-
   # read release notes before updating.
   # https://nix-community.github.io/home-manager/release-notes.xhtml
   home.stateVersion = "25.05";
@@ -61,11 +51,13 @@ in
     jq
     just
     kotlin-language-server
+    ktfmt
     lldb
     lsof
     ncdu
     neovim
     nix-direnv
+    nix-index-unwrapped
     nixfmt-rfc-style
     nixos-generators
     nixpkgs-review
@@ -212,7 +204,7 @@ in
       Service.ExecStart = "${zotra}/bin/zotra server";
     };
 
-  home.file.".config/mpv/scripts".source =
+  xdg.configFile."mpv/scripts".source =
     let
       drv = pkgs.symlinkJoin {
         name = "mpv-scripts";
@@ -225,25 +217,17 @@ in
     in
     "${drv}/share/mpv/scripts";
 
-  home.file.".config/direnv/lib/nix-direnv.sh".source =
+  xdg.configFile."mpv/shaders".source = # .
+    "${pkgs.callPackage ./pkgs/mpv-shaders.nix { }}";
+
+  xdg.configFile."direnv/lib/nix-direnv.sh".source = # .
     "${pkgs.nix-direnv}/share/nix-direnv/direnvrc";
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
+  # source one of
   #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/sheheryar/etc/profile.d/hm-session-vars.sh
-  #
+  # ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+  # ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
+  # /etc/profiles/per-user/sheheryar/etc/profile.d/hm-session-vars.sh
   home.sessionVariables = {
     # EDITOR = "emacs";
   };

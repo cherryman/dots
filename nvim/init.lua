@@ -79,13 +79,6 @@ if vim.g.neovide then
   vim.o.guifont = "Source Code Pro:h15"
 end
 
-applyall(vim.fn.sign_define, {
-  { 'DiagnosticSignInformation', { text = '-', texthl = 'Todo', linehl = '', numhl = '' } },
-  { 'DiagnosticSignHint', { text = '*', texthl = 'Todo', linehl = '', numhl = '' } },
-  { 'DiagnosticSignWarning', { text = '*', texthl = 'Todo', linehl = '', numhl = '' } },
-  { 'DiagnosticSignError', { text = '>', texthl = 'WarningMsg', linehl = '', numhl = '' } },
-})
-
 -- Shouldn't be hardcoded, but whatever. `bg` value from material.vim
 -- with +5% K in CMYK.
 local DARKBG = '#1d272b'
@@ -176,7 +169,33 @@ now(function()
   })
 
   vim.diagnostic.enable(true, nil)
-  vim.diagnostic.config({ virtual_text = true })
+
+  vim.diagnostic.config({
+    underline = false,
+    virtual_text = true,
+    virtual_lines = false,
+    signs = {
+      priority = 11,
+      numhl = {
+        [vim.diagnostic.severity.HINT] = "",
+        [vim.diagnostic.severity.INFO] = "Todo",
+        [vim.diagnostic.severity.WARN] = "Todo",
+        [vim.diagnostic.severity.ERROR] = "WarningMsg",
+      },
+      linehl = {
+        [vim.diagnostic.severity.HINT] = "",
+        [vim.diagnostic.severity.INFO] = "",
+        [vim.diagnostic.severity.WARN] = "",
+        [vim.diagnostic.severity.ERROR] = "",
+      },
+      text = {
+        [vim.diagnostic.severity.HINT] = "",
+        [vim.diagnostic.severity.INFO] = "",
+        [vim.diagnostic.severity.WARN] = "*",
+        [vim.diagnostic.severity.ERROR] = ">",
+      },
+    },
+  })
 
   require('blink.cmp').setup({
     sources = {
@@ -638,6 +657,16 @@ function find_files_project()
   require('telescope.builtin').find_files({ cwd = cwd })
 end
 
+function toggle_virtual_text()
+  local x = not vim.diagnostic.config().virtual_text
+  vim.diagnostic.config({ virtual_text = x })
+end
+
+function toggle_virtual_lines()
+  local x = not vim.diagnostic.config().virtual_lines
+  vim.diagnostic.config({ virtual_lines = x })
+end
+
 _G.__commentyank = function(mode)
   if mode == nil then
     vim.o.operatorfunc = 'v:lua.__commentyank'
@@ -691,9 +720,10 @@ applyall(vim.keymap.set, {
   { 'n', 'gd', require('telescope.builtin').lsp_definitions },
   { 'n', 'gt', require('telescope.builtin').lsp_type_definitions },
   { 'n', 'gD', require('telescope.builtin').lsp_implementations },
+  { 'n', ' lt', toggle_virtual_text },
+  { 'n', ' lT', toggle_virtual_lines },
 
   { 'n', ' gB', '<cmd>Git blame<CR>' },
-
   { 'n', '[h', '<cmd>GitGutterPrevHunk<CR>' },
   { 'n', ']h', '<cmd>GitGutterNextHunk<CR>' },
 })

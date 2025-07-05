@@ -4,10 +4,8 @@
     brightnessctl
     cargo-llvm-cov # broken on darwin
     cargo-vet # broken on darwin
-    checksec
     eww
     grim
-    ktfmt
     playerctl
     slurp
     swww

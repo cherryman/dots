@@ -25,6 +25,7 @@ import math
 import pdb
 import hashlib
 import pickle
+import binascii
 from datetime import datetime
 from pathlib import Path
 from typing import *
@@ -66,3 +67,20 @@ def _solsk_to_hex(path: str) -> str:
     return enhex(bytes(json.loads(reads(path))))
 
 aliases['solsk-to-hex'] = lambda args: _solsk_to_hex(args[0])
+
+def unhex(s: str | bytes | bytearray):
+    s = s.strip()
+    if len(s) >= 2 and ((isinstance(s, (bytes, bytearray)) and s[:2] == b'0x') or s[:2] == '0x'):
+        s = s[2:]
+    if len(s) % 2 != 0:
+        if isinstance(s, (bytes, bytearray)):
+            s = b'0' + s
+        else:
+            s = '0' + s
+    return binascii.unhexlify(s)
+
+def enhex(x):
+    x = binascii.hexlify(x)
+    if not hasattr(x, 'encode'):
+        x = x.decode('ascii')
+    return x

@@ -6,10 +6,10 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-  system.primaryUser = "sheheryar";
-  users.users.sheheryar.name = "sheheryar";
-  users.users.sheheryar.home = "/Users/sheheryar";
+  # see `darwin-rebuild changelog` before changing.
+  system.stateVersion = 6;
 
+  # needed to generate nix-darwin setup in `/etc/fish`
   programs.fish = {
     enable = true;
     useBabelfish = true;
@@ -25,19 +25,30 @@
       "beeper"
       "breaktimer"
       "chatgpt"
-      "discord"
       "signal"
       "tailscale"
+      "todoist"
       "zen"
     ];
   };
 
-  # see `darwin-rebuild changelog` before changing.
-  system.stateVersion = 6;
+  services.karabiner-elements = {
+    enable = true;
+    # https://github.com/nix-darwin/nix-darwin/issues/1041
+    package = pkgs.karabiner-elements.overrideAttrs (old: {
+      version = "14.13.0";
+      src = pkgs.fetchurl {
+        inherit (old.src) url;
+        hash = "sha256-gmJwoht/Tfm5qMecmq1N6PSAIfWOqsvuHU8VDJY8bLw=";
+      };
+      dontFixup = true;
+    });
+  };
 
   system.keyboard = {
     enableKeyMapping = true;
-    swapLeftCtrlAndFn = true;
+    # swapped in karabiner to not affect external keyboards
+    # swapLeftCtrlAndFn = true;
     userKeyMapping = [
       # caps lock -> option
       {
