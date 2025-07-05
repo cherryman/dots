@@ -1,5 +1,0 @@
-prefix=${HOME}/.local
-cache=${XDG_CACHE_HOME}/npm
-tmp=/tmp
-globalignorefile=${XDG_CONFIG_HOME}/git/ignore
-audit=false

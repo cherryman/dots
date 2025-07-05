@@ -1,1 +1,0 @@
-[[ -o login || ! -o interactive ]] && source "$HOME/.profile"

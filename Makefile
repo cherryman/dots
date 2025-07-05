@@ -13,16 +13,10 @@ HOME_DIRS	= .config bin                               \
 all: dir xdg
 
 # for $XDG_CONFIG_HOME/* type targets
-XDGC_TARGETS	= alacritty    \
-		  mpv          \
-		  i3           \
+XDGC_TARGETS	= mpv          \
 		  sway	       \
-		  waybar       \
-		  picom        \
-		  bspwm        \
 		  dunst        \
 		  rofi         \
-		  sxhkd        \
 		  fontconfig   \
 		  base16-shell \
 		  tmux         \
@@ -31,7 +25,6 @@ XDGC_TARGETS	= alacritty    \
 		  emacs        \
 		  doom         \
 		  darktable    \
-		  hypr         \
 		  eww          \
 		  btop         \
 		  qmk          \
@@ -75,43 +68,10 @@ vim:
 	$(LINK) ../$(DOTDIR)/$@/vim-plug ../.vim/
 	$(LINK) ../$(DOTDIR)/$@/snippets ../.vim/
 
-.PHONY: sh
-sh:
-	$(LINK) $(DOTDIR)/$@/profile ../.profile
-	$(LINK) $(DOTDIR)/$@/env ../.env
-
-.PHONY: zsh
-zsh:	base16-shell
-	$(LINK) $(DOTDIR)/$@/zshrc ../.zshrc
-	$(LINK) $(DOTDIR)/$@/zshenv ../.zshenv
-	$(LINK) ../$(DOTDIR)/$@/zplug $(XDGC)
-
-.PHONY: npm
-npm:
-	$(LINK) $(DOTDIR)/$@/npmrc ../.npmrc
-
 .PHONY: restic
 restic:
 	$(LINK) $(DOTDIR)/$@/exclude ../.resticexclude
 
-.PHONY: redshift
-redshift:
-	$(LINK) ../$(DOTDIR)/$@/redshift.conf $(XDGC)
-
-.PHONY: python
-python:
-	$(LINK) ../$(DOTDIR)/$@/pythonrc.py $(XDGC)
-
-.PHONY: xorg
-xorg: xkb
-	$(LINK) $(DOTDIR)/$@/Xresources ../.Xresources
-	$(LINK) $(DOTDIR)/$@/xprofile ../.xprofile
-	$(LINK) $(DOTDIR)/$@/xinitrc ../.xinitrc
-
 .PHONY: xkb
 xkb:
 	(cd / && sudo patch -u -p0 < "$(PWD)/$@/patch")
-
-.PHONY: claude
-claude:
-	$(LINK) $(DOTDIR)/$@ ../.claude

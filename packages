@@ -1,14 +1,10 @@
-alacritty
 deluge
 discord
 dunst
 emacs
-git
-mold
+ghostty
 mpv
 nix
-pass
-pass-otp
 pipewire-pulse
 slack
 sway
@@ -18,4 +14,3 @@ xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 zathura
 zen-browser
-zsh
