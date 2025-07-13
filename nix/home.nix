@@ -6,6 +6,18 @@ in
 {
   home.enableNixpkgsReleaseCheck = false;
 
+  # `home-manager switch` failing breaks `home-manager`, so not enabling.
+  programs.home-manager.enable = false;
+
+  # source one of
+  #
+  # ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+  # ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
+  # /etc/profiles/per-user/sheheryar/etc/profile.d/hm-session-vars.sh
+  home.sessionVariables = {
+    # EDITOR = "emacs";
+  };
+
   # read release notes before updating.
   # https://nix-community.github.io/home-manager/release-notes.xhtml
   home.stateVersion = "25.05";
@@ -18,7 +30,6 @@ in
     basedpyright
     biber
     biff
-    btop
     bun
     cachix
     cargo-bloat
@@ -35,6 +46,7 @@ in
     entr
     eza
     fd
+    ffmpeg
     fzf
     gh
     git
@@ -56,7 +68,6 @@ in
     lsof
     ncdu
     neovim
-    nix-direnv
     nix-index-unwrapped
     nixfmt-rfc-style
     nixos-generators
@@ -220,18 +231,47 @@ in
   xdg.configFile."mpv/shaders".source = # .
     "${pkgs.callPackage ./pkgs/mpv-shaders.nix { }}";
 
-  xdg.configFile."direnv/lib/nix-direnv.sh".source = # .
-    "${pkgs.nix-direnv}/share/nix-direnv/direnvrc";
-
-  # source one of
-  #
-  # ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  # ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  # /etc/profiles/per-user/sheheryar/etc/profile.d/hm-session-vars.sh
-  home.sessionVariables = {
-    # EDITOR = "emacs";
+  programs.btop = {
+    enable = true;
+    settings = {
+      vim_keys = true;
+      update_ms = 1000;
+    };
   };
 
-  # `home-manager switch` failing breaks `home-manager`, so not enabling.
-  programs.home-manager.enable = false;
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    stdlib = ''
+      # https://rgoswami.me/posts/poetry-direnv/
+      layout_poetry() {
+        if [[ ! -f pyproject.toml ]]; then
+          log_error 'No pyproject.toml found.  Use `poetry new` or `poetry init` to create one first.'
+          exit 2
+        fi
+
+        local VENV=$(dirname $(poetry run which python))
+        export VIRTUAL_ENV=$(echo "$VENV" | rev | cut -d'/' -f2- | rev)
+        export POETRY_ACTIVE=1
+        PATH_add "$VENV"
+      }
+
+      # https://github.com/direnv/direnv/wiki#uv
+      layout_uv() {
+          if [[ -d ".venv" ]]; then
+              VIRTUAL_ENV="$(pwd)/.venv"
+          fi
+
+          if [[ -z $VIRTUAL_ENV || ! -d $VIRTUAL_ENV ]]; then
+              log_status "No virtual environment exists. Executing \`uv venv\` to create one."
+              uv venv
+              VIRTUAL_ENV="$(pwd)/.venv"
+          fi
+
+          PATH_add "$VIRTUAL_ENV/bin"
+          export UV_ACTIVE=1  # or VENV_ACTIVE=1
+          export VIRTUAL_ENV
+      }
+    '';
+  };
 }

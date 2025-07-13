@@ -26,9 +26,7 @@ XDGC_TARGETS	= mpv          \
 		  doom         \
 		  darktable    \
 		  eww          \
-		  btop         \
 		  qmk          \
-		  direnv       \
 		  aerospace    \
 		  fish         \
 		  ghostty      \
