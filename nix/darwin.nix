@@ -25,11 +25,17 @@
       "beeper"
       "breaktimer"
       "chatgpt"
-      "signal"
       "tailscale"
       "todoist"
       "zen"
     ];
+  };
+
+  security.pam.services.sudo_local = {
+    enable = true;
+    touchIdAuth = true;
+    # fixes sudo touch id not working in tmux
+    reattach = true;
   };
 
   services.karabiner-elements = {

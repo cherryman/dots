@@ -26,14 +26,15 @@ import pdb
 import hashlib
 import pickle
 import binascii
+import random
+import numpy as np
+
 from datetime import datetime
 from pathlib import Path
 from typing import *
-
+from random import randint, randrange, randbytes
 from base64 import b64encode as b64e, b64decode as b64d
 from base58 import b58encode as b58e, b58decode as b58d
-
-import numpy as np
 
 # imports a lot of useful stuff. obviates some of the above^
 #

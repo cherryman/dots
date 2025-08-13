@@ -14,6 +14,7 @@ in
     alt-tab-macos
     anki-bin
     audacity
+    bitwarden-desktop
     discord
     emacs
     imhex
@@ -22,8 +23,11 @@ in
     raycast
     slack
     spotify
+    thunderbird-latest-unwrapped
     utm
     zathura
+
+    (pkgs.callPackage ./pkgs/rapidraw.nix { })
   ];
 
   home.activation.fuck-you-discord =

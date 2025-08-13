@@ -32,6 +32,7 @@ in
     biff
     bun
     cachix
+    carapace
     cargo-bloat
     cargo-deny
     cargo-expand
@@ -39,6 +40,7 @@ in
     cargo-udeps
     cargo-watch
     cargo-zigbuild
+    comma
     curl
     dig
     direnv
@@ -60,6 +62,7 @@ in
     imagemagick
     img2pdf
     irssi
+    inshellisense
     jq
     just
     kotlin-language-server

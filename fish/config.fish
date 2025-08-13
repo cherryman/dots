@@ -105,6 +105,9 @@ if status is-interactive
     type -q zoxide; and zoxide init fish | source
     type -q direnv; and direnv hook fish | source
 
+    set -Ux CARAPACE_BRIDGES 'inshellisense,fish,zsh'
+    type -q carapace; and carapace _carapace fish | source
+
     function execute_to_pager
         commandline -a " &| $PAGER"
         commandline -f execute

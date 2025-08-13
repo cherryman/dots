@@ -57,6 +57,10 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     if.app-id = 'com.hnc.Discord'
     run = ['move-node-to-workspace 4']
 
+[[on-window-detected]]
+    if.app-id = 'com.automattic.beeper.desktop'
+    run = ['move-node-to-workspace 4']
+
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
 # - Constant:     gaps.outer.top = 8

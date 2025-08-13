@@ -12,6 +12,9 @@ $HOME/media/vid
 $HOME/.config/chromium
 $HOME/.config/discord
 $HOME/.config/Slack
+$HOME/.config/Signal
+$HOME/.config/Electron
+$HOME/.config/GIMP
 $HOME/.local/state
 $HOME/.local/share
 $HOME/.local/opt
