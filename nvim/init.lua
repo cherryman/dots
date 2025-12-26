@@ -275,6 +275,34 @@ now(function()
   applyall(vim.keymap.set, {
     { {'i', 's'}, '<C-j>', require('luasnip').expand_or_jump },
   })
+
+  -- rust-analyzer
+  vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      if client.name == "rust_analyzer" then
+        vim.keymap.set("n", "<C-k>", function()
+          local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+          client.request("experimental/externalDocs", params, function(err, result)
+            if err then
+              vim.notify("Error fetching docs: " .. vim.inspect(err), vim.log.levels.ERROR)
+              return
+            end
+            if result then
+              local url = type(result) == "string" and result or result.web
+              if url then
+                vim.ui.open(url)
+              else
+                vim.notify("No documentation found", vim.log.levels.WARN)
+              end
+            else
+              vim.notify("No documentation found", vim.log.levels.WARN)
+            end
+          end)
+        end, { buffer = args.buf, desc = "Open external documentation" })
+      end
+    end,
+  })
 end)
 
 now(function()
@@ -544,47 +572,6 @@ later(function()
   })
 end)
 
--- later(function()
---   add({
---     source = 'mrcjkb/rustaceanvim',
---     depends = {
---       -- > This plugin will automatically register the necessary client
---       -- > capabilities if you have cmp-nvim-lsp installed.
---       -- https://github.com/mrcjkb/rustaceanvim#how-to-enable-auto-completion
---       'hrsh7th/cmp-nvim-lsp',
---       -- adding this to make sure dap is read.
---       'mfussenegger/nvim-dap',
---     },
---   })
---   vim.g.rustaceanvim = {
---     tools = {
---       reload_workspace_from_cargo_toml = false,
---     },
---     dap = {
---       executable = {
---         args = { "--liblldb", "/usr/lib/liblldb.so", "--port", "${port}" },
---         command = "codelldb"
---       },
---       host = "127.0.0.1",
---       port = "${port}",
---       type = "server"
---     },
---     server = {
---       default_settings = {
---         ["rust-analyzer"] = {
---           cargo = {
---             targetDir = true,
---           },
---         },
---       },
---     },
---   }
---   applyall(vim.keymap.set, {
---     { 'n', '<C-k>', '<cmd>RustLsp externalDocs<CR>' },
---     { 'n', 'go', '<cmd>RustLsp parentModule<CR>' },
---   })
--- end)
-
 later(function()
   add({ source = 'jpalardy/vim-slime' })
 
@@ -626,6 +613,7 @@ later(function()
       },
       typstyle = {
         command = "typstyle",
+        args = { "--wrap-text" },
       },
     },
   })

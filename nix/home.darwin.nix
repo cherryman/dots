@@ -14,7 +14,7 @@ in
     alt-tab-macos
     anki-bin
     audacity
-    bitwarden-desktop
+    deluge
     discord
     emacs
     imhex
@@ -22,10 +22,10 @@ in
     mpv-unwrapped
     raycast
     slack
-    spotify
     thunderbird-latest-unwrapped
     utm
     zathura
+    zotero
 
     (pkgs.callPackage ./pkgs/rapidraw.nix { })
   ];

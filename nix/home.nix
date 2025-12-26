@@ -30,6 +30,7 @@ in
     basedpyright
     biber
     biff
+    bitwarden-cli
     bun
     cachix
     carapace
@@ -56,6 +57,7 @@ in
     git-lfs
     git-subrepo
     gradle
+    graphite-cli
     grpcurl
     hexyl
     hyperfine
@@ -70,7 +72,7 @@ in
     lldb
     lsof
     ncdu
-    neovim
+    neovim-unwrapped
     nix-index-unwrapped
     nixfmt-rfc-style
     nixos-generators
@@ -81,6 +83,7 @@ in
     numbat
     openfortivpn
     openvpn
+    ouch
     p7zip
     pandoc
     poetry
@@ -137,6 +140,12 @@ in
     volatility3
     wireshark
 
+    # ai stuff
+    amp-cli
+    claude-code
+    codex
+    gemini-cli
+
     (pkgs.wordlists.override {
       lists = with pkgs; [
         nmap
@@ -147,13 +156,10 @@ in
     })
 
     # custom
-    (pkgs.callPackage ./pkgs/rebiber.nix { })
     (pkgs.callPackage ./pkgs/cfddns.nix { })
-    (pkgs.callPackage ./pkgs/sif.nix { })
-    (pkgs.callPackage ./pkgs/zotra.nix { })
     (pkgs.callPackage ./pkgs/ipsw.nix { })
 
-    (python312.withPackages (p: [
+    (python313.withPackages (p: [
       p.base58
       p.cryptography
       p.editorconfig # doom emacs optimization
@@ -164,11 +170,10 @@ in
       p.pandas
       p.pillow
       p.pwntools
+      p.requests
       p.sympy
       p.torch
       p.xonsh
-      py-solders
-      py-solana
     ]))
 
     (pass.withExtensions (ext: [
@@ -196,27 +201,13 @@ in
 
   nix.gc = {
     automatic = true;
-    frequency = "weekly";
+    dates = "weekly";
     persistent = true;
   };
 
   services = {
     syncthing.enable = true;
   };
-
-  # should port this to darwin with launchd. see examples:
-  # https://github.com/nix-community/home-manager/tree/master/modules/launchd
-  # https://github.com/nix-community/home-manager/blob/e1aec543f5caf643ca0d94b6a633101942fd065f/modules/services/syncthing.nix#L100
-  systemd.user.services.zotra =
-    let
-      zotra = pkgs.callPackage ./pkgs/zotra.nix { };
-    in
-    {
-      Unit.Description = "zotra server";
-      Unit.After = [ "network.target" ];
-      Install.WantedBy = [ "default.target" ];
-      Service.ExecStart = "${zotra}/bin/zotra server";
-    };
 
   xdg.configFile."mpv/scripts".source =
     let

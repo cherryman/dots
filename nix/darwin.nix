@@ -22,9 +22,11 @@
   homebrew = {
     enable = true;
     casks = [
-      "beeper"
       "breaktimer"
       "chatgpt"
+      "karabiner-elements"
+      "obsidian"
+      "spotify"
       "tailscale"
       "todoist"
       "zen"
@@ -36,19 +38,6 @@
     touchIdAuth = true;
     # fixes sudo touch id not working in tmux
     reattach = true;
-  };
-
-  services.karabiner-elements = {
-    enable = true;
-    # https://github.com/nix-darwin/nix-darwin/issues/1041
-    package = pkgs.karabiner-elements.overrideAttrs (old: {
-      version = "14.13.0";
-      src = pkgs.fetchurl {
-        inherit (old.src) url;
-        hash = "sha256-gmJwoht/Tfm5qMecmq1N6PSAIfWOqsvuHU8VDJY8bLw=";
-      };
-      dontFixup = true;
-    });
   };
 
   system.keyboard = {

@@ -55,6 +55,8 @@ alias ipy ipython
 alias x xonsh
 alias j just
 
+alias lsg 'fd --max-depth=1'
+
 if type -q nvim
     set -gx EDITOR nvim
     set -gx VISUAL nvim

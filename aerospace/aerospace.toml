@@ -30,8 +30,20 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     run = ['layout floating']
 
 [[on-window-detected]]
+    if.app-id = 'org.praat.Praat'
+    run = ['move-node-to-workspace 2', 'layout floating']
+
+[[on-window-detected]]
+    if.window-title-regex-substring = "^Phantom Wallet$"
+    run = ['layout floating']
+
+[[on-window-detected]]
     if.app-id = 'app.zen-browser.zen'
     run = ['move-node-to-workspace 2']
+
+[[on-window-detected]]
+    if.app-id = 'md.obsidian'
+    run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
     if.app-id = 'org.gnu.Emacs'
@@ -42,11 +54,11 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
-    if.app-id = 'com.apple.mail'
+    if.app-id = 'com.automattic.beeper.desktop'
     run = ['move-node-to-workspace 4']
 
 [[on-window-detected]]
-    if.app-id = 'com.spotify.client'
+    if.app-id = 'com.apple.MobileSMS'
     run = ['move-node-to-workspace 4']
 
 [[on-window-detected]]
@@ -58,8 +70,12 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     run = ['move-node-to-workspace 4']
 
 [[on-window-detected]]
-    if.app-id = 'com.automattic.beeper.desktop'
-    run = ['move-node-to-workspace 4']
+    if.app-id = 'com.apple.mail'
+    run = ['move-node-to-workspace 5']
+
+[[on-window-detected]]
+    if.app-id = 'com.spotify.client'
+    run = ['move-node-to-workspace 6']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:

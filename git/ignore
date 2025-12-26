@@ -27,3 +27,4 @@ Session.vim
 .aider.*
 CLAUDE.md
 .claude/
+.nvimrc

@@ -85,3 +85,8 @@ def enhex(x):
     if not hasattr(x, 'encode'):
         x = x.decode('ascii')
     return x
+
+def sha256(x: bytes | str):
+    if isinstance(x, str):
+        x = x.encode()
+    return hashlib.sha256(x).digest()
