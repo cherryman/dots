@@ -89,7 +89,7 @@ begin
     end
 
     if type -q babelfish && test -f $hmvars
-        babelfish < $hmvars > /dev/null
+        babelfish < $hmvars | source
      end
 
     # nix being weird as usual.

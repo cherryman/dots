@@ -31,7 +31,7 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 [[on-window-detected]]
     if.app-id = 'org.praat.Praat'
-    run = ['move-node-to-workspace 2', 'layout floating']
+    run = ['layout floating', 'move-node-to-workspace 5']
 
 [[on-window-detected]]
     if.window-title-regex-substring = "^Phantom Wallet$"

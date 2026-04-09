@@ -27,7 +27,7 @@ in
     zathura
     zotero
 
-    (pkgs.callPackage ./pkgs/rapidraw.nix { })
+    # (pkgs.callPackage ./pkgs/rapidraw.nix { })
   ];
 
   home.activation.fuck-you-discord =

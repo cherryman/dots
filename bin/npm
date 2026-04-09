@@ -1,0 +1,3 @@
+#!/bin/sh
+echo >&2 '`npm` disabled for security reasons. use `bun` or `pnpm`.'
+exit 1

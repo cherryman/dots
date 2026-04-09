@@ -27,8 +27,8 @@
       "karabiner-elements"
       "obsidian"
       "spotify"
-      "tailscale"
-      "todoist"
+      "tailscale-app"
+      "todoist-app"
       "zen"
     ];
   };

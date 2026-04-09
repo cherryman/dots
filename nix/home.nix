@@ -87,6 +87,7 @@ in
     p7zip
     pandoc
     poetry
+    pscale
     qmk
     qrencode
     restic
@@ -95,6 +96,7 @@ in
     rsync
     ruff
     rustup
+    sentry-cli
     shellcheck
     socat
     syncthing
@@ -134,6 +136,7 @@ in
     ghidra
     john
     mitmproxy
+    mtr
     netcat-gnu
     nmap
     radare2
@@ -141,10 +144,11 @@ in
     wireshark
 
     # ai stuff
-    amp-cli
+    # amp-cli
     claude-code
     codex
     gemini-cli
+    opencode
 
     (pkgs.wordlists.override {
       lists = with pkgs; [
@@ -155,9 +159,8 @@ in
       ];
     })
 
-    # custom
-    (pkgs.callPackage ./pkgs/cfddns.nix { })
     (pkgs.callPackage ./pkgs/ipsw.nix { })
+    (pkgs.callPackage ./pkgs/amp-cli.nix { })
 
     (python313.withPackages (p: [
       p.base58
