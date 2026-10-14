@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -14,20 +15,19 @@ in
     alt-tab-macos
     anki-bin
     audacity
-    deluge
     discord
     emacs
     imhex
     maccy
     mpv-unwrapped
+    pkgs-unstable.rapidraw
     raycast
     slack
     thunderbird-latest-unwrapped
     utm
-    zathura
+    # https://github.com/NixOS/nixpkgs/issues/514738
+    pkgs-unstable.zathura
     zotero
-
-    # (pkgs.callPackage ./pkgs/rapidraw.nix { })
   ];
 
   home.activation.fuck-you-discord =

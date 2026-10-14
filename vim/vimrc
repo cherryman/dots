@@ -7,6 +7,8 @@ call plug#begin('~/.vim/plugged')
 
 " themes
 Plug 'cherryman/material.vim', { 'branch': 'main' }
+Plug 'ellisonleao/gruvbox.nvim'
+Plug 'sainnhe/gruvbox-material'
 
 " defaults
 Plug 'tpope/vim-repeat'
@@ -65,13 +67,16 @@ if !has('nvim')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
+let g:lightline_colorscheme = 'solarized'
 let g:material_terminal_italics = 1
 let g:material_theme_style = 'default'
+let g:gruvbox_material_enable_bold = 1
+let g:gruvbox_material_enable_italic = 1
+let g:gruvbox_material_background = 'hard'
 
 set background=dark
 
-colorscheme material
-let g:lightline_colorscheme = 'material'
+colorscheme gruvbox-material
 
 "}}}
 " ---- Indentation {{{

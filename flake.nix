@@ -2,15 +2,16 @@
   description = "Home Manager configuration of sheheryar";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.11";
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -19,10 +20,21 @@
     inputs@{
       self,
       nixpkgs,
+      nixpkgs-unstable,
       home-manager,
       nix-darwin,
       ...
     }:
+    let
+      pkgs-unstable-module =
+        { pkgs, ... }:
+        {
+          _module.args.pkgs-unstable = import nixpkgs-unstable {
+            config.allowUnfree = true;
+            system = pkgs.stdenv.hostPlatform.system;
+          };
+        };
+    in
     {
       darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
         modules = [
@@ -39,6 +51,7 @@
                   home.username = "sheheryar";
                   home.homeDirectory = "/Users/sheheryar";
                 })
+                pkgs-unstable-module
                 ./nix/home.nix
                 ./nix/home.darwin.nix
               ];
@@ -55,6 +68,7 @@
               home.username = "sheheryar";
               home.homeDirectory = "/home/sheheryar";
             })
+            pkgs-unstable-module
             ./nix/home.nix
             ./nix/home.linux.nix
           ];

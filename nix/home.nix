@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 let
   py-solders = (pkgs.callPackage ./pkgs/py-solders.nix { });
   py-solana = (pkgs.callPackage ./pkgs/py-solana.nix { solders = py-solders; });
@@ -20,7 +25,7 @@ in
 
   # read release notes before updating.
   # https://nix-community.github.io/home-manager/release-notes.xhtml
-  home.stateVersion = "25.05";
+  home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
     # unfortunately difficult to run anything with hardware accel.
@@ -72,13 +77,11 @@ in
     lldb
     lsof
     ncdu
-    neovim-unwrapped
+    pkgs-unstable.neovim-unwrapped # 0.12.5
     nix-index-unwrapped
     nixfmt-rfc-style
     nixos-generators
     nixpkgs-review
-    nodePackages.prettier
-    nodePackages.typescript-language-server
     nodejs
     numbat
     openfortivpn
@@ -87,6 +90,7 @@ in
     p7zip
     pandoc
     poetry
+    prettier
     pscale
     qmk
     qrencode
@@ -106,6 +110,8 @@ in
     tmux
     tokei
     tokio-console
+    tree-sitter
+    typescript-language-server
     typst
     typstyle
     util-linux
@@ -145,7 +151,7 @@ in
 
     # ai stuff
     # amp-cli
-    claude-code
+    # claude-code
     codex
     gemini-cli
     opencode
@@ -173,10 +179,14 @@ in
       p.pandas
       p.pillow
       p.pwntools
+      p.pymupdf
+      p.pypdf
       p.requests
+      p.spotipy
       p.sympy
       p.torch
       p.xonsh
+      (p.callPackage ./pkgs/pyrekordbox.nix { })
     ]))
 
     (pass.withExtensions (ext: [
@@ -212,13 +222,21 @@ in
     syncthing.enable = true;
   };
 
+  home.file.".codex/AGENTS.md".source = # .
+    ../AGENTS.md;
+
+  home.file.".claude/CLAUDE.md".source = # .
+    ../AGENTS.md;
+
   xdg.configFile."mpv/scripts".source =
     let
       drv = pkgs.symlinkJoin {
         name = "mpv-scripts";
         paths = with pkgs.mpvScripts; [
           autoload
+          # compilation broken due to some binary signing
           autosubsync-mpv
+          # https://github.com/mrxdst/webtorrent-mpv-hook/commit/d3381c92d08b2506700e33aae7ce02f18e15431f
           webtorrent-mpv-hook
         ];
       };

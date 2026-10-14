@@ -308,67 +308,19 @@ end)
 now(function()
   add({
     source = 'nvim-treesitter/nvim-treesitter',
+    checkout = 'main',
     hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
   })
-  add({ source = 'nvim-treesitter/nvim-treesitter-textobjects' })
-  add({ source = 'windwp/nvim-ts-autotag' })
-  require('nvim-treesitter.configs').setup({
-    ensure_installed = "all",
-    ignore_install = {"tex", "latex", "markdown", "wing"},
-    indent = {
-      disable = {"tex", "latex"},
-    },
-    highlight = {
-      enable = true,
-      disable = {"tex", "latex"},
-    },
-    textobjects = {
-      select = {
-        enable = true,
-        include_surrounding_whitespace = true,
-        lookahead = true,
-        keymaps = {
-          ["af"] = "@function.outer",
-          ["if"] = "@function.inner",
-          ["ab"] = "@block.outer",
-          ["ib"] = "@block.inner",
-        },
-        selection_modes = {},
-      },
-      move = {
-        enable = true,
-        disable = {'tex', 'latex'},
-        set_jumps = true,
-        goto_next_start = {
-          ["]m"] = "@function.outer",
-        },
-        goto_next_end = {
-          ["]M"] = "@function.outer",
-        },
-        goto_previous_start = {
-          ["[m"] = "@function.outer",
-        },
-        goto_previous_end = {
-          ["[M"] = "@function.outer",
-        },
-      },
-    },
+  add({
+    source = 'nvim-treesitter/nvim-treesitter-textobjects',
+    checkout = 'main',
   })
-  require('nvim-ts-autotag').setup({
-    opts = {
-      -- Defaults
-      enable_close = true, -- Auto close tags
-      enable_rename = true, -- Auto rename pairs of tags
-      enable_close_on_slash = false -- Auto close on trailing </
-    },
-    -- Also override individual filetype configs, these take priority.
-    -- Empty by default, useful if one of the "opts" global settings
-    -- doesn't work well in a specific filetype
-    per_filetype = {
-      -- ["html"] = {
-      --   enable_close = false
-      -- }
-    },
+  require('nvim-treesitter').install({
+    'stable',
+    'unstable',
+  })
+  require('nvim-treesitter-textobjects').setup({
+    -- TODO
   })
 end)
 
@@ -467,8 +419,9 @@ later(function()
 end)
 
 later(function()
-  add({ source = 'ggandor/leap.nvim' })
-  require('leap').set_default_keymaps()
+  add({ source = 'https://codeberg.org/andyg/leap.nvim' })
+  vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
+  vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
   vim.g.surround_no_mappings = 1
 end)
 
@@ -678,6 +631,9 @@ _G.__commentyank = function(mode)
   return ''
 end
 
+local ts_select = require('nvim-treesitter-textobjects.select')
+local ts_move = require('nvim-treesitter-textobjects.move')
+
 applyall(vim.keymap.set, {
   { 'n', 'ds', '<Plug>Dsurround' },
   { 'n', 'cs', '<Plug>Csurround' },
@@ -692,6 +648,14 @@ applyall(vim.keymap.set, {
 
   { {'n', 'x', 'o'}, 'gy', _G.__commentyank, { expr = true } },
   { 'n', 'gyy', 'yygcc', { remap = true } },
+
+  { { "x", "o" }, "am", function() ts_select.select_textobject("@function.outer", "textobjects") end },
+  { { "x", "o" }, "im", function() ts_select.select_textobject("@function.inner", "textobjects") end },
+
+  { { "n", "x", "o" }, "]m", function() ts_move.goto_next_start("@function.outer", "textobjects") end },
+  { { "n", "x", "o" }, "]M", function() ts_move.goto_next_end("@function.outer", "textobjects") end },
+  { { "n", "x", "o" }, "[m", function() ts_move.goto_previous_start("@function.outer", "textobjects") end },
+  { { "n", "x", "o" }, "[M", function() ts_move.goto_previous_end("@function.outer", "textobjects") end },
 
   { 'n', '  ', require('telescope.builtin').find_files },
   { 'n', ' .', require('telescope.builtin').find_files },

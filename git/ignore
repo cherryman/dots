@@ -1,5 +1,5 @@
 .notes.md
-.local/
+.local
 
 ### Vim
 [._]*.s[a-v][a-z]
@@ -30,3 +30,4 @@ Session.vim
 CLAUDE.md
 .claude/
 .agents
+.codex/

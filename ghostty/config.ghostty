@@ -1,0 +1,36 @@
+theme = Gruvbox Material
+font-family = Menlo
+font-size = 14
+macos-option-as-alt = true
+window-decoration = auto
+
+keybind = alt+a>alt+a=text:\x1ba
+
+keybind = alt+h=goto_split:left
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+l=goto_split:right
+
+keybind = alt+a>-=new_split:down
+keybind = alt+a>backslash=new_split:right
+keybind = alt+a>h=goto_split:left
+keybind = alt+a>j=goto_split:down
+keybind = alt+a>k=goto_split:up
+keybind = alt+a>l=goto_split:right
+keybind = alt+a>ctrl+h=resize_split:left,30
+keybind = alt+a>ctrl+j=resize_split:down,30
+keybind = alt+a>ctrl+k=resize_split:up,30
+keybind = alt+a>ctrl+l=resize_split:right,30
+keybind = alt+a>z=toggle_split_zoom
+
+keybind = alt+p=previous_tab
+keybind = alt+n=next_tab
+keybind = alt+shift+p=move_tab:-1
+keybind = alt+shift+n=move_tab:1
+keybind = alt+a>p=previous_tab
+keybind = alt+a>n=next_tab
+keybind = alt+a>shift+p=move_tab:-1
+keybind = alt+a>shift+n=move_tab:1
+
+keybind = alt+a>equal=equalize_splits
+keybind = alt+a>backspace=reset_font_size
