@@ -14,6 +14,11 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    oh-my-pi = {
+      url = "github:can1357/oh-my-pi";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
@@ -23,6 +28,7 @@
       nixpkgs-unstable,
       home-manager,
       nix-darwin,
+      oh-my-pi,
       ...
     }:
     let
@@ -33,6 +39,7 @@
             config.allowUnfree = true;
             system = pkgs.stdenv.hostPlatform.system;
           };
+          _module.args.oh-my-pi = oh-my-pi.packages.${pkgs.stdenv.hostPlatform.system}.default;
         };
     in
     {

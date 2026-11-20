@@ -28,6 +28,8 @@ in
     # https://github.com/NixOS/nixpkgs/issues/514738
     pkgs-unstable.zathura
     zotero
+
+    (pkgs.callPackage ./pkgs/yubico/yubico-authenticator.nix { })
   ];
 
   home.activation.fuck-you-discord =

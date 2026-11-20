@@ -99,6 +99,10 @@ begin
     end
 end
 
+if set -q REX_BIN_DIR
+    fish_add_path --path --prepend --move $REX_BIN_DIR
+end
+
 if status is-interactive
     set BASE16_SHELL "$HOME/.config/base16-shell/"
     source "$BASE16_SHELL/profile_helper.fish"

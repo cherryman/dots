@@ -2,6 +2,7 @@
   config,
   pkgs,
   pkgs-unstable,
+  oh-my-pi,
   ...
 }:
 let
@@ -9,6 +10,11 @@ let
   py-solana = (pkgs.callPackage ./pkgs/py-solana.nix { solders = py-solders; });
 in
 {
+  imports = [
+    ./mods/agents.nix
+    ./mods/zen.nix
+  ];
+
   home.enableNixpkgsReleaseCheck = false;
 
   # `home-manager switch` failing breaks `home-manager`, so not enabling.
@@ -119,6 +125,7 @@ in
     wabt
     websocat
     wget
+    pkgs-unstable.wrangler
     xh
     yarn
     yazi
@@ -150,11 +157,10 @@ in
     wireshark
 
     # ai stuff
-    # amp-cli
-    # claude-code
-    codex
-    gemini-cli
-    opencode
+    pkgs-unstable.antigravity-cli
+    pkgs-unstable.claude-code
+    pkgs-unstable.codex
+    oh-my-pi
 
     (pkgs.wordlists.override {
       lists = with pkgs; [
@@ -167,6 +173,8 @@ in
 
     (pkgs.callPackage ./pkgs/ipsw.nix { })
     (pkgs.callPackage ./pkgs/amp-cli.nix { })
+    (pkgs.callPackage ./pkgs/yubico/yubikey-manager.nix { })
+    (pkgs.callPackage ./pkgs/yubico/yubico-piv-tool.nix { })
 
     (python313.withPackages (p: [
       p.base58
@@ -221,12 +229,6 @@ in
   services = {
     syncthing.enable = true;
   };
-
-  home.file.".codex/AGENTS.md".source = # .
-    ../AGENTS.md;
-
-  home.file.".claude/CLAUDE.md".source = # .
-    ../AGENTS.md;
 
   xdg.configFile."mpv/scripts".source =
     let

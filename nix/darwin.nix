@@ -26,6 +26,8 @@
       "chatgpt"
       "karabiner-elements"
       "krita"
+      "mixed-in-key"
+      "mixed-in-key-live"
       "obsidian"
       "protonvpn"
       "rekordbox"
